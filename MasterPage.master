@@ -1,0 +1,41 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeFile="MasterPage.master.cs" Inherits="MasterPage" %>
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <style>
+        #logo
+        {
+            width:100%;
+            height:auto;
+        }
+    </style>
+    <asp:ContentPlaceHolder ID="head" runat="server">
+    </asp:ContentPlaceHolder>
+    <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css" />
+</head>
+<body>
+    <form id="form1" runat="server">
+    <meta name="viewport" content="width=device-width" />
+    <img id="logo" src="Images/MP_logo.png" />
+    <div>
+        <asp:ContentPlaceHolder ID="body" runat="server">
+        
+        </asp:ContentPlaceHolder>
+    </div>
+
+    <div>
+        <asp:ContentPlaceHolder ID="footer" runat="server">
+
+        </asp:ContentPlaceHolder>
+    </div>
+
+    <div class="w3-container">
+        <p runat="server" class="w3-text-gray">
+            Created By: Janne Kuukkanen.
+        </p>
+    </div>
+    </form>
+</body>
+</html>

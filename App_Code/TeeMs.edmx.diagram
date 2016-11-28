@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="7e729d911acb4b15ac3ca80859d50717" Name="Diagram1">
+        <EntityTypeShape EntityType="TeeMsModel.assignment" Width="1.5" PointX="3" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.assignment_component" Width="1.5" PointX="5.25" PointY="15.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.assignment_person" Width="1.5" PointX="5.25" PointY="3.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.group" Width="1.5" PointX="3" PointY="7.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.group_member" Width="1.5" PointX="5.25" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.group_role" Width="1.5" PointX="3" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.login" Width="1.5" PointX="5.75" PointY="7" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.organization" Width="1.5" PointX="0.75" PointY="8.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.person" Width="1.5" PointX="3" PointY="3.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.project" Width="1.5" PointX="0.75" PointY="15.125" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.project_group" Width="1.5" PointX="5.25" PointY="12.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="TeeMsModel.role" Width="1.5" PointX="0.75" PointY="4" IsExpanded="true" />
+        <AssociationConnector Association="TeeMsModel.fk_assignment_component_assignment1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_assignment1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_assignment_project1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_person1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_group_has_person_group1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_group_organization" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_project_has_group_group1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_group_has_person_person1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_group_member_group_role1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_person_role1" ManuallyRouted="false" />
+        <AssociationConnector Association="TeeMsModel.fk_project_has_group_project1" ManuallyRouted="false" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

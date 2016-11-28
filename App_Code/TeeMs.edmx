@@ -1,0 +1,881 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TeeMsModel.Store" Alias="Self" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.1" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityContainer Name="TeeMsModelStoreContainer">
+          <EntitySet Name="assignment" EntityType="TeeMsModel.Store.assignment" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="assignment_component" EntityType="TeeMsModel.Store.assignment_component" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="assignment_person" EntityType="TeeMsModel.Store.assignment_person" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="group" EntityType="TeeMsModel.Store.group" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="group_member" EntityType="TeeMsModel.Store.group_member" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="group_role" EntityType="TeeMsModel.Store.group_role" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="login" EntityType="TeeMsModel.Store.login" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="organization" EntityType="TeeMsModel.Store.organization" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="person" EntityType="TeeMsModel.Store.person" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="project" EntityType="TeeMsModel.Store.project" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="project_group" EntityType="TeeMsModel.Store.project_group" store:Type="Tables" Schema="H3387" />
+          <EntitySet Name="role" EntityType="TeeMsModel.Store.role" store:Type="Tables" Schema="H3387" />
+          <AssociationSet Name="fk_assignment_component_assignment1" Association="TeeMsModel.Store.fk_assignment_component_assignment1">
+            <End Role="assignment" EntitySet="assignment" />
+            <End Role="assignment_component" EntitySet="assignment_component" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_has_person_assignment1" Association="TeeMsModel.Store.fk_assignment_has_person_assignment1">
+            <End Role="assignment" EntitySet="assignment" />
+            <End Role="assignment_person" EntitySet="assignment_person" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_has_person_person1" Association="TeeMsModel.Store.fk_assignment_has_person_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="assignment_person" EntitySet="assignment_person" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_project1" Association="TeeMsModel.Store.fk_assignment_project1">
+            <End Role="project" EntitySet="project" />
+            <End Role="assignment" EntitySet="assignment" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_has_person_group1" Association="TeeMsModel.Store.fk_group_has_person_group1">
+            <End Role="group" EntitySet="group" />
+            <End Role="group_member" EntitySet="group_member" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_has_person_person1" Association="TeeMsModel.Store.fk_group_has_person_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="group_member" EntitySet="group_member" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_member_group_role1" Association="TeeMsModel.Store.fk_group_member_group_role1">
+            <End Role="group_role" EntitySet="group_role" />
+            <End Role="group_member" EntitySet="group_member" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_organization" Association="TeeMsModel.Store.fk_group_organization">
+            <End Role="organization" EntitySet="organization" />
+            <End Role="group" EntitySet="group" />
+          </AssociationSet>
+          <AssociationSet Name="fk_person_role1" Association="TeeMsModel.Store.fk_person_role1">
+            <End Role="role" EntitySet="role" />
+            <End Role="person" EntitySet="person" />
+          </AssociationSet>
+          <AssociationSet Name="fk_project_has_group_group1" Association="TeeMsModel.Store.fk_project_has_group_group1">
+            <End Role="group" EntitySet="group" />
+            <End Role="project_group" EntitySet="project_group" />
+          </AssociationSet>
+          <AssociationSet Name="fk_project_has_group_project1" Association="TeeMsModel.Store.fk_project_has_group_project1">
+            <End Role="project" EntitySet="project" />
+            <End Role="project_group" EntitySet="project_group" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="assignment">
+          <Key>
+            <PropertyRef Name="amt_id" />
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Name="amt_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="description" Type="varchar" MaxLength="255" />
+          <Property Name="amt_tag" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="creation_date" Type="datetime" Nullable="false" />
+          <Property Name="percent_done" Type="varchar" Nullable="false" MaxLength="45" />
+          <Property Name="finished" Type="bool" Nullable="false" />
+          <Property Name="privacy" Type="int" Nullable="false" />
+          <Property Name="edited" Type="timestamp" />
+          <Property Name="project_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="assignment_component">
+          <Key>
+            <PropertyRef Name="amtc_id" />
+            <PropertyRef Name="amt_id" />
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Name="amtc_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="finished" Type="bool" Nullable="false" />
+          <Property Name="edited" Type="timestamp" />
+          <Property Name="amt_id" Type="int" Nullable="false" />
+          <Property Name="project_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="assignment_person">
+          <Key>
+            <PropertyRef Name="assignment_person_id" />
+            <PropertyRef Name="amt_id" />
+            <PropertyRef Name="project_id" />
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Name="assignment_person_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="amt_id" Type="int" Nullable="false" />
+          <Property Name="project_id" Type="int" Nullable="false" />
+          <Property Name="person_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="group_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="group_tag" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="creator" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="privacy" Type="int" Nullable="false" />
+          <Property Name="creation_date" Type="timestamp" Nullable="false" />
+          <Property Name="edited" Type="timestamp" />
+          <Property Name="organization_org_id" Type="int" />
+        </EntityType>
+        <EntityType Name="group_member">
+          <Key>
+            <PropertyRef Name="group_member_id" />
+            <PropertyRef Name="group_id" />
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Name="group_member_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="person_id" Type="int" Nullable="false" />
+          <Property Name="grouprole_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="group_role">
+          <Key>
+            <PropertyRef Name="grouprole_id" />
+          </Key>
+          <Property Name="grouprole_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="description" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="class" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="login">
+          <Key>
+            <PropertyRef Name="login_id" />
+          </Key>
+          <Property Name="login_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="username" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="password" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="salt" Type="varchar" Nullable="false" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="organization">
+          <Key>
+            <PropertyRef Name="org_id" />
+          </Key>
+          <Property Name="org_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="description" Type="varchar" MaxLength="255" />
+          <Property Name="privacy" Type="int" Nullable="false" />
+          <Property Name="creation_date" Type="timestamp" Nullable="false" />
+          <Property Name="org_tag" Type="varchar" Nullable="false" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="person">
+          <Key>
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Name="person_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="first_name" Type="varchar" MaxLength="200" />
+          <Property Name="last_name" Type="varchar" MaxLength="255" />
+          <Property Name="username" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="email" Type="varchar" MaxLength="255" />
+          <Property Name="privacy" Type="int" Nullable="false" />
+          <Property Name="creation_date" Type="timestamp" Nullable="false" />
+          <Property Name="edited" Type="timestamp" />
+          <Property Name="role_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="project">
+          <Key>
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Name="project_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="description" Type="varchar" MaxLength="255" />
+          <Property Name="project_tag" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="creation_date" Type="timestamp" Nullable="false" />
+          <Property Name="due_date" Type="datetime" />
+          <Property Name="percent_done" Type="varchar" Nullable="false" MaxLength="45" />
+          <Property Name="finished" Type="bool" Nullable="false" />
+          <Property Name="picture_url" Type="varchar" MaxLength="255" />
+          <Property Name="privacy" Type="int" Nullable="false" />
+          <Property Name="edited" Type="timestamp" />
+        </EntityType>
+        <EntityType Name="project_group">
+          <Key>
+            <PropertyRef Name="project_group_id" />
+            <PropertyRef Name="project_id" />
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="project_group_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="project_id" Type="int" Nullable="false" />
+          <Property Name="group_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="role_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="description" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="class" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="fk_assignment_component_assignment1">
+          <End Role="assignment" Type="TeeMsModel.Store.assignment" Multiplicity="1" />
+          <End Role="assignment_component" Type="TeeMsModel.Store.assignment_component" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment_component">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_has_person_assignment1">
+          <End Role="assignment" Type="TeeMsModel.Store.assignment" Multiplicity="1" />
+          <End Role="assignment_person" Type="TeeMsModel.Store.assignment_person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment_person">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_has_person_person1">
+          <End Role="person" Type="TeeMsModel.Store.person" Multiplicity="1" />
+          <End Role="assignment_person" Type="TeeMsModel.Store.assignment_person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="assignment_person">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_project1">
+          <End Role="project" Type="TeeMsModel.Store.project" Multiplicity="1" />
+          <End Role="assignment" Type="TeeMsModel.Store.assignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="project">
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment">
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_group_has_person_group1">
+          <End Role="group" Type="TeeMsModel.Store.group" Multiplicity="1" />
+          <End Role="group_member" Type="TeeMsModel.Store.group_member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="group_member">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_group_has_person_person1">
+          <End Role="person" Type="TeeMsModel.Store.person" Multiplicity="1" />
+          <End Role="group_member" Type="TeeMsModel.Store.group_member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="group_member">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_group_member_group_role1">
+          <End Role="group_role" Type="TeeMsModel.Store.group_role" Multiplicity="1" />
+          <End Role="group_member" Type="TeeMsModel.Store.group_member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group_role">
+              <PropertyRef Name="grouprole_id" />
+            </Principal>
+            <Dependent Role="group_member">
+              <PropertyRef Name="grouprole_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_group_organization">
+          <End Role="organization" Type="TeeMsModel.Store.organization" Multiplicity="0..1" />
+          <End Role="group" Type="TeeMsModel.Store.group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="organization">
+              <PropertyRef Name="org_id" />
+            </Principal>
+            <Dependent Role="group">
+              <PropertyRef Name="organization_org_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_person_role1">
+          <End Role="role" Type="TeeMsModel.Store.role" Multiplicity="1" />
+          <End Role="person" Type="TeeMsModel.Store.person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="role_id" />
+            </Principal>
+            <Dependent Role="person">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_project_has_group_group1">
+          <End Role="group" Type="TeeMsModel.Store.group" Multiplicity="1" />
+          <End Role="project_group" Type="TeeMsModel.Store.project_group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="project_group">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_project_has_group_project1">
+          <End Role="project" Type="TeeMsModel.Store.project" Multiplicity="1" />
+          <End Role="project_group" Type="TeeMsModel.Store.project_group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="project">
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="project_group">
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TeeMsModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="TeeMsEntities" p1:LazyLoadingEnabled="true">
+          <EntitySet Name="assignment" EntityType="TeeMsModel.assignment" />
+          <EntitySet Name="assignment_component" EntityType="TeeMsModel.assignment_component" />
+          <EntitySet Name="assignment_person" EntityType="TeeMsModel.assignment_person" />
+          <EntitySet Name="group" EntityType="TeeMsModel.group" />
+          <EntitySet Name="group_member" EntityType="TeeMsModel.group_member" />
+          <EntitySet Name="group_role" EntityType="TeeMsModel.group_role" />
+          <EntitySet Name="login" EntityType="TeeMsModel.login" />
+          <EntitySet Name="organization" EntityType="TeeMsModel.organization" />
+          <EntitySet Name="person" EntityType="TeeMsModel.person" />
+          <EntitySet Name="project" EntityType="TeeMsModel.project" />
+          <EntitySet Name="project_group" EntityType="TeeMsModel.project_group" />
+          <EntitySet Name="role" EntityType="TeeMsModel.role" />
+          <AssociationSet Name="fk_assignment_component_assignment1" Association="TeeMsModel.fk_assignment_component_assignment1">
+            <End Role="assignment" EntitySet="assignment" />
+            <End Role="assignment_component" EntitySet="assignment_component" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_has_person_assignment1" Association="TeeMsModel.fk_assignment_has_person_assignment1">
+            <End Role="assignment" EntitySet="assignment" />
+            <End Role="assignment_person" EntitySet="assignment_person" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_project1" Association="TeeMsModel.fk_assignment_project1">
+            <End Role="project" EntitySet="project" />
+            <End Role="assignment" EntitySet="assignment" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_has_person_person1" Association="TeeMsModel.fk_assignment_has_person_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="assignment_person" EntitySet="assignment_person" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_has_person_group1" Association="TeeMsModel.fk_group_has_person_group1">
+            <End Role="group" EntitySet="group" />
+            <End Role="group_member" EntitySet="group_member" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_organization" Association="TeeMsModel.fk_group_organization">
+            <End Role="organization" EntitySet="organization" />
+            <End Role="group" EntitySet="group" />
+          </AssociationSet>
+          <AssociationSet Name="fk_project_has_group_group1" Association="TeeMsModel.fk_project_has_group_group1">
+            <End Role="group" EntitySet="group" />
+            <End Role="project_group" EntitySet="project_group" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_has_person_person1" Association="TeeMsModel.fk_group_has_person_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="group_member" EntitySet="group_member" />
+          </AssociationSet>
+          <AssociationSet Name="fk_group_member_group_role1" Association="TeeMsModel.fk_group_member_group_role1">
+            <End Role="group_role" EntitySet="group_role" />
+            <End Role="group_member" EntitySet="group_member" />
+          </AssociationSet>
+          <AssociationSet Name="fk_person_role1" Association="TeeMsModel.fk_person_role1">
+            <End Role="role" EntitySet="role" />
+            <End Role="person" EntitySet="person" />
+          </AssociationSet>
+          <AssociationSet Name="fk_project_has_group_project1" Association="TeeMsModel.fk_project_has_group_project1">
+            <End Role="project" EntitySet="project" />
+            <End Role="project_group" EntitySet="project_group" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="assignment">
+          <Key>
+            <PropertyRef Name="amt_id" />
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Name="amt_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="description" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="amt_tag" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="creation_date" Type="DateTime" Nullable="false" />
+          <Property Name="percent_done" Type="String" Nullable="false" MaxLength="45" Unicode="false" FixedLength="false" />
+          <Property Name="finished" Type="Boolean" Nullable="false" />
+          <Property Name="privacy" Type="Int32" Nullable="false" />
+          <Property Name="edited" Type="DateTime" />
+          <Property Name="project_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="assignment_component" Relationship="TeeMsModel.fk_assignment_component_assignment1" FromRole="assignment" ToRole="assignment_component" />
+          <NavigationProperty Name="assignment_person" Relationship="TeeMsModel.fk_assignment_has_person_assignment1" FromRole="assignment" ToRole="assignment_person" />
+          <NavigationProperty Name="project" Relationship="TeeMsModel.fk_assignment_project1" FromRole="assignment" ToRole="project" />
+        </EntityType>
+        <EntityType Name="assignment_component">
+          <Key>
+            <PropertyRef Name="amtc_id" />
+            <PropertyRef Name="amt_id" />
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Name="amtc_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="finished" Type="Boolean" Nullable="false" />
+          <Property Name="edited" Type="DateTime" />
+          <Property Name="amt_id" Type="Int32" Nullable="false" />
+          <Property Name="project_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_component_assignment1" FromRole="assignment_component" ToRole="assignment" />
+        </EntityType>
+        <EntityType Name="assignment_person">
+          <Key>
+            <PropertyRef Name="assignment_person_id" />
+            <PropertyRef Name="amt_id" />
+            <PropertyRef Name="project_id" />
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Name="assignment_person_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="amt_id" Type="Int32" Nullable="false" />
+          <Property Name="project_id" Type="Int32" Nullable="false" />
+          <Property Name="person_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_has_person_assignment1" FromRole="assignment_person" ToRole="assignment" />
+          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_assignment_has_person_person1" FromRole="assignment_person" ToRole="person" />
+        </EntityType>
+        <EntityType Name="group">
+          <Key>
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="group_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="group_tag" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="creator" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="privacy" Type="Int32" Nullable="false" />
+          <Property Name="creation_date" Type="DateTime" Nullable="false" />
+          <Property Name="edited" Type="DateTime" />
+          <Property Name="organization_org_id" Type="Int32" />
+          <NavigationProperty Name="group_member" Relationship="TeeMsModel.fk_group_has_person_group1" FromRole="group" ToRole="group_member" />
+          <NavigationProperty Name="organization" Relationship="TeeMsModel.fk_group_organization" FromRole="group" ToRole="organization" />
+          <NavigationProperty Name="project_group" Relationship="TeeMsModel.fk_project_has_group_group1" FromRole="group" ToRole="project_group" />
+        </EntityType>
+        <EntityType Name="group_member">
+          <Key>
+            <PropertyRef Name="group_member_id" />
+            <PropertyRef Name="group_id" />
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Name="group_member_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
+          <Property Name="person_id" Type="Int32" Nullable="false" />
+          <Property Name="grouprole_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="group" Relationship="TeeMsModel.fk_group_has_person_group1" FromRole="group_member" ToRole="group" />
+          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_group_has_person_person1" FromRole="group_member" ToRole="person" />
+          <NavigationProperty Name="group_role" Relationship="TeeMsModel.fk_group_member_group_role1" FromRole="group_member" ToRole="group_role" />
+        </EntityType>
+        <EntityType Name="group_role">
+          <Key>
+            <PropertyRef Name="grouprole_id" />
+          </Key>
+          <Property Name="grouprole_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="class" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="group_member" Relationship="TeeMsModel.fk_group_member_group_role1" FromRole="group_role" ToRole="group_member" />
+        </EntityType>
+        <EntityType Name="login">
+          <Key>
+            <PropertyRef Name="login_id" />
+          </Key>
+          <Property Name="login_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="password" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="salt" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="organization">
+          <Key>
+            <PropertyRef Name="org_id" />
+          </Key>
+          <Property Name="org_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="description" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="privacy" Type="Int32" Nullable="false" />
+          <Property Name="creation_date" Type="DateTime" Nullable="false" />
+          <Property Name="org_tag" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <NavigationProperty Name="group" Relationship="TeeMsModel.fk_group_organization" FromRole="organization" ToRole="group" />
+        </EntityType>
+        <EntityType Name="person">
+          <Key>
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Name="person_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="first_name" Type="String" MaxLength="200" Unicode="false" FixedLength="false" />
+          <Property Name="last_name" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="email" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="privacy" Type="Int32" Nullable="false" />
+          <Property Name="creation_date" Type="DateTime" Nullable="false" />
+          <Property Name="edited" Type="DateTime" />
+          <Property Name="role_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="assignment_person" Relationship="TeeMsModel.fk_assignment_has_person_person1" FromRole="person" ToRole="assignment_person" />
+          <NavigationProperty Name="group_member" Relationship="TeeMsModel.fk_group_has_person_person1" FromRole="person" ToRole="group_member" />
+          <NavigationProperty Name="role" Relationship="TeeMsModel.fk_person_role1" FromRole="person" ToRole="role" />
+        </EntityType>
+        <EntityType Name="project">
+          <Key>
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Name="project_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="description" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="project_tag" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="creation_date" Type="DateTime" Nullable="false" />
+          <Property Name="due_date" Type="DateTime" />
+          <Property Name="percent_done" Type="String" Nullable="false" MaxLength="45" Unicode="false" FixedLength="false" />
+          <Property Name="finished" Type="Boolean" Nullable="false" />
+          <Property Name="picture_url" Type="String" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="privacy" Type="Int32" Nullable="false" />
+          <Property Name="edited" Type="DateTime" />
+          <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_project1" FromRole="project" ToRole="assignment" />
+          <NavigationProperty Name="project_group" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project" ToRole="project_group" />
+        </EntityType>
+        <EntityType Name="project_group">
+          <Key>
+            <PropertyRef Name="project_group_id" />
+            <PropertyRef Name="project_id" />
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Name="project_group_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="project_id" Type="Int32" Nullable="false" />
+          <Property Name="group_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="group" Relationship="TeeMsModel.fk_project_has_group_group1" FromRole="project_group" ToRole="group" />
+          <NavigationProperty Name="project" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project_group" ToRole="project" />
+        </EntityType>
+        <EntityType Name="role">
+          <Key>
+            <PropertyRef Name="role_id" />
+          </Key>
+          <Property Name="role_id" Type="Int32" Nullable="false" p1:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="255" Unicode="false" FixedLength="false" />
+          <Property Name="class" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_person_role1" FromRole="role" ToRole="person" />
+        </EntityType>
+        <Association Name="fk_assignment_component_assignment1">
+          <End Role="assignment" Type="TeeMsModel.assignment" Multiplicity="1" />
+          <End Role="assignment_component" Type="TeeMsModel.assignment_component" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment_component">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_has_person_assignment1">
+          <End Role="assignment" Type="TeeMsModel.assignment" Multiplicity="1" />
+          <End Role="assignment_person" Type="TeeMsModel.assignment_person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment_person">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_project1">
+          <End Role="project" Type="TeeMsModel.project" Multiplicity="1" />
+          <End Role="assignment" Type="TeeMsModel.assignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="project">
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment">
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_has_person_person1">
+          <End Role="person" Type="TeeMsModel.person" Multiplicity="1" />
+          <End Role="assignment_person" Type="TeeMsModel.assignment_person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="assignment_person">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_group_has_person_group1">
+          <End Role="group" Type="TeeMsModel.group" Multiplicity="1" />
+          <End Role="group_member" Type="TeeMsModel.group_member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="group_member">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_group_organization">
+          <End Role="organization" Type="TeeMsModel.organization" Multiplicity="0..1" />
+          <End Role="group" Type="TeeMsModel.group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="organization">
+              <PropertyRef Name="org_id" />
+            </Principal>
+            <Dependent Role="group">
+              <PropertyRef Name="organization_org_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_project_has_group_group1">
+          <End Role="group" Type="TeeMsModel.group" Multiplicity="1" />
+          <End Role="project_group" Type="TeeMsModel.project_group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="project_group">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_group_has_person_person1">
+          <End Role="person" Type="TeeMsModel.person" Multiplicity="1" />
+          <End Role="group_member" Type="TeeMsModel.group_member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="group_member">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_group_member_group_role1">
+          <End Role="group_role" Type="TeeMsModel.group_role" Multiplicity="1" />
+          <End Role="group_member" Type="TeeMsModel.group_member" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group_role">
+              <PropertyRef Name="grouprole_id" />
+            </Principal>
+            <Dependent Role="group_member">
+              <PropertyRef Name="grouprole_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_person_role1">
+          <End Role="role" Type="TeeMsModel.role" Multiplicity="1" />
+          <End Role="person" Type="TeeMsModel.person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="role">
+              <PropertyRef Name="role_id" />
+            </Principal>
+            <Dependent Role="person">
+              <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_project_has_group_project1">
+          <End Role="project" Type="TeeMsModel.project" Multiplicity="1" />
+          <End Role="project_group" Type="TeeMsModel.project_group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="project">
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="project_group">
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TeeMsModelStoreContainer" CdmEntityContainer="TeeMsEntities">
+          <EntitySetMapping Name="assignment">
+            <EntityTypeMapping TypeName="TeeMsModel.assignment">
+              <MappingFragment StoreEntitySet="assignment">
+                <ScalarProperty Name="amt_id" ColumnName="amt_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="amt_tag" ColumnName="amt_tag" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="percent_done" ColumnName="percent_done" />
+                <ScalarProperty Name="finished" ColumnName="finished" />
+                <ScalarProperty Name="privacy" ColumnName="privacy" />
+                <ScalarProperty Name="edited" ColumnName="edited" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="assignment_component">
+            <EntityTypeMapping TypeName="TeeMsModel.assignment_component">
+              <MappingFragment StoreEntitySet="assignment_component">
+                <ScalarProperty Name="amtc_id" ColumnName="amtc_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="finished" ColumnName="finished" />
+                <ScalarProperty Name="edited" ColumnName="edited" />
+                <ScalarProperty Name="amt_id" ColumnName="amt_id" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="assignment_person">
+            <EntityTypeMapping TypeName="TeeMsModel.assignment_person">
+              <MappingFragment StoreEntitySet="assignment_person">
+                <ScalarProperty Name="assignment_person_id" ColumnName="assignment_person_id" />
+                <ScalarProperty Name="amt_id" ColumnName="amt_id" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="group">
+            <EntityTypeMapping TypeName="TeeMsModel.group">
+              <MappingFragment StoreEntitySet="group">
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="group_tag" ColumnName="group_tag" />
+                <ScalarProperty Name="creator" ColumnName="creator" />
+                <ScalarProperty Name="privacy" ColumnName="privacy" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="edited" ColumnName="edited" />
+                <ScalarProperty Name="organization_org_id" ColumnName="organization_org_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="group_member">
+            <EntityTypeMapping TypeName="TeeMsModel.group_member">
+              <MappingFragment StoreEntitySet="group_member">
+                <ScalarProperty Name="group_member_id" ColumnName="group_member_id" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="grouprole_id" ColumnName="grouprole_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="group_role">
+            <EntityTypeMapping TypeName="TeeMsModel.group_role">
+              <MappingFragment StoreEntitySet="group_role">
+                <ScalarProperty Name="grouprole_id" ColumnName="grouprole_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="class" ColumnName="class" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="login">
+            <EntityTypeMapping TypeName="TeeMsModel.login">
+              <MappingFragment StoreEntitySet="login">
+                <ScalarProperty Name="login_id" ColumnName="login_id" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="salt" ColumnName="salt" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="organization">
+            <EntityTypeMapping TypeName="TeeMsModel.organization">
+              <MappingFragment StoreEntitySet="organization">
+                <ScalarProperty Name="org_id" ColumnName="org_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="privacy" ColumnName="privacy" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="org_tag" ColumnName="org_tag" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="person">
+            <EntityTypeMapping TypeName="TeeMsModel.person">
+              <MappingFragment StoreEntitySet="person">
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="first_name" ColumnName="first_name" />
+                <ScalarProperty Name="last_name" ColumnName="last_name" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="privacy" ColumnName="privacy" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="edited" ColumnName="edited" />
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="project">
+            <EntityTypeMapping TypeName="TeeMsModel.project">
+              <MappingFragment StoreEntitySet="project">
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="project_tag" ColumnName="project_tag" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="due_date" ColumnName="due_date" />
+                <ScalarProperty Name="percent_done" ColumnName="percent_done" />
+                <ScalarProperty Name="finished" ColumnName="finished" />
+                <ScalarProperty Name="picture_url" ColumnName="picture_url" />
+                <ScalarProperty Name="privacy" ColumnName="privacy" />
+                <ScalarProperty Name="edited" ColumnName="edited" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="project_group">
+            <EntityTypeMapping TypeName="TeeMsModel.project_group">
+              <MappingFragment StoreEntitySet="project_group">
+                <ScalarProperty Name="project_group_id" ColumnName="project_group_id" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="role">
+            <EntityTypeMapping TypeName="TeeMsModel.role">
+              <MappingFragment StoreEntitySet="role">
+                <ScalarProperty Name="role_id" ColumnName="role_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="class" ColumnName="class" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="False" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="True" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
