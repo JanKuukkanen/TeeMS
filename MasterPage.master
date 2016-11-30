@@ -19,6 +19,18 @@
     <form id="form1" runat="server">
     <meta name="viewport" content="width=device-width" />
     <img id="logo" src="Images/MP_logo.png" />
+
+    <div class="w3-third" style="width:10%;">
+        <ul class="w3-ul">
+            <li><a href="Home.aspx">Home</a></li>
+            <li><a href="ViewProfile.aspx">Profile</a></li>
+            <li><a href="Projects.aspx">Projects</a></li>
+            <li><a href="Groups.aspx">Groups</a></li>
+            <li><a href="Chat.aspx">Chat</a></li>
+            <li><a href="SignOut.aspx">Sign out</a></li>
+        </ul>
+    </div>
+
     <div>
         <asp:ContentPlaceHolder ID="body" runat="server">
         
@@ -32,7 +44,7 @@
     </div>
 
     <div class="w3-container">
-        <p runat="server" class="w3-text-gray">
+        <p runat="server" class="w3-text-gray w3-threequarter">
             Created By: Janne Kuukkanen.
         </p>
     </div>

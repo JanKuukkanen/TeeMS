@@ -57,11 +57,11 @@ public partial class Register : System.Web.UI.Page
 
                 var l = new login
                 {
-                    username = uname,
+                    login_name = uname,
                     salt = salt,
                     password = saltedhash
                 };
-
+                
                 ctx.person.Add(p);
                 ctx.login.Add(l);
                 ctx.SaveChanges();

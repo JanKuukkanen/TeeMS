@@ -23,16 +23,16 @@ public partial class TeeMsEntities : DbContext
         throw new UnintentionalCodeFirstException();
     }
 
-    public DbSet<assignment> assignment { get; set; }
     public DbSet<assignment_component> assignment_component { get; set; }
     public DbSet<assignment_person> assignment_person { get; set; }
-    public DbSet<group> group { get; set; }
     public DbSet<group_member> group_member { get; set; }
     public DbSet<group_role> group_role { get; set; }
-    public DbSet<login> login { get; set; }
-    public DbSet<organization> organization { get; set; }
     public DbSet<person> person { get; set; }
-    public DbSet<project> project { get; set; }
     public DbSet<project_group> project_group { get; set; }
     public DbSet<role> role { get; set; }
+    public DbSet<login> login { get; set; }
+    public DbSet<assignment> assignment { get; set; }
+    public DbSet<group> group { get; set; }
+    public DbSet<organization> organization { get; set; }
+    public DbSet<project> project { get; set; }
 }

@@ -12,6 +12,9 @@ namespace TeeMs.Encoder
 {
     public class Encoder
     {
+
+        TeeMsEntities ctx;
+
         public Encoder()
         {
             
@@ -55,6 +58,44 @@ namespace TeeMs.Encoder
             }
 
             return sb.ToString();
+        }
+
+        public Boolean AuthenticateUser(string uname, string password)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                // Query for the person with a username similar to the users input
+                var userperson = ctx.person.Where(p => p.username == uname);
+                var logininfo = ctx.login.Where(p => p.login_name == uname);
+
+                person authenticator = userperson.FirstOrDefault();
+                login loginauth = logininfo.FirstOrDefault();
+
+                if (authenticator.username == loginauth.login_name)
+                {
+                    string saltedhash = GenerateSaltedHash(password, loginauth.salt);
+
+                    if (saltedhash == loginauth.password)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
         }
     } 
 }

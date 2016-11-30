@@ -21,7 +21,7 @@ public partial class assignment
     public int amt_id { get; set; }
     public string name { get; set; }
     public string description { get; set; }
-    public string amt_tag { get; set; }
+    public int amt_tag { get; set; }
     public System.DateTime creation_date { get; set; }
     public string percent_done { get; set; }
     public bool finished { get; set; }
@@ -53,8 +53,8 @@ public partial class assignment_person
     public int project_id { get; set; }
     public int person_id { get; set; }
 
-    public virtual assignment assignment { get; set; }
     public virtual person person { get; set; }
+    public virtual assignment assignment { get; set; }
 }
 
 public partial class group
@@ -67,7 +67,7 @@ public partial class group
 
     public int group_id { get; set; }
     public string name { get; set; }
-    public string group_tag { get; set; }
+    public int group_tag { get; set; }
     public string creator { get; set; }
     public int privacy { get; set; }
     public System.DateTime creation_date { get; set; }
@@ -86,9 +86,9 @@ public partial class group_member
     public int person_id { get; set; }
     public int grouprole_id { get; set; }
 
-    public virtual group group { get; set; }
     public virtual person person { get; set; }
     public virtual group_role group_role { get; set; }
+    public virtual group group { get; set; }
 }
 
 public partial class group_role
@@ -109,7 +109,7 @@ public partial class group_role
 public partial class login
 {
     public int login_id { get; set; }
-    public string username { get; set; }
+    public string login_name { get; set; }
     public string password { get; set; }
     public string salt { get; set; }
 }
@@ -126,7 +126,7 @@ public partial class organization
     public string description { get; set; }
     public int privacy { get; set; }
     public System.DateTime creation_date { get; set; }
-    public string org_tag { get; set; }
+    public int org_tag { get; set; }
 
     public virtual ICollection<group> group { get; set; }
 }
@@ -165,7 +165,7 @@ public partial class project
     public int project_id { get; set; }
     public string name { get; set; }
     public string description { get; set; }
-    public string project_tag { get; set; }
+    public int project_tag { get; set; }
     public System.DateTime creation_date { get; set; }
     public Nullable<System.DateTime> due_date { get; set; }
     public string percent_done { get; set; }
