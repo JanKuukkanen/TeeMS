@@ -8,7 +8,7 @@ using TeeMs.Encoder;
 
 public partial class Register : System.Web.UI.Page
 {
-    TeeMsEntities ctx;
+    private TeeMsEntities ctx;
 
     protected void Page_Load(object sender, EventArgs e)
     {

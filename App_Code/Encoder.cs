@@ -13,7 +13,7 @@ namespace TeeMs.Encoder
     public class Encoder
     {
 
-        TeeMsEntities ctx;
+        private TeeMsEntities ctx;
 
         public Encoder()
         {

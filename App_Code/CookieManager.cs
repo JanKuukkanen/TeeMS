@@ -14,8 +14,8 @@ namespace TeeMs.CookieManager
 {
     public class CookieManager
     {
-        TeeMsEntities ctx;
-        FormsAuthenticationTicket ticket;
+        private TeeMsEntities ctx;
+        private FormsAuthenticationTicket ticket;
 
         public CookieManager()
         {

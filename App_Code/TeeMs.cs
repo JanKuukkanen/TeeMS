@@ -53,8 +53,8 @@ public partial class assignment_person
     public int project_id { get; set; }
     public int person_id { get; set; }
 
-    public virtual person person { get; set; }
     public virtual assignment assignment { get; set; }
+    public virtual person person { get; set; }
 }
 
 public partial class group
@@ -86,9 +86,9 @@ public partial class group_member
     public int person_id { get; set; }
     public int grouprole_id { get; set; }
 
+    public virtual group group { get; set; }
     public virtual person person { get; set; }
     public virtual group_role group_role { get; set; }
-    public virtual group group { get; set; }
 }
 
 public partial class group_role

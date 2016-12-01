@@ -9,8 +9,8 @@ using System.Web.Security;
 public partial class Home : System.Web.UI.Page
 {
 
-    TeeMsEntities ctx;
-    FormsAuthenticationTicket ticket;
+    private TeeMsEntities ctx;
+    private FormsAuthenticationTicket ticket;
 
     protected void Page_Load(object sender, EventArgs e)
     {
@@ -22,6 +22,7 @@ public partial class Home : System.Web.UI.Page
     {
         int group_id = CreateNewGroup();
         GroupMemberConnection(group_id);
+        Response.Redirect("Group.aspx?Group=" + group_id.ToString());
     }
 
     #region CREATEMETHODS
@@ -56,6 +57,7 @@ public partial class Home : System.Web.UI.Page
             addedrow = emptyrow;
         }
 
+        // Next add a new group to the database
         try
         {
             var g = new group
@@ -73,16 +75,37 @@ public partial class Home : System.Web.UI.Page
         catch (Exception ex)
         {
 
-            lbMessages.Text = ex.Message;
+            lbMessages.Text = ex.InnerException.ToString();
             return 0;
         }
     }
 
-    protected void GroupMemberConnection(int group_id)
+    protected void GroupMemberConnection(int addgroup_id)
     {
         // There is a Many to Many relationship between a person and the group
-        // so we need to fill the extra database table as well
-        
+        // so we need to fill the group_member database table as well
+        try
+        {
+            var addeduser = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
+            var addedgroup = ctx.group.Where(g => g.group_id == addgroup_id).SingleOrDefault();
+            var addedrole = ctx.group_role.Where(gr => gr.@class == 1).SingleOrDefault();
+
+            var gm = new group_member
+            {
+                group_id = addedgroup.group_id,
+                person_id = addeduser.person_id,
+                grouprole_id = addedrole.grouprole_id
+            };
+
+            addeduser.group_member.Add(gm);
+            addedgroup.group_member.Add(gm);
+            ctx.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.InnerException.ToString();
+        }
     }
     #endregion
 }
