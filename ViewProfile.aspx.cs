@@ -14,27 +14,25 @@ public partial class ViewProfile : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        ctx = new TeeMsEntities();
+
         HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
         ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
-        if (!IsPostBack)
-        {
-            FillLabels(); 
-        }
+        FillLabels(); 
     }
 
     protected void FillLabels()
     {
         try
         {
-            ctx = new TeeMsEntities();
+            string cookieusername = ticket.Name;
+            var correctperson = ctx.person.Where(p => p.username == cookieusername).FirstOrDefault();
 
-            var rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
-
-            lbUsernameInsert.Text = rightperson.username;
-            lbEmailInsert.Text = rightperson.email;
-            lbFirstNameInsert.Text = rightperson.first_name;
-            lbLastNameInsert.Text = rightperson.last_name;
+            lbUsernameInsert.Text = correctperson.username;
+            lbEmailInsert.Text = correctperson.email;
+            lbFirstNameInsert.Text = correctperson.first_name;
+            lbLastNameInsert.Text = correctperson.last_name;
         }
         catch (Exception ex)
         {
@@ -55,8 +53,6 @@ public partial class ViewProfile : System.Web.UI.Page
 
     protected void UpdateUserProfile()
     {
-        ctx = new TeeMsEntities();
-
         try
         {
             var rightperson = ctx.person.Where(p => p.username == ticket.Name).FirstOrDefault();
@@ -64,24 +60,60 @@ public partial class ViewProfile : System.Web.UI.Page
 
             if (rightperson != null && rightlogin != null)
             {
-                var changedperson = ctx.person.Where(p => p.person_id == rightperson.person_id).FirstOrDefault();
+                string uname = rightperson.username;
+                string fname = rightperson.first_name;
+                string lname = rightperson.last_name;
+                string email = rightperson.email;
+                bool ischanged = false;
 
-                string uname = txtUserName.Text;
-                string fname = txtFirstName.Text;
-                string lname = txtLastName.Text;
-                string email = txtEmail.Text;
-
-                if (changedperson != null)
+                if (txtUserName.Text != String.Empty)
                 {
-                    changedperson.username = uname;
-                    changedperson.first_name = fname;
-                    changedperson.last_name = lname;
-                    changedperson.email = email;
-                    changedperson.edited = DateTime.Now;
+                    uname = txtUserName.Text;
+                    rightperson.username = uname;
+                    rightlogin.login_name = uname;
+                    ischanged = true;
+                }
+
+                if (txtFirstName.Text != String.Empty)
+                {
+                    fname = txtFirstName.Text;
+                    rightperson.first_name = fname;
+                    ischanged = true;
+                }
+
+                if (txtLastName.Text != String.Empty)
+                {
+                    lname = txtLastName.Text;
+                    rightperson.last_name = lname;
+                    ischanged = true;
+                }
+
+                if (txtEmail.Text != String.Empty)
+                {
+                    email = txtEmail.Text;
+                    rightperson.email = email;
+                    ischanged = true;
+                }
+
+
+                if (ischanged == true)
+                {
+                    rightperson.edited = DateTime.Now;
 
                     int num = ctx.SaveChanges();
 
+                    FormsAuthentication.SetAuthCookie(uname, true);
+
                     lbErrorMessages.Text = String.Format("Updated {0} database entries", num.ToString());
+
+                    lbUsernameInsert.Text = uname;
+                    lbEmailInsert.Text = email;
+                    lbFirstNameInsert.Text = fname;
+                    lbLastNameInsert.Text = lname;
+                }
+                else if (ischanged == false)
+                {
+                    lbErrorMessages.Text = "Please insert the data you wish to change in the correct textbox";
                 }
             }
             else
@@ -98,6 +130,33 @@ public partial class ViewProfile : System.Web.UI.Page
 
     protected void UpdateUserPassword()
     {
-        Encoder encoder = new Encoder();
+        try
+        {
+            Encoder encoder = new Encoder();
+
+            var rightperson = ctx.person.Where(p => p.username == ticket.Name).FirstOrDefault();
+            var rightlogin = ctx.login.Where(l => l.login_name == ticket.Name).FirstOrDefault();
+
+            if (rightperson != null && rightlogin != null)
+            {
+                string password = rightlogin.password;
+
+                string newsalt = encoder.GetSalt();
+                string newpassword = encoder.GenerateSaltedHash(txtPassword.Text, newsalt);
+
+                rightlogin.password = newpassword;
+                rightlogin.salt = newsalt;
+                rightperson.edited = DateTime.Now;
+
+                int num = ctx.SaveChanges();
+
+                lbErrorMessages.Text = String.Format("Updates {0} database entries", num.ToString());
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbErrorMessages.Text = ex.Message;
+        }
     }
 }

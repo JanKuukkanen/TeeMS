@@ -53,7 +53,6 @@
                     </td>
                     <td>
                         <asp:TextBox ID="txtUserName" runat="server"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="UserNameRequired" runat="server" ControlToValidate="txtUserName" ErrorMessage="User Name is required." ForeColor="Red" ToolTip="User Name is required." ValidationGroup="UserProfile">*</asp:RequiredFieldValidator>
                     </td>
                 </tr>
                 <tr>
@@ -62,7 +61,6 @@
                     </td>
                     <td>
                         <asp:TextBox ID="txtEmail" runat="server"></asp:TextBox>
-                        <asp:RequiredFieldValidator ID="EmailRequired" runat="server" ControlToValidate="txtEmail" ErrorMessage="E-mail is required." ForeColor="Red" ToolTip="E-mail is required." ValidationGroup="UserProfile">*</asp:RequiredFieldValidator>
                         <asp:RegularExpressionValidator ID="regexEmail" runat="server" ErrorMessage="Enter a valid email-adress!" ControlToValidate="txtEmail" ValidationGroup="UserProfile" ValidationExpression="\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*"></asp:RegularExpressionValidator>
                     </td>
                 </tr>
