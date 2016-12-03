@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.UI.HtmlControls;
 using System.Web.Security;
 using TeeMs.UserContentManager;
 
@@ -19,6 +20,8 @@ public partial class Home : System.Web.UI.Page
         {
             HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
+
+            FillDivs();
         }
         catch (HttpException ex)
         {
@@ -132,6 +135,75 @@ public partial class Home : System.Web.UI.Page
                 addeduser.group_member.Add(gm);
                 addedgroup.group_member.Add(gm);
                 ctx.SaveChanges(); 
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void FillDivs()
+    {
+        // Fill your projects section with the users projects and assignments
+        // and fill your groups with the users groups
+        UserContentManager contentmanager = new UserContentManager(ticket.Name);
+
+        try
+        {
+            List<group> usergroups = contentmanager.GetUserGroups();
+            List<project> userprojects = contentmanager.GetUserProjects();
+
+            foreach (var project in userprojects)
+            {
+                HtmlGenericControl projectdiv = new HtmlGenericControl("div");
+                HtmlGenericControl projectinnerdiv = new HtmlGenericControl("div");
+                HtmlGenericControl projectlink = new HtmlGenericControl("a");
+                HtmlGenericControl projectimage = new HtmlGenericControl("img");
+                HtmlGenericControl projectcut = new HtmlGenericControl("hr");
+
+                projectdiv.Attributes.Add("class", "w3-container");
+                projectdiv.ID = "divProject" + project.project_id;
+
+                projectinnerdiv.Attributes.Add("class", "w3-container");
+
+                projectimage.Attributes.Add("src", project.picture_url);
+                projectimage.Attributes.Add("alt", "Project image");
+                projectimage.Attributes.Add("height", "150px");
+                projectimage.Attributes.Add("width", "150px");
+                projectimage.Attributes.Add("style", "float:left;");
+
+                projectinnerdiv.Controls.Add(projectimage);
+
+                projectlink.Attributes.Add("href", String.Format("Project.aspx?Project={0}", project.project_id));
+                projectlink.Attributes.Add("style", "float:left; margin-top:5%; margin-left:5%;");
+                projectlink.InnerText = project.name;
+
+                projectinnerdiv.Controls.Add(projectlink);
+
+                projectcut.Attributes.Add("style", "color:#000;background-color:#000; height:5px;");
+
+                projectdiv.Controls.Add(projectinnerdiv);
+                projectdiv.Controls.Add(projectcut);
+
+                divYourProjects.Controls.Add(projectdiv);
+            }
+
+            foreach (var group in usergroups)
+            {
+                HtmlGenericControl groupdiv = new HtmlGenericControl("div");
+                HtmlGenericControl grouplink = new HtmlGenericControl("a");
+
+                groupdiv.Attributes.Add("class", "w3-container");
+                groupdiv.ID = "divGroup" + group.group_id;
+
+                grouplink.Attributes.Add("href", String.Format("Group.aspx?Group={0}", group.group_id));
+                grouplink.InnerText = group.name;
+
+                groupdiv.Controls.Add(grouplink);
+
+                divYourGroups.Controls.Add(groupdiv);
             }
         }
         catch (Exception ex)

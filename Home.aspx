@@ -7,18 +7,18 @@
     <div class="w3-twothird">
         <div class="w3-container">
             <h1>Your Projects</h1>
-            <div id="projectDiv" runat="server">
+            <div id="divYourProjects" runat="server">
 
             </div>
-            <a class="w3-btn" href="CreateProject.aspx">Create new Project</a>
+            <a class="w3-btn" href="CreateProject.aspx" style="margin-top:20px;">Create new Project</a>
         </div>
 
         <div class="w3-container">
             <h1>Your Groups</h1>
-            <div id="groupDiv" runat="server">
+            <div id="divYourGroups" runat="server">
 
             </div>
-            <asp:Button ID="btnCreateGroup" runat="server" Text="Create new Group" CssClass="w3-btn" OnClick="btnCreateGroup_Click" />
+            <asp:Button ID="btnCreateGroup" runat="server" Text="Create new Group" CssClass="w3-btn" Style="margin-top:20px;" OnClick="btnCreateGroup_Click" />
         </div>
 
         <div class="w3-container">

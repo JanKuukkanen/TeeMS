@@ -166,14 +166,14 @@ public partial class project
     public string name { get; set; }
     public string description { get; set; }
     public int project_tag { get; set; }
+    public string project_creator { get; set; }
     public System.DateTime creation_date { get; set; }
     public Nullable<System.DateTime> due_date { get; set; }
-    public string percent_done { get; set; }
+    public double percent_done { get; set; }
     public bool finished { get; set; }
     public string picture_url { get; set; }
     public int privacy { get; set; }
     public Nullable<System.DateTime> edited { get; set; }
-    public string project_creator { get; set; }
 
     public virtual ICollection<assignment> assignment { get; set; }
     public virtual ICollection<project_group> project_group { get; set; }

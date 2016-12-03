@@ -182,7 +182,7 @@
           <Property Name="project_creator" Type="varchar" Nullable="false" MaxLength="255" />
           <Property Name="creation_date" Type="datetime" Nullable="false" />
           <Property Name="due_date" Type="datetime" />
-          <Property Name="percent_done" Type="varchar" Nullable="false" MaxLength="45" />
+          <Property Name="percent_done" Type="double" Nullable="false" />
           <Property Name="finished" Type="bool" Nullable="false" />
           <Property Name="picture_url" Type="varchar" MaxLength="255" />
           <Property Name="privacy" Type="int" Nullable="false" />
@@ -357,7 +357,6 @@
           <EntitySet Name="login" EntityType="TeeMsModel.login" />
           <EntitySet Name="organization" EntityType="TeeMsModel.organization" />
           <EntitySet Name="person" EntityType="TeeMsModel.person" />
-          <EntitySet Name="project" EntityType="TeeMsModel.project" />
           <EntitySet Name="project_group" EntityType="TeeMsModel.project_group" />
           <EntitySet Name="role" EntityType="TeeMsModel.role" />
           <AssociationSet Name="fk_assignment_component_assignment1" Association="TeeMsModel.fk_assignment_component_assignment1">
@@ -367,10 +366,6 @@
           <AssociationSet Name="fk_assignment_has_person_assignment1" Association="TeeMsModel.fk_assignment_has_person_assignment1">
             <End Role="assignment" EntitySet="assignment" />
             <End Role="assignment_person" EntitySet="assignment_person" />
-          </AssociationSet>
-          <AssociationSet Name="fk_assignment_project1" Association="TeeMsModel.fk_assignment_project1">
-            <End Role="project" EntitySet="project" />
-            <End Role="assignment" EntitySet="assignment" />
           </AssociationSet>
           <AssociationSet Name="fk_assignment_has_person_person1" Association="TeeMsModel.fk_assignment_has_person_person1">
             <End Role="person" EntitySet="person" />
@@ -399,6 +394,11 @@
           <AssociationSet Name="fk_person_role1" Association="TeeMsModel.fk_person_role1">
             <End Role="role" EntitySet="role" />
             <End Role="person" EntitySet="person" />
+          </AssociationSet>
+          <EntitySet Name="project" EntityType="TeeMsModel.project" />
+          <AssociationSet Name="fk_assignment_project1" Association="TeeMsModel.fk_assignment_project1">
+            <End Role="project" EntitySet="project" />
+            <End Role="assignment" EntitySet="assignment" />
           </AssociationSet>
           <AssociationSet Name="fk_project_has_group_project1" Association="TeeMsModel.fk_project_has_group_project1">
             <End Role="project" EntitySet="project" />
@@ -530,25 +530,6 @@
           <NavigationProperty Name="group_member" Relationship="TeeMsModel.fk_group_has_person_person1" FromRole="person" ToRole="group_member" />
           <NavigationProperty Name="role" Relationship="TeeMsModel.fk_person_role1" FromRole="person" ToRole="role" />
         </EntityType>
-        <EntityType Name="project">
-          <Key>
-            <PropertyRef Name="project_id" />
-          </Key>
-          <Property Type="Int32" Name="project_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="name" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="String" Name="description" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="Int32" Name="project_tag" Nullable="false" />
-          <Property Type="DateTime" Name="creation_date" Nullable="false" />
-          <Property Type="DateTime" Name="due_date" />
-          <Property Type="String" Name="percent_done" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
-          <Property Type="Boolean" Name="finished" Nullable="false" />
-          <Property Type="String" Name="picture_url" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="Int32" Name="privacy" Nullable="false" />
-          <Property Type="DateTime" Name="edited" />
-          <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_project1" FromRole="project" ToRole="assignment" />
-          <NavigationProperty Name="project_group" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project" ToRole="project_group" />
-          <Property Type="String" Name="project_creator" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-        </EntityType>
         <EntityType Name="project_group">
           <Key>
             <PropertyRef Name="project_group_id" />
@@ -595,18 +576,6 @@
             </Principal>
             <Dependent Role="assignment_person">
               <PropertyRef Name="amt_id" />
-              <PropertyRef Name="project_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_assignment_project1">
-          <End Type="TeeMsModel.project" Role="project" Multiplicity="1" />
-          <End Type="TeeMsModel.assignment" Role="assignment" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="project">
-              <PropertyRef Name="project_id" />
-            </Principal>
-            <Dependent Role="assignment">
               <PropertyRef Name="project_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -692,6 +661,37 @@
             </Principal>
             <Dependent Role="person">
               <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="project">
+          <Key>
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Type="Int32" Name="project_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="name" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="description" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="project_tag" Nullable="false" />
+          <Property Type="String" Name="project_creator" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="creation_date" Nullable="false" />
+          <Property Type="DateTime" Name="due_date" />
+          <Property Type="Double" Name="percent_done" Nullable="false" />
+          <Property Type="Boolean" Name="finished" Nullable="false" />
+          <Property Type="String" Name="picture_url" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="privacy" Nullable="false" />
+          <Property Type="DateTime" Name="edited" />
+          <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_project1" FromRole="project" ToRole="assignment" />
+          <NavigationProperty Name="project_group" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project" ToRole="project_group" />
+        </EntityType>
+        <Association Name="fk_assignment_project1">
+          <End Type="TeeMsModel.project" Role="project" Multiplicity="1" />
+          <End Type="TeeMsModel.assignment" Role="assignment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="project">
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment">
+              <PropertyRef Name="project_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -822,24 +822,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="project">
-            <EntityTypeMapping TypeName="TeeMsModel.project">
-              <MappingFragment StoreEntitySet="project">
-                <ScalarProperty Name="project_creator" ColumnName="project_creator" />
-                <ScalarProperty Name="edited" ColumnName="edited" />
-                <ScalarProperty Name="privacy" ColumnName="privacy" />
-                <ScalarProperty Name="picture_url" ColumnName="picture_url" />
-                <ScalarProperty Name="finished" ColumnName="finished" />
-                <ScalarProperty Name="percent_done" ColumnName="percent_done" />
-                <ScalarProperty Name="due_date" ColumnName="due_date" />
-                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
-                <ScalarProperty Name="project_tag" ColumnName="project_tag" />
-                <ScalarProperty Name="description" ColumnName="description" />
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="project_id" ColumnName="project_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="project_group">
             <EntityTypeMapping TypeName="TeeMsModel.project_group">
               <MappingFragment StoreEntitySet="project_group">
@@ -856,6 +838,24 @@
                 <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="role_id" ColumnName="role_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="project">
+            <EntityTypeMapping TypeName="TeeMsModel.project">
+              <MappingFragment StoreEntitySet="project">
+                <ScalarProperty Name="edited" ColumnName="edited" />
+                <ScalarProperty Name="privacy" ColumnName="privacy" />
+                <ScalarProperty Name="picture_url" ColumnName="picture_url" />
+                <ScalarProperty Name="finished" ColumnName="finished" />
+                <ScalarProperty Name="percent_done" ColumnName="percent_done" />
+                <ScalarProperty Name="due_date" ColumnName="due_date" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="project_creator" ColumnName="project_creator" />
+                <ScalarProperty Name="project_tag" ColumnName="project_tag" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

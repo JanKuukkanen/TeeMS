@@ -19,6 +19,7 @@ namespace TeeMs.UserContentManager
             ctx = new TeeMsEntities();
         }
 
+        // Get any group where the user is a group_member
         public List<group> GetUserGroups()
         {
             try
@@ -38,6 +39,35 @@ namespace TeeMs.UserContentManager
             catch (Exception ex)
             {
 
+                throw ex;
+            }
+        }
+
+        // Get any project which includes the users group as a project_group
+        public List<project> GetUserProjects()
+        {
+            try
+            {
+                List<group> usergroups = GetUserGroups();
+                List<project_group> userprojectgroups = ctx.project_group.ToList(); 
+                List<project> userprojects = new List<project>();
+
+                foreach (var group in usergroups)
+                {
+                    foreach (var projectgroup in userprojectgroups)
+                    {
+                        if (projectgroup.group_id == group.group_id)
+                        {
+                            userprojects.Add(ctx.project.Where(pr => pr.project_id == projectgroup.project_id).FirstOrDefault());
+                        }
+                    }
+                }
+
+                return userprojects;
+            }
+            catch (Exception ex)
+            {
+                
                 throw ex;
             }
         }

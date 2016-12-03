@@ -14,12 +14,10 @@
         <EntityTypeShape EntityType="TeeMsModel.login" Width="1.5" PointX="9.625" PointY="10.5" />
         <EntityTypeShape EntityType="TeeMsModel.organization" Width="1.5" PointX="10.125" PointY="7.25" />
         <EntityTypeShape EntityType="TeeMsModel.person" Width="1.5" PointX="13.125" PointY="8.75" />
-        <EntityTypeShape EntityType="TeeMsModel.project" Width="1.5" PointX="0.5" PointY="11.375" />
         <EntityTypeShape EntityType="TeeMsModel.project_group" Width="1.5" PointX="3.125" PointY="11.125" />
         <EntityTypeShape EntityType="TeeMsModel.role" Width="1.5" PointX="6.5" PointY="11.625" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_component_assignment1" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_assignment1" />
-        <AssociationConnector Association="TeeMsModel.fk_assignment_project1" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_person1" />
         <AssociationConnector Association="TeeMsModel.fk_group_has_person_group1" />
         <AssociationConnector Association="TeeMsModel.fk_group_organization" />
@@ -27,6 +25,8 @@
         <AssociationConnector Association="TeeMsModel.fk_group_has_person_person1" />
         <AssociationConnector Association="TeeMsModel.fk_group_member_group_role1" />
         <AssociationConnector Association="TeeMsModel.fk_person_role1" />
+        <EntityTypeShape EntityType="TeeMsModel.project" Width="1.5" PointX="0.625" PointY="10.25" />
+        <AssociationConnector Association="TeeMsModel.fk_assignment_project1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_group_project1" />
       </Diagram>
     </edmx:Diagrams>
