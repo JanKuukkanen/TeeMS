@@ -27,7 +27,7 @@
             <asp:DropDownList ID="ddlProjectList" runat="server" /> <br />
 
             <h2 Style="margin-top:60px;">Project info</h2>
-            <asp:ListBox ID="listbProjectInfo" runat="server"></asp:ListBox>
+            <asp:TextBox ID="ProjectInfo" runat="server" Height="100px" Width="250px" ReadOnly="true" />
 
             <div>
                 <asp:Label ID="lbMessages" runat="server" />

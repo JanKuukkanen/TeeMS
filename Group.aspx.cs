@@ -4,16 +4,30 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using System.Web.Security;
+using TeeMs.UserContentManager;
 
 public partial class Group : System.Web.UI.Page
 {
     private TeeMsEntities ctx;
+    private FormsAuthenticationTicket ticket;
 
     protected void Page_Load(object sender, EventArgs e)
     {
         ctx = new TeeMsEntities();
 
         string group_id = Request.QueryString["Group"];
+
+        try
+        {
+            HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
+            ticket = FormsAuthentication.Decrypt(authcookie.Value);
+        }
+        catch (HttpException ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
 
         if (!IsPostBack)
         {
@@ -49,37 +63,50 @@ public partial class Group : System.Web.UI.Page
 
     protected void lbtnTriggerTitleChange_Click(object sender, EventArgs e)
     {
+        // Change the visibility of certain html elements to bring up a textbox
         divDefault.Visible = false;
         divDuringChange.Visible = true;
     }
 
     protected void btnTitleChanger_Click(object sender, EventArgs e)
     {
+        UserContentManager contentmanager = new UserContentManager(ticket.Name);
+
         string group_id = Request.QueryString["Group"];
-        string errormessage = "Before anything";
 
         try
         {
-            errormessage = "Before if";
-            int num = 0;
             int parsed_group_id = int.Parse(group_id);
+            bool is_same_name = false;
 
             var rightgroup = ctx.group.Where(g => g.group_id == parsed_group_id).SingleOrDefault();
 
-            errormessage = "After context";
+            // Check that the user does not already belong to a group with the same name
+            // as the one they're trying to give
+            List<group> usergroupquery = contentmanager.GetUserGroups();
 
-            if (rightgroup != null)
+            foreach (var item in usergroupquery)
+            {
+                if (item.name == txtTitleChanger.Text)
+                {
+                    is_same_name = true;
+                }
+            }
+
+            if (rightgroup != null && is_same_name == false)
             {
                 rightgroup.name = txtTitleChanger.Text;
                 rightgroup.edited = DateTime.Now;
 
-                errormessage = "After if";
-
-                num = ctx.SaveChanges();
+                ctx.SaveChanges();
 
                 h1GroupName.InnerText = txtTitleChanger.Text;
                 groupTitle.InnerText = txtTitleChanger.Text;
-                lbMessages.Text = String.Format("Changed group name", num.ToString());
+                lbMessages.Text = String.Format("Changed group name");
+            }
+            else if (is_same_name == true)
+            {
+                lbMessages.Text = "You already have a group with that name";
             }
             else
             {
@@ -92,7 +119,7 @@ public partial class Group : System.Web.UI.Page
         catch (Exception ex)
         {
 
-            lbMessages.Text = ex.Message + " " + errormessage;
+            lbMessages.Text = ex.Message;
         }
     }
 

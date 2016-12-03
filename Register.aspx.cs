@@ -23,7 +23,7 @@ public partial class Register : System.Web.UI.Page
     protected void CreateNewUser()
     {
 
-
+        // Create a new person and add them to the database
         string uname = txtUserName.Text;
         string fname = txtFirstName.Text;
         string lname = txtLastName.Text;
@@ -69,7 +69,7 @@ public partial class Register : System.Web.UI.Page
             catch (Exception ex)
             {
 
-                lbMessages.Text = ex.InnerException.ToString();
+                lbMessages.Text = ex.Message;
             }
         }
     }

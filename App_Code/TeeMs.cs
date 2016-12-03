@@ -173,6 +173,7 @@ public partial class project
     public string picture_url { get; set; }
     public int privacy { get; set; }
     public Nullable<System.DateTime> edited { get; set; }
+    public string project_creator { get; set; }
 
     public virtual ICollection<assignment> assignment { get; set; }
     public virtual ICollection<project_group> project_group { get; set; }

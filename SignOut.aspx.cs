@@ -9,13 +9,21 @@ public partial class SignOut : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (Request.Cookies["AuthCookie"] != null)
+        try
         {
-            HttpCookie endCookie = new HttpCookie("AuthCookie");
-            endCookie.Expires = DateTime.Now.AddDays(-1d);
-            Response.Cookies.Add(endCookie);
+            if (Request.Cookies["AuthCookie"] != null)
+            {
+                HttpCookie endCookie = new HttpCookie("AuthCookie");
+                endCookie.Expires = DateTime.Now.AddDays(-1d);
+                Response.Cookies.Add(endCookie);
 
-            Server.Transfer("Login.aspx", true);
+                Server.Transfer("Login.aspx", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
         }
     }
 }

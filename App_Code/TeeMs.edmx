@@ -179,6 +179,7 @@
           <Property Name="name" Type="varchar" Nullable="false" MaxLength="255" />
           <Property Name="description" Type="varchar" MaxLength="255" />
           <Property Name="project_tag" Type="int" Nullable="false" />
+          <Property Name="project_creator" Type="varchar" Nullable="false" MaxLength="255" />
           <Property Name="creation_date" Type="datetime" Nullable="false" />
           <Property Name="due_date" Type="datetime" />
           <Property Name="percent_done" Type="varchar" Nullable="false" MaxLength="45" />
@@ -546,6 +547,7 @@
           <Property Type="DateTime" Name="edited" />
           <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_project1" FromRole="project" ToRole="assignment" />
           <NavigationProperty Name="project_group" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project" ToRole="project_group" />
+          <Property Type="String" Name="project_creator" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="project_group">
           <Key>
@@ -823,6 +825,7 @@
           <EntitySetMapping Name="project">
             <EntityTypeMapping TypeName="TeeMsModel.project">
               <MappingFragment StoreEntitySet="project">
+                <ScalarProperty Name="project_creator" ColumnName="project_creator" />
                 <ScalarProperty Name="edited" ColumnName="edited" />
                 <ScalarProperty Name="privacy" ColumnName="privacy" />
                 <ScalarProperty Name="picture_url" ColumnName="picture_url" />
