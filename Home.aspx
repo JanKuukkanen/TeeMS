@@ -13,7 +13,7 @@
             <a class="w3-btn" href="CreateProject.aspx" style="margin-top:20px;">Create new Project</a>
         </div>
 
-        <div class="w3-container">
+        <div class="w3-container" style="margin-top:80px;">
             <h1>Your Groups</h1>
             <div id="divYourGroups" runat="server">
 

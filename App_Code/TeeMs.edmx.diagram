@@ -8,7 +8,6 @@
         <EntityTypeShape EntityType="TeeMsModel.assignment" Width="1.5" PointX="4.875" PointY="3" />
         <EntityTypeShape EntityType="TeeMsModel.assignment_component" Width="1.5" PointX="7.875" PointY="4.5" />
         <EntityTypeShape EntityType="TeeMsModel.assignment_person" Width="1.5" PointX="0.5" PointY="2" />
-        <EntityTypeShape EntityType="TeeMsModel.group" Width="1.5" PointX="0.625" PointY="6" />
         <EntityTypeShape EntityType="TeeMsModel.group_member" Width="1.5" PointX="3.625" PointY="7.5" />
         <EntityTypeShape EntityType="TeeMsModel.group_role" Width="1.5" PointX="6.625" PointY="9" />
         <EntityTypeShape EntityType="TeeMsModel.login" Width="1.5" PointX="9.625" PointY="10.5" />
@@ -19,15 +18,16 @@
         <AssociationConnector Association="TeeMsModel.fk_assignment_component_assignment1" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_assignment1" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_person1" />
-        <AssociationConnector Association="TeeMsModel.fk_group_has_person_group1" />
-        <AssociationConnector Association="TeeMsModel.fk_group_organization" />
-        <AssociationConnector Association="TeeMsModel.fk_project_has_group_group1" />
         <AssociationConnector Association="TeeMsModel.fk_group_has_person_person1" />
         <AssociationConnector Association="TeeMsModel.fk_group_member_group_role1" />
         <AssociationConnector Association="TeeMsModel.fk_person_role1" />
         <EntityTypeShape EntityType="TeeMsModel.project" Width="1.5" PointX="0.625" PointY="10.25" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_project1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_group_project1" />
+        <EntityTypeShape EntityType="TeeMsModel.group" Width="1.5" PointX="0.625" PointY="6.375" />
+        <AssociationConnector Association="TeeMsModel.fk_group_has_person_group1" />
+        <AssociationConnector Association="TeeMsModel.fk_group_organization" />
+        <AssociationConnector Association="TeeMsModel.fk_project_has_group_group1" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

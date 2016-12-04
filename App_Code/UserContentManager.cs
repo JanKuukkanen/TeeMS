@@ -71,5 +71,20 @@ namespace TeeMs.UserContentManager
                 throw ex;
             }
         }
+
+        public List<assignment> GetProjectAssignments()
+        {
+            try
+            {
+                List<assignment> projectassignments = new List<assignment>();
+
+                return projectassignments;
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
     } 
 }

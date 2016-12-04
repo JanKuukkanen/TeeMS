@@ -72,6 +72,7 @@ public partial class group
     public int privacy { get; set; }
     public System.DateTime creation_date { get; set; }
     public Nullable<System.DateTime> edited { get; set; }
+    public string group_picture_url { get; set; }
     public Nullable<int> organization_org_id { get; set; }
 
     public virtual ICollection<group_member> group_member { get; set; }
@@ -86,9 +87,9 @@ public partial class group_member
     public int person_id { get; set; }
     public int grouprole_id { get; set; }
 
-    public virtual group group { get; set; }
     public virtual person person { get; set; }
     public virtual group_role group_role { get; set; }
+    public virtual group group { get; set; }
 }
 
 public partial class group_role
@@ -185,8 +186,8 @@ public partial class project_group
     public int project_id { get; set; }
     public int group_id { get; set; }
 
-    public virtual group group { get; set; }
     public virtual project project { get; set; }
+    public virtual group group { get; set; }
 }
 
 public partial class role

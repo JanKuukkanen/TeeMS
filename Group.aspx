@@ -9,36 +9,59 @@
     <div class="w3-container w3-twothird">
 
         <div id="divDefault" runat="server" class="w3-container" visible="true">
-            <asp:LinkButton ID="lbtnTriggerTitleChange" runat="server" OnClick="lbtnTriggerTitleChange_Click">
-            <h1 id="h1GroupName" runat="server">Undefined Group</h1>
-            </asp:LinkButton>
-        </div>
+            <div class="w3-container" style="float:left;">
+                <asp:LinkButton ID="lbtnTriggerTitleChange" runat="server" OnClick="lbtnTriggerTitleChange_Click">
+                    <h1 id="h1GroupName" runat="server">Undefined Group</h1>
+                </asp:LinkButton>
+            </div>
 
-        <div id="divDuringChange" runat="server" class="w3-container w3-blue" visible="false" style="padding-top:5%; padding-bottom:5%;">
-            <asp:TextBox ID="txtTitleChanger" runat="server" />
-            <asp:RequiredFieldValidator ID="GroupNameRequired" runat="server" ErrorMessage="*" ForeColor="Red" ControlToValidate="txtTitleChanger" ValidationGroup="TitleChange"></asp:RequiredFieldValidator>
-
-            <asp:Button ID="btnTitleChanger" runat="server" Text="Change Name" CssClass="w3-btn" OnClick="btnTitleChanger_Click" ValidationGroup="TitleChange" />
-            <asp:Button ID="btnTitleCancel" runat="server" Text="Cancel" CssClass="w3-btn" OnClick="btnTitleCancel_Click" />
-        </div>
-
-        <div class="w3-container" style="float:left;">
-            <h2>Group projects</h2>
-            <asp:DropDownList ID="ddlProjectList" runat="server" /> <br />
-
-            <h2 Style="margin-top:60px;">Project info</h2>
-            <asp:TextBox ID="ProjectInfo" runat="server" Height="100px" Width="250px" ReadOnly="true" />
-
-            <div>
-                <asp:Label ID="lbMessages" runat="server" />
+            <div class="w3-container" style="float:right;">
+                <img id="imgGroupPicture" runat="server" alt="Group picture" width="150" height="150" /> <br />
+                <asp:Button ID="btnChangePicture" runat="server" Text="Change picture" CssClass="w3-btn" OnClick="btnChangePicture_Click" />
             </div>
         </div>
 
-        <div class="w3-container" style="margin-left:35%;">
-            <h2>Group Members</h2>
-            <asp:RadioButtonList ID="rblGroupMembers" runat="server"></asp:RadioButtonList> <br />
-            <asp:Button ID="btnAddMembers" runat="server" Text="Add members" CssClass="w3-btn" />
-            <asp:Button ID="btnShowInfo" runat="server" Text="Show info" CssClass="w3-btn" />
+        <div id="divDuringChange" runat="server" class="w3-container w3-blue" visible="false" style="padding-top:5%; padding-bottom:5%;">
+            <div id="divTitleChanger" runat="server" visible="false">
+                <asp:TextBox ID="txtTitleChanger" runat="server" />
+                <asp:RequiredFieldValidator ID="GroupNameRequired" runat="server" ErrorMessage="*" ForeColor="Red" ControlToValidate="txtTitleChanger" ValidationGroup="TitleChange"></asp:RequiredFieldValidator>
+
+                <asp:Button ID="btnTitleChanger" runat="server" Text="Change Name" CssClass="w3-btn" OnClick="btnTitleChanger_Click" ValidationGroup="TitleChange" />
+                <asp:Button ID="btnTitleCancel" runat="server" Text="Cancel" CssClass="w3-btn" OnClick="btnTitleCancel_Click" />
+            </div>
+
+            <div id="divImageChanger" runat="server" visible="false">
+                <asp:TextBox ID="txtImageChanger" runat="server" />
+                <asp:RequiredFieldValidator ID="ImageRequired" runat="server" ErrorMessage="*" ForeColor="Red" ControlToValidate="txtImageChanger" ValidationGroup="ImageChange"></asp:RequiredFieldValidator>
+
+                <asp:Button ID="btnImageChanger" runat="server" Text="Change Image" CssClass="w3-btn" OnClick="btnImageChanger_Click" ValidationGroup="ImageChange" />
+                <asp:Button ID="btnImageCancel" runat="server" Text="Cancel" CssClass="w3-btn" OnClick="btnImageCancel_Click" />
+            </div>
+        </div>
+
+        <div style="margin-top:40px;">
+            <div class="w3-container" style="float: left;">
+
+                <!-- This will become a list of elements instead of a dropdownlist -->
+                <h2>Group projects</h2>
+                <asp:DropDownList ID="ddlProjectList" runat="server" />
+                <br />
+
+                <h2 style="margin-top: 60px;">Project info</h2>
+                <asp:TextBox ID="ProjectInfo" runat="server" Height="100px" Width="250px" ReadOnly="true" />
+
+                <div>
+                    <asp:Label ID="lbMessages" runat="server" />
+                </div>
+            </div>
+
+            <div class="w3-container" style="float: right;">
+                <h2>Group Members</h2>
+                <asp:RadioButtonList ID="rblGroupMembers" runat="server"></asp:RadioButtonList>
+                <br />
+                <asp:Button ID="btnAddMembers" runat="server" Text="Add members" CssClass="w3-btn" />
+                <asp:Button ID="btnShowInfo" runat="server" Text="Show info" CssClass="w3-btn" />
+            </div>
         </div>
     </div>
 

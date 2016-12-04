@@ -193,15 +193,46 @@ public partial class Home : System.Web.UI.Page
             foreach (var group in usergroups)
             {
                 HtmlGenericControl groupdiv = new HtmlGenericControl("div");
+                HtmlGenericControl groupinnerdiv = new HtmlGenericControl("div");
                 HtmlGenericControl grouplink = new HtmlGenericControl("a");
+                HtmlGenericControl groupimage = new HtmlGenericControl("img");
+                HtmlGenericControl groupcut = new HtmlGenericControl("hr");
 
                 groupdiv.Attributes.Add("class", "w3-container");
                 groupdiv.ID = "divGroup" + group.group_id;
 
+                groupinnerdiv.Attributes.Add("class", "w3-container");
+
+                groupimage.Attributes.Add("src", group.group_picture_url);
+                groupimage.Attributes.Add("alt", "Group image");
+                groupimage.Attributes.Add("height", "150px");
+                groupimage.Attributes.Add("width", "150px");
+                groupimage.Attributes.Add("style", "float:left;");
+
+                if (group.group_picture_url != null)
+                {
+                    if (group.group_picture_url != String.Empty)
+                    {
+                        groupimage.Attributes.Add("src", group.group_picture_url);
+                    }
+                }
+                else
+                {
+                    groupimage.Attributes.Add("src", Request.ApplicationPath + "Images/no_image.png");
+                }
+
+                groupinnerdiv.Controls.Add(groupimage);
+
                 grouplink.Attributes.Add("href", String.Format("Group.aspx?Group={0}", group.group_id));
+                grouplink.Attributes.Add("style", "float:left; margin-top:5%; margin-left:5%;");
                 grouplink.InnerText = group.name;
 
-                groupdiv.Controls.Add(grouplink);
+                groupinnerdiv.Controls.Add(grouplink);
+
+                groupcut.Attributes.Add("style", "color:#000;background-color:#000; height:5px;");
+
+                groupdiv.Controls.Add(groupinnerdiv);
+                groupdiv.Controls.Add(groupcut);
 
                 divYourGroups.Controls.Add(groupdiv);
             }

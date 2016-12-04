@@ -2,9 +2,86 @@
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
     <!-- Change title so that it shows the name of the project currently being worked on -->
-    <title>Project</title>
+    <title id="projectTitle" runat="server">Project</title>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
+    <div class="w3-container w3-twothird">
+
+        <div id="divDefault" runat="server" class="w3-container" visible="true">
+            <div class="w3-container" style="float:left;">
+                <asp:LinkButton ID="lbtnTriggerTitleChange" OnClick="lbtnTriggerTitleChange_Click" runat="server">
+                    <h1 id="h1ProjectName" runat="server">Undefined Project</h1>
+                </asp:LinkButton>
+            </div>
+
+            <div class="w3-container" style="float:right;">
+                <img id="imgProjectPicture" runat="server" alt="Project picture" width="150" height="150" /> <br />
+                <asp:Button ID="btnChangePicture" runat="server" Text="Change picture" OnClick="btnChangePicture_Click" CssClass="w3-btn" />
+            </div>
+        </div>
+
+        <div id="divDuringChange" runat="server" class="w3-container w3-blue" visible="false" style="padding-top:5%; padding-bottom:5%;">
+            <div id="divTitleChanger" runat="server" visible="false">
+                <asp:TextBox ID="txtTitleChanger" runat="server" />
+                <asp:RequiredFieldValidator ID="ProjectNameRequired" runat="server" ErrorMessage="*" ForeColor="Red" ControlToValidate="txtTitleChanger" ValidationGroup="TitleChange"></asp:RequiredFieldValidator>
+
+                <asp:Button ID="btnTitleChanger" runat="server" Text="Change Name" OnClick="btnTitleChanger_Click" CssClass="w3-btn" ValidationGroup="TitleChange" />
+                <asp:Button ID="btnTitleCancel" runat="server" Text="Cancel" OnClick="btnTitleCancel_Click" CssClass="w3-btn" />
+            </div>
+
+            <div id="divImageChanger" runat="server" visible="false">
+                <asp:TextBox ID="txtImageChanger" runat="server" />
+                <asp:RequiredFieldValidator ID="ImageRequired" runat="server" ErrorMessage="*" ForeColor="Red" ControlToValidate="txtImageChanger" ValidationGroup="ImageChange"></asp:RequiredFieldValidator>
+
+                <asp:Button ID="btnImageChanger" runat="server" Text="Change Image" OnClick="btnImageChanger_Click" CssClass="w3-btn" ValidationGroup="ImageChange" />
+                <asp:Button ID="btnImageCancel" runat="server" Text="Cancel" OnClick="btnImageCancel_Click" CssClass="w3-btn" />
+            </div>
+        </div>
+
+        <div>
+            <div class="w3-container" style="float: left;">
+
+                <div id="divProjectDesc">
+                    <h2>Project description</h2>
+                    <asp:TextBox ID="txtProjectDescription" runat="server" Height="100px" Width="450px" ReadOnly="true" />
+                </div>
+
+                <!-- This will contain all the charts of the workflow -->
+                <div id="divWorkFlow" style="margin-top:40px;">
+                    <h2>Workflow</h2>
+
+                    <!-- Number of charts will be displayed here -->
+
+                </div>
+
+                <!-- This will be the comments section -->
+                <div id="divComments">
+
+                </div>
+
+                <div>
+                    <asp:Label ID="lbMessages" runat="server" />
+                </div>
+            </div>
+
+            <div class="w3-container" style="float: right; margin-top:40px;">
+                <div class="w3-container">
+                    <h2>Groups working on the project</h2>
+                    <asp:DropDownList ID="ddlMemberGroupList" runat="server" />
+                    <br />
+                    <asp:Button ID="btnShowGroupInfo" runat="server" Text="Show info" OnClick="btnShowGroupInfo_Click" CssClass="w3-btn" style="margin-top:10px;" />
+                </div>
+
+                <div class="w3-container" style="margin-top:40px;">
+                    <h2>Assignments</h2>
+                    <asp:DropDownList ID="ddlAssignmentList" runat="server" />
+                    <br />
+                    <asp:Button ID="btnCreateNewAssignment" runat="server" Text="Create new" OnClick="btnCreateNewAssignment_Click" CssClass="w3-btn" style="margin-top:10px;" />
+                    <asp:Button ID="btnShowAssignmentInfo" runat="server" Text="Show info" OnClick="btnShowAssignmentInfo_Click" CssClass="w3-btn" style="margin-top:10px;" />
+                </div>
+            </div>
+        </div>
+    </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="footer" Runat="Server">
 </asp:Content>
