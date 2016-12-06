@@ -71,6 +71,8 @@ public partial class Register : System.Web.UI.Page
 
                 lbMessages.Text = ex.Message;
             }
+
+            Response.Redirect("Login.aspx");
         }
     }
 }

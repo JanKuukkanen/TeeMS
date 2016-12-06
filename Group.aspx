@@ -57,10 +57,29 @@
 
             <div class="w3-container" style="float: right;">
                 <h2>Group Members</h2>
-                <asp:RadioButtonList ID="rblGroupMembers" runat="server"></asp:RadioButtonList>
-                <br />
-                <asp:Button ID="btnAddMembers" runat="server" Text="Add members" CssClass="w3-btn" />
-                <asp:Button ID="btnShowInfo" runat="server" Text="Show info" CssClass="w3-btn" />
+
+                <div id="divGroupMembers" runat="server" visible="true">
+                    <asp:RadioButtonList ID="rblGroupMembers" runat="server"></asp:RadioButtonList>
+                    <br />
+                    <asp:Button ID="btnAddMembers" runat="server" Text="Add members" OnClick="btnAddMembers_Click" CssClass="w3-btn" />
+                    <asp:Button ID="btnShowInfo" runat="server" Text="Show info" OnClick="btnShowInfo_Click" CssClass="w3-btn" />
+                </div>
+
+                <div id="divSearch" runat="server" visible="false" style="padding-left:5%; padding-right:10%;" >
+                    <h4>Search</h4>
+                    <asp:TextBox ID="txtSearchGroupMembers" runat="server" /> <br />
+                    <asp:Button ID="btnSearchGroupMembers" runat="server" Text="Search" OnClick="btnSearchGroupMembers_Click" CssClass="w3-btn" Style="margin-top:5px;" />
+                    <hr style="color:#000;background-color:#000; height:5px;" />
+                    <asp:GridView ID="gvGroupMembers" OnSelectedIndexChanged="gvGroupMembers_SelectedIndexChanged" runat="server" AutoGenerateColumns="False">
+                        <Columns>
+                            <asp:ButtonField DataTextField="username" HeaderText="Username" CommandName="Select" />                            
+                            <asp:BoundField DataField="first_name" HeaderText="First name" />
+                            <asp:BoundField DataField="last_name" HeaderText="Last name" />
+                            <asp:BoundField DataField="email" HeaderText="Email" />
+                        </Columns>
+                    </asp:GridView>
+                    <asp:SqlDataSource ID="TeeMsMySqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:TeeMsGridViewConnectionString %>" ProviderName="<%$ ConnectionStrings:TeeMsGridViewConnectionString.ProviderName %>" SelectCommand="SELECT [username], [first_name], [last_name], [email] FROM [person] ORDER BY [username]"></asp:SqlDataSource>
+                </div>
             </div>
         </div>
     </div>

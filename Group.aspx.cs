@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Security;
+using System.Data;
+using System.Web.UI.HtmlControls;
 using TeeMs.UserContentManager;
 
 public partial class Group : System.Web.UI.Page
@@ -75,6 +77,7 @@ public partial class Group : System.Web.UI.Page
         }
     }
 
+    #region BUTTONS
     protected void lbtnTriggerTitleChange_Click(object sender, EventArgs e)
     {
         // Change the visibility of certain html elements to bring up a textbox
@@ -200,4 +203,108 @@ public partial class Group : System.Web.UI.Page
         divDuringChange.Visible = false;
         divDefault.Visible = true;
     }
+
+    protected void btnAddMembers_Click(object sender, EventArgs e)
+    {
+        if (divSearch.Visible == false)
+        {
+            divSearch.Visible = true;
+            btnAddMembers.Text = "Close search";
+        }
+        else
+        {
+            divSearch.Visible = false;
+            btnAddMembers.Text = "Add members";
+        }
+    }
+
+    protected void btnShowInfo_Click(object sender, EventArgs e)
+    {
+
+    }
+
+    protected void btnSearchGroupMembers_Click(object sender, EventArgs e)
+    {
+        // Search the database for the persons the user is searching
+        string searchmember = txtSearchGroupMembers.Text;
+
+        List<person> userstoadd = SearchMembers(searchmember);
+
+        DataTable dt = new DataTable();
+
+        dt.Columns.Add("username", typeof(string));
+        dt.Columns.Add("first_name", typeof(string));
+        dt.Columns.Add("last_name", typeof(string));
+        dt.Columns.Add("email", typeof(string));
+
+        // Then fill the gridview with the results
+        try
+        {
+            if (userstoadd != null)
+            {
+                foreach (var person in userstoadd)
+                {
+                    dt.Rows.Add(person.username, person.first_name, person.last_name, person.email);
+                    gvGroupMembers.DataSource = dt;
+                    gvGroupMembers.DataBind();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+    #endregion
+
+    #region SEARCH_FUNCTIONS
+    // Search the database for the persons the user is searching
+    protected List<person> SearchMembers(string searchmember)
+    {
+        bool add_to_grid = true;
+        List<person> userstoadd = new List<person>();
+
+        try
+        {
+            var users = ctx.person.ToList();
+
+            if (users != null && searchmember != String.Empty)
+            {
+                foreach (var person in users)
+                {
+                    add_to_grid = true;
+
+                    for (int i = 0; i < searchmember.Count(); i++)
+                    {
+                        if (searchmember[i] != person.username[i] && person.username[i] != null)
+                        {
+                            add_to_grid = false;
+                        }
+                    }
+
+                    if (add_to_grid == true)
+                    {
+                        userstoadd.Add(person);
+                    }
+                }
+            }
+
+            return userstoadd;
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+            return userstoadd;
+        }
+    }
+
+    protected void gvGroupMembers_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // Add the selected member to the group
+        lbMessages.Text = (gvGroupMembers.SelectedRow.Cells[0].Controls[0] as LinkButton).Text;
+    }
+
+    #endregion
 }

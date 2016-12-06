@@ -225,12 +225,35 @@ public partial class Project : System.Web.UI.Page
     #region ASSIGNMENT_AND_GROUP_BUTTONS
     protected void btnShowGroupInfo_Click(object sender, EventArgs e)
     {
+        UserContentManager contentmanager = new UserContentManager(ticket.Name);
 
+        string groupname = ddlMemberGroupList.SelectedValue;
+
+        try
+        {
+            List<group> usergroups = contentmanager.GetUserGroups();
+
+            if (usergroups != null)
+            {
+                foreach (var group in usergroups)
+                {
+                    if (groupname == group.name)
+                    {
+                        Response.Redirect(String.Format("Group.aspx?Group={0}", group.group_id));
+                    }
+                } 
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
     }
 
     protected void btnCreateNewAssignment_Click(object sender, EventArgs e)
     {
-
+        Response.Redirect("CreateAssignment.aspx");
     }
 
     protected void btnShowAssignmentInfo_Click(object sender, EventArgs e)
