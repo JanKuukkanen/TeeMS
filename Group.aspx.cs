@@ -17,13 +17,14 @@ public partial class Group : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         ctx = new TeeMsEntities();
-
-        string group_id = Request.QueryString["Group"];
+        string group_id = String.Empty;
 
         try
         {
             HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
+
+            group_id = Request.QueryString["Group"];
         }
         catch (HttpException ex)
         {
@@ -31,7 +32,7 @@ public partial class Group : System.Web.UI.Page
             lbMessages.Text = ex.Message;
         }
 
-        if (!IsPostBack)
+        if (!IsPostBack && group_id != String.Empty)
         {
             FillControls(int.Parse(group_id)); 
         }
@@ -69,6 +70,27 @@ public partial class Group : System.Web.UI.Page
             {
                 imgGroupPicture.Src = pictureuri;
             }
+
+            // Fill ddlProjecyList with groups currently working on the project
+            var projectgroupquery = ctx.project_group.ToList();
+            List<project> projects_in_group = new List<project>();
+
+            if (projectgroupquery != null)
+            {
+                foreach (var projectgroup in projectgroupquery)
+                {
+                    if (projectgroup.group_id == rightgroup.group_id)
+                    {
+                        projects_in_group.Add(ctx.project.Where(pr => pr.project_id == projectgroup.project_id).SingleOrDefault());
+                    }
+                }
+
+                foreach (var project in projects_in_group)
+                {
+                    ddlProjectList.Items.Add(project.name);
+                }
+            }
+            ddlProjectList.Items.Insert(0, "Choose Group");
         }
         catch (Exception ex)
         {
@@ -220,7 +242,52 @@ public partial class Group : System.Web.UI.Page
 
     protected void btnShowInfo_Click(object sender, EventArgs e)
     {
+        string user_to_show = rblGroupMembers.SelectedValue;
+        string group_id = String.Empty;
 
+        try
+        {
+            var rightperson = ctx.person.Where(p => p.username == user_to_show).SingleOrDefault();
+            Response.Redirect(String.Format(Request.ApplicationPath + "ViewUser.aspx?Person={0}", rightperson.person_id));
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void btnDeleteMember_Click(object sender, EventArgs e)
+    {
+        string user_to_delete = rblGroupMembers.SelectedValue;
+        string group_id = String.Empty;
+
+        try
+        {
+            group_id = Request.QueryString["Group"];
+            int removefromgroup = int.Parse(group_id);
+
+            var rightperson = ctx.person.Where(p => p.username == user_to_delete).SingleOrDefault();
+            var rightgroup = ctx.group.Where(g => g.group_id == removefromgroup).SingleOrDefault();
+
+            if (rightperson != null && rightgroup != null)
+            {
+                var rightgroupmember = ctx.group_member.Where(gm => gm.person_id == rightperson.person_id && gm.group_id == rightgroup.group_id).SingleOrDefault();
+
+                if (rightgroupmember != null)
+                {
+                    ctx.group_member.Remove(rightgroupmember);
+                    ctx.SaveChanges();
+
+                    Response.Redirect(String.Format(Request.ApplicationPath + "Group.aspx?Group={0}", rightgroup.group_id));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
     }
 
     protected void btnSearchGroupMembers_Click(object sender, EventArgs e)
@@ -303,8 +370,84 @@ public partial class Group : System.Web.UI.Page
     protected void gvGroupMembers_SelectedIndexChanged(object sender, EventArgs e)
     {
         // Add the selected member to the group
-        lbMessages.Text = (gvGroupMembers.SelectedRow.Cells[0].Controls[0] as LinkButton).Text;
-    }
+        string username = (gvGroupMembers.SelectedRow.Cells[0].Controls[0] as LinkButton).Text;
+        string group_id = String.Empty;
 
+
+        // Fill the group_member database table as well
+        try
+        {
+            group_id = Request.QueryString["Group"];
+
+            int to_add_groupid = int.Parse(group_id);
+
+            if (group_id != String.Empty)
+            {
+                var addeduser = ctx.person.Where(p => p.username == username).FirstOrDefault();
+                var addedgroup = ctx.group.Where(g => g.group_id == to_add_groupid).FirstOrDefault();
+                var addedrole = ctx.group_role.Where(gr => gr.@class == 1).FirstOrDefault();
+
+                if (addeduser != null && addedgroup != null && addedrole != null)
+                {
+                    var gm = new group_member
+                    {
+                        group_id = addedgroup.group_id,
+                        person_id = addeduser.person_id,
+                        grouprole_id = addedrole.grouprole_id
+                    };
+
+                    addeduser.edited = DateTime.Now;
+                    addedgroup.edited = DateTime.Now;
+
+                    addeduser.group_member.Add(gm);
+                    addedgroup.group_member.Add(gm);
+                    ctx.SaveChanges();
+                } 
+            }
+            else
+            {
+                lbMessages.Text = "No Group Specified";
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+
+        if (group_id != String.Empty)
+        {
+            Response.Redirect(String.Format(Request.ApplicationPath + "Group.aspx?Group={0}", group_id));
+        }
+    }
     #endregion
+
+    protected void ddlProjectList_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        string projectname = ddlProjectList.SelectedValue;
+        string group_id = String.Empty;
+
+        try
+        {
+            group_id = Request.QueryString["Group"];
+            int groupnro_id = int.Parse(group_id);
+            var rightproject = ctx.project.Where(pr => pr.name == projectname).SingleOrDefault();
+
+            if (rightproject != null)
+            {
+                var group_project = ctx.project_group.Where(pg => pg.project_id == rightproject.project_id && pg.group_id == groupnro_id).SingleOrDefault();
+
+                if (group_project != null)
+                {
+
+                    lbProjectInfo.Text = group_project.project.description;
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
 }

@@ -20,14 +20,14 @@ public partial class Home : System.Web.UI.Page
         {
             HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
-
-            FillDivs();
         }
         catch (HttpException ex)
         {
             
             lbMessages.Text = ex.Message;
         }
+
+        FillDivs();
     }
 
     protected void btnCreateGroup_Click(object sender, EventArgs e)
@@ -150,13 +150,22 @@ public partial class Home : System.Web.UI.Page
         // and fill your groups with the users groups
         UserContentManager contentmanager = new UserContentManager(ticket.Name);
 
+        string testmessage = "";
+
         try
         {
             List<group> usergroups = contentmanager.GetUserGroups();
+            List<group> usertestgroups = new List<group>();
+            List<project> usertestprojects = new List<project>();
+
+            //usertestgroups = GetGroups();
+            //usertestprojects = GetProjects();
             List<project> userprojects = contentmanager.GetUserProjects();
 
             foreach (var project in userprojects)
             {
+                testmessage = "Foreach alkoi juuri";
+
                 HtmlGenericControl projectdiv = new HtmlGenericControl("div");
                 HtmlGenericControl projectinnerdiv = new HtmlGenericControl("div");
                 HtmlGenericControl projectlink = new HtmlGenericControl("a");
@@ -239,9 +248,108 @@ public partial class Home : System.Web.UI.Page
         }
         catch (Exception ex)
         {
-            
-            lbMessages.Text = ex.Message;
+
+            lbMessages.Text = ex.Message + " " + testmessage;
         }
     }
     #endregion
+
+    protected List<project> GetProjects()
+    {
+        UserContentManager contentmanager = new UserContentManager(ticket.Name);
+        string uname = ticket.Name;
+        string testmessage = "HEH";
+
+        List<project> userprojects = new List<project>();
+
+        try
+        {
+            List<group> usergroups = GetGroups();
+
+            List<project_group> userprojectgroups = ctx.project_group.ToList();
+
+            List<project> allprojects = ctx.project.ToList();
+
+            lbGroupErrors.Text = "For eachien sisällä";
+
+            if (usergroups != null)
+            {
+                foreach (var group in usergroups)
+                {
+                    foreach (var projectgroup in userprojectgroups)
+                    {
+                        lbGroupErrors.Text = "For eachien sisällä";
+
+                        if (projectgroup.group_id == group.group_id)
+                        {
+                            userprojects.Add(ctx.project.Where(pr => pr.project_id == projectgroup.project_id).SingleOrDefault());
+                        }
+                    }
+                } 
+            }
+
+            if (allprojects != null)
+            {
+                foreach (var project in allprojects)
+                {
+                    if (!userprojects.Contains(project))
+                    {
+                        testmessage = "mutta täälläkin päästiin iffin sisälle";
+                        userprojects.Add(ctx.project.Where(pr => pr.project_creator == uname && pr.project_id == project.project_id).SingleOrDefault());
+                    }
+                } 
+            }
+
+            return userprojects;
+        }
+        catch (Exception ex)
+        {
+
+            lbErrors.Text = testmessage;
+            return null;
+        }
+    }
+
+    protected List<group> GetGroups()
+    {
+        //List<group> usergroups = new List<group>();
+        string uname = ticket.Name;
+        string testmessage = "";
+        List<group> usergroups = new List<group>();
+
+        try
+        {
+
+            //var rightperson = ctx.person.Where(p => p.username == uname).FirstOrDefault();
+            var rightperson = ctx.person.Where(p => p.username == uname).SingleOrDefault();
+
+            var usergroupids = ctx.group_member.Where(gm => gm.person_id == rightperson.person_id).ToList();
+
+            List<group> allgroups = ctx.group.ToList();
+
+            lbErrors.Text = allgroups.ToString();
+
+            foreach (var item in usergroupids)
+            {
+                usergroups.Add(ctx.group.Where(g => g.group_id == item.group_id).FirstOrDefault());
+            }
+
+            foreach (var group in allgroups)
+            {
+                if (!usergroups.Contains(group))
+                {
+                    usergroups.Add(ctx.group.Where(g => g.creator == uname && g.group_id == group.group_id).SingleOrDefault());
+                }
+            }
+
+            //return usergroups;
+        }
+        catch (Exception ex)
+        {
+
+            lbGroupErrors.Text = testmessage;
+        }
+
+        return usergroups;
+    }
 }

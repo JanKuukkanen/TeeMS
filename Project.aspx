@@ -69,7 +69,21 @@
                     <h2>Groups working on the project</h2>
                     <asp:DropDownList ID="ddlMemberGroupList" runat="server" />
                     <br />
+                    <asp:Button ID="btnAddGroup" runat="server" Text="Add a Group" OnClick="btnAddGroup_Click" CssClass="w3-btn" style="margin-top:10px;" />
                     <asp:Button ID="btnShowGroupInfo" runat="server" Text="Show info" OnClick="btnShowGroupInfo_Click" CssClass="w3-btn" style="margin-top:10px;" />
+                </div>
+
+                <div id="divSearch" runat="server" visible="false" style="padding-left:5%; padding-right:10%;" >
+                    <h4>Search</h4>
+                    <asp:TextBox ID="txtSearchGroups" runat="server" /> <br />
+                    <asp:Button ID="btnSearchGroups" runat="server" Text="Search" OnClick="btnSearchGroups_Click" CssClass="w3-btn" Style="margin-top:5px;" />
+                    <hr style="color:#000;background-color:#000; height:5px;" />
+                    <asp:GridView ID="gvGroups" runat="server" OnSelectedIndexChanged="gvGroups_SelectedIndexChanged" AutoGenerateColumns="False">
+                        <Columns>
+                            <asp:ButtonField DataTextField="groupname" HeaderText="Group name" CommandName="Select" />                            
+                            <asp:BoundField DataField="creation_date" HeaderText="Creation day" />
+                        </Columns>
+                    </asp:GridView>
                 </div>
 
                 <div class="w3-container" style="margin-top:40px;">

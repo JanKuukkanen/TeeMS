@@ -27,6 +27,7 @@ namespace TeeMs.UserContentManager
                 var rightperson = ctx.person.Where(p => p.username == username).FirstOrDefault();
                 var usergroupids = ctx.group_member.Where(gm => gm.person_id == rightperson.person_id).ToList();
 
+                List<group> allgroups = ctx.group.ToList();
                 List<group> usergroups = new List<group>();
 
                 foreach (var item in usergroupids)
@@ -49,7 +50,9 @@ namespace TeeMs.UserContentManager
             try
             {
                 List<group> usergroups = GetUserGroups();
-                List<project_group> userprojectgroups = ctx.project_group.ToList(); 
+                List<project_group> userprojectgroups = ctx.project_group.ToList();
+
+                List<project> allcreatedprojects = ctx.project.Where(pr => pr.project_creator == username).ToList();
                 List<project> userprojects = new List<project>();
 
                 foreach (var group in usergroups)
@@ -61,6 +64,11 @@ namespace TeeMs.UserContentManager
                             userprojects.Add(ctx.project.Where(pr => pr.project_id == projectgroup.project_id).FirstOrDefault());
                         }
                     }
+                }
+
+                foreach (var project in allcreatedprojects)
+                {
+                    userprojects.Add(project); 
                 }
 
                 return userprojects;

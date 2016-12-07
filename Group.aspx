@@ -44,11 +44,17 @@
 
                 <!-- This will become a list of elements instead of a dropdownlist -->
                 <h2>Group projects</h2>
-                <asp:DropDownList ID="ddlProjectList" runat="server" />
+                <asp:DropDownList ID="ddlProjectList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlProjectList_SelectedIndexChanged" />
                 <br />
 
                 <h2 style="margin-top: 60px;">Project info</h2>
-                <asp:TextBox ID="ProjectInfo" runat="server" Height="100px" Width="250px" ReadOnly="true" />
+                <table>
+                    <tr>
+                        <td style="border: 1px solid black; width:350px; height:250px; vertical-align:top;">
+                            <asp:Label ID="lbProjectInfo" runat="server" />
+                        </td>
+                    </tr>
+                </table>
 
                 <div>
                     <asp:Label ID="lbMessages" runat="server" />
@@ -62,6 +68,7 @@
                     <asp:RadioButtonList ID="rblGroupMembers" runat="server"></asp:RadioButtonList>
                     <br />
                     <asp:Button ID="btnAddMembers" runat="server" Text="Add members" OnClick="btnAddMembers_Click" CssClass="w3-btn" />
+                    <asp:Button ID="btnDeleteMember" runat="server" Text="Remove Member" OnClick="btnDeleteMember_Click" CssClass="w3-btn" />
                     <asp:Button ID="btnShowInfo" runat="server" Text="Show info" OnClick="btnShowInfo_Click" CssClass="w3-btn" />
                 </div>
 
@@ -78,7 +85,6 @@
                             <asp:BoundField DataField="email" HeaderText="Email" />
                         </Columns>
                     </asp:GridView>
-                    <asp:SqlDataSource ID="TeeMsMySqlDataSource" runat="server" ConnectionString="<%$ ConnectionStrings:TeeMsGridViewConnectionString %>" ProviderName="<%$ ConnectionStrings:TeeMsGridViewConnectionString.ProviderName %>" SelectCommand="SELECT [username], [first_name], [last_name], [email] FROM [person] ORDER BY [username]"></asp:SqlDataSource>
                 </div>
             </div>
         </div>

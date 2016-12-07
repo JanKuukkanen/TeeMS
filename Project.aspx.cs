@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Security;
+using System.Data;
 using TeeMs.UserContentManager;
 
 public partial class Project : System.Web.UI.Page
@@ -16,12 +17,14 @@ public partial class Project : System.Web.UI.Page
     {
         ctx = new TeeMsEntities();
 
-        string project_id = Request.QueryString["Project"];
+        string project_id = String.Empty;
 
         try
         {
             HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
+
+            project_id = Request.QueryString["Project"];
         }
         catch (HttpException ex)
         {
@@ -223,6 +226,52 @@ public partial class Project : System.Web.UI.Page
     #endregion
 
     #region ASSIGNMENT_AND_GROUP_BUTTONS
+    protected void btnAddGroup_Click(object sender, EventArgs e)
+    {
+        if (divSearch.Visible == false)
+        {
+            divSearch.Visible = true;
+            btnAddGroup.Text = "Close search";
+        }
+        else
+        {
+            divSearch.Visible = false;
+            btnAddGroup.Text = "Add groups";
+        }
+    }
+
+    protected void btnSearchGroups_Click(object sender, EventArgs e)
+    {
+        // Search the database for the persons the user is searching
+        string searchgroup = txtSearchGroups.Text;
+
+        List<group> groupstoadd = SearchGroups(searchgroup);
+
+        DataTable dt = new DataTable();
+
+        dt.Columns.Add("groupname", typeof(string));
+        dt.Columns.Add("creation_date", typeof(string));
+
+        // Then fill the gridview with the results
+        try
+        {
+            if (groupstoadd != null)
+            {
+                foreach (var group in groupstoadd)
+                {
+                    dt.Rows.Add(group.name, group.creation_date);
+                    gvGroups.DataSource = dt;
+                    gvGroups.DataBind();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
     protected void btnShowGroupInfo_Click(object sender, EventArgs e)
     {
         UserContentManager contentmanager = new UserContentManager(ticket.Name);
@@ -259,6 +308,102 @@ public partial class Project : System.Web.UI.Page
     protected void btnShowAssignmentInfo_Click(object sender, EventArgs e)
     {
 
+    }
+
+    #endregion
+
+    #region SEARCH_FUNCTIONS
+    // Search the database for the persons the user is searching
+    protected List<group> SearchGroups(string searchgroup)
+    {
+        bool add_to_grid = true;
+        List<group> grouptoadd = new List<group>();
+
+        try
+        {
+            var groups = ctx.group.ToList();
+
+            if (groups != null && searchgroup != String.Empty)
+            {
+                foreach (var group in groups)
+                {
+                    add_to_grid = true;
+
+                    for (int i = 0; i < searchgroup.Count(); i++)
+                    {
+                        if (searchgroup[i] != group.name[i] && group.name[i] != null)
+                        {
+                            add_to_grid = false;
+                        }
+                    }
+
+                    if (add_to_grid == true)
+                    {
+                        grouptoadd.Add(group);
+                    }
+                }
+            }
+
+            return grouptoadd;
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+            return null;
+        }
+    }
+
+    protected void gvGroups_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // Add the selected member to the group
+        string group_name = (gvGroups.SelectedRow.Cells[0].Controls[0] as LinkButton).Text;
+        string project_id = String.Empty;
+
+
+        // Fill the group_member database table as well
+        try
+        {
+            project_id = Request.QueryString["Project"];
+
+            int to_add_projectid = int.Parse(project_id);
+
+            if (project_id != String.Empty)
+            {
+                var addedgroup = ctx.group.Where(g => g.name == group_name).FirstOrDefault();
+                var addedproject = ctx.project.Where(pr => pr.project_id == to_add_projectid).FirstOrDefault();
+
+                if (addedgroup != null && addedproject != null)
+                {
+                    var prg = new project_group
+                    {
+                        group_id = addedgroup.group_id,
+                        project_id = addedproject.project_id
+                    };
+
+                    addedproject.edited = DateTime.Now;
+                    addedgroup.edited = DateTime.Now;
+
+                    addedproject.project_group.Add(prg);
+                    addedgroup.project_group.Add(prg);
+                    ctx.SaveChanges();
+                }
+            }
+            else
+            {
+                lbMessages.Text = "No Group Specified";
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+
+        if (project_id != String.Empty)
+        {
+            Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
+        }
     }
     #endregion
 }
