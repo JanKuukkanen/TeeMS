@@ -43,7 +43,9 @@
 
                 <div id="divProjectDesc">
                     <h2>Project description</h2>
-                    <asp:TextBox ID="txtProjectDescription" runat="server" Height="100px" Width="450px" ReadOnly="true" />
+                    <asp:TextBox ID="txtProjectDescription" runat="server" Height="100px" Width="450px" Style="vertical-align:top;" ReadOnly="true" />
+                    <br />
+                    <asp:Button ID="btnEditDescription" runat="server" Text="Edit description" OnClick="btnEditDescription_Click" CssClass="w3-btn" />
                 </div>
 
                 <!-- This will contain all the charts of the workflow -->

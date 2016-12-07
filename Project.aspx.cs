@@ -76,6 +76,28 @@ public partial class Project : System.Web.UI.Page
             }
             ddlMemberGroupList.Items.Insert(0, "Choose Group");
 
+            // Fill ddlAssignmentList with groups currently working on the project
+            var assignmentquery = ctx.assignment.ToList();
+            List<assignment> projectassignments = new List<assignment>();
+
+            if (assignmentquery != null)
+            {
+                foreach (var assignment in assignmentquery)
+                {
+                    if (assignment.project_id == project_id)
+                    {
+                        projectassignments.Add(assignment);
+                    }
+                }
+
+                foreach (var assignment in projectassignments)
+                {
+                    ddlAssignmentList.Items.Add(assignment.name);
+                }
+            }
+            ddlAssignmentList.Items.Insert(0, "Choose Assignment");
+
+            // Set project picture
             string pictureuri = Request.ApplicationPath + "Images/no_image.png";
 
             if (rightproject.picture_url != null)
@@ -94,6 +116,42 @@ public partial class Project : System.Web.UI.Page
         {
             
             lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void btnEditDescription_Click(object sender, EventArgs e)
+    {
+        if (txtProjectDescription.ReadOnly == true)
+        {
+            txtProjectDescription.ReadOnly = false;
+            btnEditDescription.Text = "Save changes";
+        }
+        else if (txtProjectDescription.ReadOnly == false)
+        {
+            try
+            {
+                string project_id = Request.QueryString["Project"];
+                int parsed_project_id = int.Parse(project_id);
+
+                var rightproject = ctx.project.Where(pr => pr.project_id == parsed_project_id).SingleOrDefault();
+
+                if (rightproject != null)
+                {
+                    rightproject.description = txtProjectDescription.Text;
+                    rightproject.edited = DateTime.Now;
+
+                    ctx.SaveChanges();
+                }
+
+                txtProjectDescription.Text = rightproject.description;
+                txtProjectDescription.ReadOnly = true;
+                btnEditDescription.Text = "Edit description";
+            }
+            catch (Exception ex)
+            {
+                
+                lbMessages.Text = ex.Message;
+            }
         }
     }
 
@@ -302,7 +360,17 @@ public partial class Project : System.Web.UI.Page
 
     protected void btnCreateNewAssignment_Click(object sender, EventArgs e)
     {
-        Response.Redirect("CreateAssignment.aspx");
+        try
+        {
+            string project_id = Request.QueryString["Project"];
+
+            Response.Redirect(String.Format("CreateAssignment.aspx?Project={0}", project_id));
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
     }
 
     protected void btnShowAssignmentInfo_Click(object sender, EventArgs e)
