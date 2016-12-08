@@ -1,0 +1,255 @@
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
+
+CREATE SCHEMA IF NOT EXISTS `H3387` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `H3387` ;
+
+-- -----------------------------------------------------
+-- Table `H3387`.`role`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`role` (
+  `role_id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `description` VARCHAR(255) NOT NULL ,
+  `class` INT NOT NULL ,
+  PRIMARY KEY (`role_id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`person`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`person` (
+  `person_id` INT NOT NULL AUTO_INCREMENT ,
+  `first_name` VARCHAR(200) NULL ,
+  `last_name` VARCHAR(255) NULL ,
+  `username` VARCHAR(255) NOT NULL ,
+  `email` VARCHAR(255) NULL ,
+  `privacy` INT NOT NULL ,
+  `creation_date` DATETIME NOT NULL ,
+  `edited` TIMESTAMP NULL ,
+  `role_id` INT NOT NULL ,
+  PRIMARY KEY (`person_id`) ,
+  INDEX `fk_person_role1_idx` (`role_id` ASC) ,
+  UNIQUE INDEX `username_UNIQUE` (`username` ASC) ,
+  CONSTRAINT `fk_person_role1`
+    FOREIGN KEY (`role_id` )
+    REFERENCES `H3387`.`role` (`role_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`project`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`project` (
+  `project_id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `description` VARCHAR(255) NULL ,
+  `project_tag` INT NOT NULL ,
+  `project_creator` VARCHAR(255) NOT NULL ,
+  `creation_date` DATETIME NOT NULL ,
+  `due_date` DATETIME NULL ,
+  `percent_done` DOUBLE NOT NULL ,
+  `finished` TINYINT(1) NOT NULL ,
+  `picture_url` VARCHAR(255) NULL ,
+  `privacy` INT NOT NULL ,
+  `edited` TIMESTAMP NULL ,
+  PRIMARY KEY (`project_id`) ,
+  UNIQUE INDEX `project_tag_UNIQUE` (`project_tag` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`organization`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`organization` (
+  `org_id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `description` VARCHAR(255) NULL ,
+  `privacy` INT NOT NULL ,
+  `creation_date` DATETIME NOT NULL ,
+  `org_tag` INT NOT NULL ,
+  PRIMARY KEY (`org_id`) ,
+  UNIQUE INDEX `org_tag_UNIQUE` (`org_tag` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`group`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`group` (
+  `group_id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `group_tag` INT NOT NULL ,
+  `creator` VARCHAR(255) NOT NULL ,
+  `privacy` INT NOT NULL ,
+  `creation_date` DATETIME NOT NULL ,
+  `edited` TIMESTAMP NULL ,
+  `group_picture_url` VARCHAR(255) NULL ,
+  `organization_org_id` INT NULL ,
+  PRIMARY KEY (`group_id`) ,
+  INDEX `fk_group_organization_idx` (`organization_org_id` ASC) ,
+  UNIQUE INDEX `group_tag_UNIQUE` (`group_tag` ASC) ,
+  CONSTRAINT `fk_group_organization`
+    FOREIGN KEY (`organization_org_id` )
+    REFERENCES `H3387`.`organization` (`org_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`assignment`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`assignment` (
+  `amt_id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `description` VARCHAR(255) NULL ,
+  `amt_tag` INT NOT NULL ,
+  `creation_date` DATETIME NOT NULL ,
+  `percent_done` VARCHAR(45) NOT NULL ,
+  `finished` TINYINT(1) NOT NULL ,
+  `privacy` INT NOT NULL ,
+  `edited` TIMESTAMP NULL ,
+  `project_id` INT NOT NULL ,
+  PRIMARY KEY (`amt_id`, `project_id`) ,
+  INDEX `fk_assignment_project1_idx` (`project_id` ASC) ,
+  UNIQUE INDEX `amt_tag_UNIQUE` (`amt_tag` ASC) ,
+  CONSTRAINT `fk_assignment_project1`
+    FOREIGN KEY (`project_id` )
+    REFERENCES `H3387`.`project` (`project_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`assignment_component`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`assignment_component` (
+  `amtc_id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `finished` TINYINT(1) NOT NULL ,
+  `edited` TIMESTAMP NULL ,
+  `amt_id` INT NOT NULL ,
+  `project_id` INT NOT NULL ,
+  PRIMARY KEY (`amtc_id`, `amt_id`, `project_id`) ,
+  INDEX `fk_assignment_component_assignment1_idx` (`amt_id` ASC, `project_id` ASC) ,
+  CONSTRAINT `fk_assignment_component_assignment1`
+    FOREIGN KEY (`amt_id` , `project_id` )
+    REFERENCES `H3387`.`assignment` (`amt_id` , `project_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`login`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`login` (
+  `login_id` INT NOT NULL AUTO_INCREMENT ,
+  `login_name` VARCHAR(255) NOT NULL ,
+  `password` VARCHAR(255) NOT NULL ,
+  `salt` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`login_id`) ,
+  UNIQUE INDEX `username_UNIQUE` (`login_name` ASC) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`group_role`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`group_role` (
+  `grouprole_id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NOT NULL ,
+  `description` VARCHAR(255) NOT NULL ,
+  `class` INT NOT NULL ,
+  PRIMARY KEY (`grouprole_id`) )
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`group_member`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`group_member` (
+  `group_member_id` INT NOT NULL AUTO_INCREMENT ,
+  `group_id` INT NOT NULL ,
+  `person_id` INT NOT NULL ,
+  `grouprole_id` INT NOT NULL ,
+  PRIMARY KEY (`group_member_id`, `group_id`, `person_id`) ,
+  INDEX `fk_group_has_person_person1_idx` (`person_id` ASC) ,
+  INDEX `fk_group_has_person_group1_idx` (`group_id` ASC) ,
+  INDEX `fk_group_member_group_role1_idx` (`grouprole_id` ASC) ,
+  CONSTRAINT `fk_group_has_person_group1`
+    FOREIGN KEY (`group_id` )
+    REFERENCES `H3387`.`group` (`group_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_group_has_person_person1`
+    FOREIGN KEY (`person_id` )
+    REFERENCES `H3387`.`person` (`person_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_group_member_group_role1`
+    FOREIGN KEY (`grouprole_id` )
+    REFERENCES `H3387`.`group_role` (`grouprole_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`project_group`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`project_group` (
+  `project_group_id` INT NOT NULL AUTO_INCREMENT ,
+  `project_id` INT NOT NULL ,
+  `group_id` INT NOT NULL ,
+  PRIMARY KEY (`project_group_id`, `project_id`, `group_id`) ,
+  INDEX `fk_project_has_group_group1_idx` (`group_id` ASC) ,
+  INDEX `fk_project_has_group_project1_idx` (`project_id` ASC) ,
+  CONSTRAINT `fk_project_has_group_project1`
+    FOREIGN KEY (`project_id` )
+    REFERENCES `H3387`.`project` (`project_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_project_has_group_group1`
+    FOREIGN KEY (`group_id` )
+    REFERENCES `H3387`.`group` (`group_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `H3387`.`assignment_person`
+-- -----------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `H3387`.`assignment_person` (
+  `assignment_person_id` INT NOT NULL AUTO_INCREMENT ,
+  `amt_id` INT NOT NULL ,
+  `project_id` INT NOT NULL ,
+  `person_id` INT NOT NULL ,
+  PRIMARY KEY (`assignment_person_id`, `amt_id`, `project_id`, `person_id`) ,
+  INDEX `fk_assignment_has_person_person1_idx` (`person_id` ASC) ,
+  INDEX `fk_assignment_has_person_assignment1_idx` (`amt_id` ASC, `project_id` ASC) ,
+  CONSTRAINT `fk_assignment_has_person_assignment1`
+    FOREIGN KEY (`amt_id` , `project_id` )
+    REFERENCES `H3387`.`assignment` (`amt_id` , `project_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_assignment_has_person_person1`
+    FOREIGN KEY (`person_id` )
+    REFERENCES `H3387`.`person` (`person_id` )
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB;
+
+USE `H3387` ;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

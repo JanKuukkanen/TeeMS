@@ -155,8 +155,6 @@ public partial class Home : System.Web.UI.Page
             List<group> usergroups = contentmanager.GetUserGroups();
             List<project> userprojects = contentmanager.GetUserProjects();
 
-            lbMessages.Text = userprojects.Count.ToString();
-
             foreach (var project in userprojects)
             {
 

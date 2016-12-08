@@ -23,14 +23,6 @@
 
         <div class="w3-container">
             <asp:Label ID="lbMessages" runat="server" Text="" />
-
-            <div>
-                <asp:Label ID="lbErrors" runat="server" Text="" />
-            </div>
-
-            <div>
-                <asp:Label ID="lbGroupErrors" runat="server" Text="" />
-            </div>
         </div>
     </div>
 </asp:Content>
