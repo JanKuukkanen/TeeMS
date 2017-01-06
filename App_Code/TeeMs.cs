@@ -23,6 +23,7 @@ public partial class assignment
     public string description { get; set; }
     public int amt_tag { get; set; }
     public System.DateTime creation_date { get; set; }
+    public Nullable<System.DateTime> assignment_due_date { get; set; }
     public string percent_done { get; set; }
     public bool finished { get; set; }
     public int privacy { get; set; }
@@ -87,9 +88,9 @@ public partial class group_member
     public int person_id { get; set; }
     public int grouprole_id { get; set; }
 
+    public virtual group group { get; set; }
     public virtual person person { get; set; }
     public virtual group_role group_role { get; set; }
-    public virtual group group { get; set; }
 }
 
 public partial class group_role
@@ -186,8 +187,8 @@ public partial class project_group
     public int project_id { get; set; }
     public int group_id { get; set; }
 
-    public virtual project project { get; set; }
     public virtual group group { get; set; }
+    public virtual project project { get; set; }
 }
 
 public partial class role

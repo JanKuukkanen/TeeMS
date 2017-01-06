@@ -72,6 +72,7 @@
                     <asp:DropDownList ID="ddlMemberGroupList" runat="server" />
                     <br />
                     <asp:Button ID="btnAddGroup" runat="server" Text="Add a Group" OnClick="btnAddGroup_Click" CssClass="w3-btn" style="margin-top:10px;" />
+                    <asp:Button ID="btnRemoveGroup" runat="server" Text="Remove Group" OnClick="btnRemoveGroup_Click" CssClass="w3-btn" style="margin-top:10px;"
                     <asp:Button ID="btnShowGroupInfo" runat="server" Text="Show info" OnClick="btnShowGroupInfo_Click" CssClass="w3-btn" style="margin-top:10px;" />
                 </div>
 
@@ -93,6 +94,7 @@
                     <asp:DropDownList ID="ddlAssignmentList" runat="server" />
                     <br />
                     <asp:Button ID="btnCreateNewAssignment" runat="server" Text="Create new" OnClick="btnCreateNewAssignment_Click" CssClass="w3-btn" style="margin-top:10px;" />
+                    <asp:Button ID="btnRemoveAssignment" runat="server" Text="Remove Assignment" OnClick="btnRemoveAssignment_Click" CssClass="w3-btn" style="margin-top:10px;"
                     <asp:Button ID="btnShowAssignmentInfo" runat="server" Text="Show info" OnClick="btnShowAssignmentInfo_Click" CssClass="w3-btn" style="margin-top:10px;" />
                 </div>
             </div>

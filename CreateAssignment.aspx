@@ -35,7 +35,7 @@
                 <asp:Label ID="lbDueDate" runat="server" Text="Due date" />
                 <asp:Calendar ID="calendarDueDate" runat="server"></asp:Calendar>
                 <br />
-                <asp:Button ID="btnCreateAssignment" runat="server" Text="Create Project" OnClick="btnCreateAssignment_Click" Style="margin-top: 5px;" />
+                <asp:Button ID="btnCreateAssignment" runat="server" Text="Create Assignment" OnClick="btnCreateAssignment_Click" Style="margin-top: 5px;" />
             </div>
 
             <!-- Still to add: privacy rules -->

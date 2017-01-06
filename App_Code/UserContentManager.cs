@@ -121,7 +121,7 @@ namespace TeeMs.UserContentManager
 	            {
 		            foreach (var groupmember in groupmembers)
                     {
-                        users = ctx.person.Where(p => p.person_id == groupmember.person_id).ToList();
+                        users.Add(ctx.person.Where(p => p.person_id == groupmember.person_id).SingleOrDefault());
                     } 
 	            }
 
@@ -131,7 +131,6 @@ namespace TeeMs.UserContentManager
             {
                 
                 throw ex;
-                return null;
             }
         }
 

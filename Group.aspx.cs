@@ -90,7 +90,7 @@ public partial class Group : System.Web.UI.Page
                     ddlProjectList.Items.Add(project.name);
                 }
             }
-            ddlProjectList.Items.Insert(0, "Choose Group");
+            ddlProjectList.Items.Insert(0, "Choose Project");
         }
         catch (Exception ex)
         {
@@ -155,6 +155,7 @@ public partial class Group : System.Web.UI.Page
             }
 
             divDuringChange.Visible = false;
+            divTitleChanger.Visible = false;
             divDefault.Visible = true;
         }
         catch (Exception ex)

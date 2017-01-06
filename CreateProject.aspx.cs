@@ -158,7 +158,7 @@ public partial class CreateProject : System.Web.UI.Page
                     addedrow = emptyrow;
                 }
 
-                // Still missing: Due date, picture url. Change the percent_done in the database to DOUBLE
+                // Insert new project into database
                 var newproject = new project
                 {
                     name = projectname,
@@ -198,7 +198,7 @@ public partial class CreateProject : System.Web.UI.Page
             var rightgroup = ctx.group.Where(g => g.name == ddlGroupList.SelectedItem.Text).FirstOrDefault();
             var rightproject = ctx.project.Where(pr => pr.project_id == project_id).FirstOrDefault();
 
-            if (rightgroup != null || rightproject != null)
+            if (rightgroup != null && rightproject != null)
             {
                 var projectgroup = new project_group
                     {

@@ -330,6 +330,11 @@ public partial class Project : System.Web.UI.Page
         }
     }
 
+    protected void btnRemoveGroup_Click(object sender, EventArgs e)
+    {
+
+    }
+
     protected void btnShowGroupInfo_Click(object sender, EventArgs e)
     {
         UserContentManager contentmanager = new UserContentManager(ticket.Name);
@@ -373,9 +378,27 @@ public partial class Project : System.Web.UI.Page
         }
     }
 
-    protected void btnShowAssignmentInfo_Click(object sender, EventArgs e)
+    protected void btnRemoveAssignment_Click(object sender, EventArgs e)
     {
 
+    }
+
+    protected void btnShowAssignmentInfo_Click(object sender, EventArgs e)
+    {
+        if (ddlAssignmentList.SelectedIndex != 0)
+        {
+            try
+            {
+                var rightassignment = ctx.assignment.Where(a => a.amt_tag == ddlAssignmentList.SelectedIndex).SingleOrDefault();
+
+                Response.Redirect(String.Format("Assignment.aspx?Assignment={0}", rightassignment.amt_id));
+            }
+            catch (Exception ex)
+            {
+                
+                lbMessages.Text = ex.Message;
+            }
+        }
     }
 
     #endregion

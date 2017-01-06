@@ -4,31 +4,54 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="7e729d911acb4b15ac3ca80859d50717" Name="Diagram1">
-        <EntityTypeShape EntityType="TeeMsModel.assignment" Width="1.5" PointX="4.875" PointY="3" />
-        <EntityTypeShape EntityType="TeeMsModel.assignment_component" Width="1.5" PointX="7.875" PointY="4.5" />
-        <EntityTypeShape EntityType="TeeMsModel.assignment_person" Width="1.5" PointX="0.5" PointY="2" />
-        <EntityTypeShape EntityType="TeeMsModel.group_member" Width="1.5" PointX="3.625" PointY="7.5" />
-        <EntityTypeShape EntityType="TeeMsModel.group_role" Width="1.5" PointX="6.625" PointY="9" />
-        <EntityTypeShape EntityType="TeeMsModel.login" Width="1.5" PointX="9.625" PointY="10.5" />
-        <EntityTypeShape EntityType="TeeMsModel.organization" Width="1.5" PointX="10.125" PointY="7.25" />
-        <EntityTypeShape EntityType="TeeMsModel.person" Width="1.5" PointX="13.125" PointY="8.75" />
-        <EntityTypeShape EntityType="TeeMsModel.project_group" Width="1.5" PointX="3.125" PointY="11.125" />
-        <EntityTypeShape EntityType="TeeMsModel.role" Width="1.5" PointX="6.5" PointY="11.625" />
+      <Diagram DiagramId="e1bb7681888c4694869d64171a27794b" Name="Diagram1" >
+        <EntityTypeShape EntityType="TeeMs.assignment" Width="1.5" PointX="3.125" PointY="6.75" />
+        <EntityTypeShape EntityType="TeeMs.assignment_component" Width="1.5" PointX="3.1335172593284009" PointY="9.32257602052883" />
+        <EntityTypeShape EntityType="TeeMs.assignment_person" Width="1.5" PointX="5" PointY="4.625" />
+        <EntityTypeShape EntityType="TeeMs.group" Width="1.5" PointX="5.4919015045705724" PointY="28.377900464636227" />
+        <EntityTypeShape EntityType="TeeMs.group_member" Width="1.5" PointX="12" PointY="2.875" />
+        <EntityTypeShape EntityType="TeeMs.group_role" Width="1.5" PointX="11.75" PointY="6.25" />
+        <EntityTypeShape EntityType="TeeMs.login" Width="1.5" PointX="8.625" PointY="0.5" />
+        <EntityTypeShape EntityType="TeeMs.organization" Width="1.5" PointX="6" PointY="0.5" />
+        <EntityTypeShape EntityType="TeeMs.person" Width="1.5" PointX="0.5" PointY="3.5" />
+        <EntityTypeShape EntityType="TeeMs.project" Width="1.5" PointX="6" PointY="8.125" />
+        <EntityTypeShape EntityType="TeeMs.project_group" Width="1.5" PointX="9" PointY="9.625" />
+        <EntityTypeShape EntityType="TeeMs.role" Width="1.5" PointX="0.5" PointY="7.625" />
+        <AssociationConnector Association="TeeMs.fk_assignment_component_assignment1" />
+        <AssociationConnector Association="TeeMs.fk_assignment_has_person_assignment1" />
+        <AssociationConnector Association="TeeMs.fk_assignment_project1" />
+        <AssociationConnector Association="TeeMs.fk_assignment_has_person_person1" />
+        <AssociationConnector Association="TeeMs.fk_group_has_person_group1" />
+        <AssociationConnector Association="TeeMs.fk_group_organization" />
+        <AssociationConnector Association="TeeMs.fk_project_has_group_group1" />
+        <AssociationConnector Association="TeeMs.fk_group_has_person_person1" />
+        <AssociationConnector Association="TeeMs.fk_group_member_group_role1" />
+        <AssociationConnector Association="TeeMs.fk_person_role1" />
+        <AssociationConnector Association="TeeMs.fk_project_has_group_project1" />
+        <EntityTypeShape EntityType="TeeMsModel.assignment" Width="1.5" PointX="9.125" PointY="3.125" />
+        <EntityTypeShape EntityType="TeeMsModel.assignment_component" Width="1.5" PointX="12.125" PointY="4.625" />
+        <EntityTypeShape EntityType="TeeMsModel.assignment_person" Width="1.5" PointX="0.5" PointY="6.125" />
+        <EntityTypeShape EntityType="TeeMsModel.group" Width="1.5" PointX="1.125" PointY="0.875" />
+        <EntityTypeShape EntityType="TeeMsModel.group_member" Width="1.5" PointX="4.125" PointY="2.375" />
+        <EntityTypeShape EntityType="TeeMsModel.group_role" Width="1.5" PointX="7.125" PointY="3.875" />
+        <EntityTypeShape EntityType="TeeMsModel.login" Width="1.5" PointX="14.875" PointY="3.5" />
+        <EntityTypeShape EntityType="TeeMsModel.organization" Width="1.5" PointX="2.375" PointY="11.25" />
+        <EntityTypeShape EntityType="TeeMsModel.person" Width="1.5" PointX="5.375" PointY="12.75" />
+        <EntityTypeShape EntityType="TeeMsModel.project" Width="1.5" PointX="3.75" PointY="6.625" />
+        <EntityTypeShape EntityType="TeeMsModel.project_group" Width="1.5" PointX="6.25" PointY="8.125" />
+        <EntityTypeShape EntityType="TeeMsModel.role" Width="1.5" PointX="9.25" PointY="9.625" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_component_assignment1" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_assignment1" />
-        <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_person1" />
-        <AssociationConnector Association="TeeMsModel.fk_group_has_person_person1" />
-        <AssociationConnector Association="TeeMsModel.fk_group_member_group_role1" />
-        <AssociationConnector Association="TeeMsModel.fk_person_role1" />
-        <EntityTypeShape EntityType="TeeMsModel.project" Width="1.5" PointX="0.625" PointY="10.25" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_project1" />
-        <AssociationConnector Association="TeeMsModel.fk_project_has_group_project1" />
-        <EntityTypeShape EntityType="TeeMsModel.group" Width="1.5" PointX="0.625" PointY="6.375" />
+        <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_person1" />
         <AssociationConnector Association="TeeMsModel.fk_group_has_person_group1" />
         <AssociationConnector Association="TeeMsModel.fk_group_organization" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_group_group1" />
-      </Diagram>
+        <AssociationConnector Association="TeeMsModel.fk_group_has_person_person1" />
+        <AssociationConnector Association="TeeMsModel.fk_group_member_group_role1" />
+        <AssociationConnector Association="TeeMsModel.fk_person_role1" />
+        <AssociationConnector Association="TeeMsModel.fk_project_has_group_project1" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
