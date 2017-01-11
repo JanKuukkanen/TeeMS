@@ -22,7 +22,7 @@
             <div class="w3-container" style="margin-top: 40px;">
                 <asp:Label ID="lbProjectDescription" runat="server" Text="Project Description:" />
                 <br />
-                <asp:TextBox ID="txtProjectDescription" runat="server" Height="80px"></asp:TextBox>
+                <asp:TextBox ID="txtProjectDescription" runat="server" TextMode="MultiLine" Height="80px"></asp:TextBox>
             </div>
 
             <div class="w3-container" style="margin-top: 40px;">

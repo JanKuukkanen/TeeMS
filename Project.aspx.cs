@@ -13,6 +13,9 @@ public partial class Project : System.Web.UI.Page
     private TeeMsEntities ctx;
     private FormsAuthenticationTicket ticket;
 
+    //private List<group> projectgroups_perm = new List<group>();
+    
+
     protected void Page_Load(object sender, EventArgs e)
     {
         ctx = new TeeMsEntities();
@@ -76,20 +79,14 @@ public partial class Project : System.Web.UI.Page
             }
             ddlMemberGroupList.Items.Insert(0, "Choose Group");
 
+            List<group> projectgroups_perm = groups_in_project;
+            Session["projectgroups"] = projectgroups_perm;
+
             // Fill ddlAssignmentList with groups currently working on the project
-            var assignmentquery = ctx.assignment.ToList();
-            List<assignment> projectassignments = new List<assignment>();
+            List<assignment> projectassignments = rightproject.assignment.ToList();
 
-            if (assignmentquery != null)
+            if (projectassignments != null)
             {
-                foreach (var assignment in assignmentquery)
-                {
-                    if (assignment.project_id == project_id)
-                    {
-                        projectassignments.Add(assignment);
-                    }
-                }
-
                 foreach (var assignment in projectassignments)
                 {
                     ddlAssignmentList.Items.Add(assignment.name);
@@ -110,6 +107,13 @@ public partial class Project : System.Web.UI.Page
             else
             {
                 imgProjectPicture.Src = pictureuri;
+            }
+
+            // Set due date to calendar
+            if (rightproject.due_date != null)
+            {
+                calendarDueDate.SelectedDate = (DateTime)rightproject.due_date;
+                calendarDueDate.VisibleDate = (DateTime)rightproject.due_date; 
             }
         }
         catch (Exception ex)
@@ -332,7 +336,7 @@ public partial class Project : System.Web.UI.Page
 
     protected void btnRemoveGroup_Click(object sender, EventArgs e)
     {
-
+        RemoveProjectGroup();
     }
 
     protected void btnShowGroupInfo_Click(object sender, EventArgs e)
@@ -376,11 +380,6 @@ public partial class Project : System.Web.UI.Page
             
             lbMessages.Text = ex.Message;
         }
-    }
-
-    protected void btnRemoveAssignment_Click(object sender, EventArgs e)
-    {
-
     }
 
     protected void btnShowAssignmentInfo_Click(object sender, EventArgs e)
@@ -469,7 +468,8 @@ public partial class Project : System.Web.UI.Page
                     var prg = new project_group
                     {
                         group_id = addedgroup.group_id,
-                        project_id = addedproject.project_id
+                        project_id = addedproject.project_id,
+                        supporting = true
                     };
 
                     addedproject.edited = DateTime.Now;
@@ -496,5 +496,50 @@ public partial class Project : System.Web.UI.Page
             Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
         }
     }
+    #endregion
+
+    #region REMOVAL_FUNCTIONS
+
+    protected void RemoveProjectGroup()
+    {
+        try
+        {
+            string project_textid = Request.QueryString["Project"];
+            int project_id = int.Parse(project_textid);
+
+            string groupname = ddlMemberGroupList.SelectedItem.Text;
+            int groupindex = ddlMemberGroupList.SelectedIndex;
+
+            // Because a project can contain multiple groups with the same name we have to identify the right group to remove
+            List<group> projectgroups_perm = (List<group>)Session["projectgroups"];
+            group group_to_remove = new group();
+
+            int counter = 0;
+            foreach (var projectgroup in projectgroups_perm)
+            {
+                if (projectgroup.name == groupname && counter == groupindex - 1)
+                {
+                    group_to_remove = projectgroup;
+                }
+                counter++;
+            }
+
+            var rightprojectgroup = ctx.project_group.Where(pg => pg.project_id == project_id && pg.group_id == group_to_remove.group_id).SingleOrDefault();
+
+            if (rightprojectgroup != null)
+            {
+                ctx.project_group.Remove(rightprojectgroup);
+                ctx.SaveChanges();
+
+                Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
     #endregion
 }

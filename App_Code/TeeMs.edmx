@@ -199,6 +199,7 @@
           <Property Name="project_group_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="project_id" Type="int" Nullable="false" />
           <Property Name="group_id" Type="int" Nullable="false" />
+          <Property Name="supporting" Type="bool" Nullable="false" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -360,7 +361,6 @@
           <EntitySet Name="organization" EntityType="TeeMsModel.organization" />
           <EntitySet Name="person" EntityType="TeeMsModel.person" />
           <EntitySet Name="project" EntityType="TeeMsModel.project" />
-          <EntitySet Name="project_group" EntityType="TeeMsModel.project_group" />
           <EntitySet Name="role" EntityType="TeeMsModel.role" />
           <AssociationSet Name="fk_assignment_component_assignment1" Association="TeeMsModel.fk_assignment_component_assignment1">
             <End Role="assignment" EntitySet="assignment" />
@@ -386,10 +386,6 @@
             <End Role="organization" EntitySet="organization" />
             <End Role="group" EntitySet="group" />
           </AssociationSet>
-          <AssociationSet Name="fk_project_has_group_group1" Association="TeeMsModel.fk_project_has_group_group1">
-            <End Role="group" EntitySet="group" />
-            <End Role="project_group" EntitySet="project_group" />
-          </AssociationSet>
           <AssociationSet Name="fk_group_has_person_person1" Association="TeeMsModel.fk_group_has_person_person1">
             <End Role="person" EntitySet="person" />
             <End Role="group_member" EntitySet="group_member" />
@@ -401,6 +397,11 @@
           <AssociationSet Name="fk_person_role1" Association="TeeMsModel.fk_person_role1">
             <End Role="role" EntitySet="role" />
             <End Role="person" EntitySet="person" />
+          </AssociationSet>
+          <EntitySet Name="project_group" EntityType="TeeMsModel.project_group" />
+          <AssociationSet Name="fk_project_has_group_group1" Association="TeeMsModel.fk_project_has_group_group1">
+            <End Role="group" EntitySet="group" />
+            <End Role="project_group" EntitySet="project_group" />
           </AssociationSet>
           <AssociationSet Name="fk_project_has_group_project1" Association="TeeMsModel.fk_project_has_group_project1">
             <End Role="project" EntitySet="project" />
@@ -553,18 +554,6 @@
           <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_project1" FromRole="project" ToRole="assignment" />
           <NavigationProperty Name="project_group" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project" ToRole="project_group" />
         </EntityType>
-        <EntityType Name="project_group">
-          <Key>
-            <PropertyRef Name="project_group_id" />
-            <PropertyRef Name="project_id" />
-            <PropertyRef Name="group_id" />
-          </Key>
-          <Property Type="Int32" Name="project_group_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="Int32" Name="project_id" Nullable="false" />
-          <Property Type="Int32" Name="group_id" Nullable="false" />
-          <NavigationProperty Name="group" Relationship="TeeMsModel.fk_project_has_group_group1" FromRole="project_group" ToRole="group" />
-          <NavigationProperty Name="project" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project_group" ToRole="project" />
-        </EntityType>
         <EntityType Name="role">
           <Key>
             <PropertyRef Name="role_id" />
@@ -651,18 +640,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_project_has_group_group1">
-          <End Type="TeeMsModel.group" Role="group" Multiplicity="1" />
-          <End Type="TeeMsModel.project_group" Role="project_group" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="group">
-              <PropertyRef Name="group_id" />
-            </Principal>
-            <Dependent Role="project_group">
-              <PropertyRef Name="group_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="fk_group_has_person_person1">
           <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
           <End Type="TeeMsModel.group_member" Role="group_member" Multiplicity="*" />
@@ -696,6 +673,31 @@
             </Principal>
             <Dependent Role="person">
               <PropertyRef Name="role_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="project_group">
+          <Key>
+            <PropertyRef Name="project_group_id" />
+            <PropertyRef Name="project_id" />
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Type="Int32" Name="project_group_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Int32" Name="project_id" Nullable="false" />
+          <Property Type="Int32" Name="group_id" Nullable="false" />
+          <Property Type="Boolean" Name="supporting" Nullable="false" />
+          <NavigationProperty Name="group" Relationship="TeeMsModel.fk_project_has_group_group1" FromRole="project_group" ToRole="group" />
+          <NavigationProperty Name="project" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project_group" ToRole="project" />
+        </EntityType>
+        <Association Name="fk_project_has_group_group1">
+          <End Type="TeeMsModel.group" Role="group" Multiplicity="1" />
+          <End Type="TeeMsModel.project_group" Role="project_group" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="project_group">
+              <PropertyRef Name="group_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -846,15 +848,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="project_group">
-            <EntityTypeMapping TypeName="TeeMsModel.project_group">
-              <MappingFragment StoreEntitySet="project_group">
-                <ScalarProperty Name="group_id" ColumnName="group_id" />
-                <ScalarProperty Name="project_id" ColumnName="project_id" />
-                <ScalarProperty Name="project_group_id" ColumnName="project_group_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="role">
             <EntityTypeMapping TypeName="TeeMsModel.role">
               <MappingFragment StoreEntitySet="role">
@@ -862,6 +855,16 @@
                 <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="role_id" ColumnName="role_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="project_group">
+            <EntityTypeMapping TypeName="TeeMsModel.project_group">
+              <MappingFragment StoreEntitySet="project_group">
+                <ScalarProperty Name="supporting" ColumnName="supporting" />
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+                <ScalarProperty Name="project_group_id" ColumnName="project_group_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

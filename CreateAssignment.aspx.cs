@@ -44,8 +44,6 @@ public partial class CreateAssignment : System.Web.UI.Page
 
             List<person> userquery = contentmanager.GetProjectUsers(project_id);
 
-            lbmessages.Text = userquery.Count.ToString();
-
             if (userquery != null)
             {
                 foreach (var user in userquery)
@@ -64,16 +62,97 @@ public partial class CreateAssignment : System.Web.UI.Page
 
     protected void btnCreateAssignment_Click(object sender, EventArgs e)
     {
-        int assignment_id = CreateNewAssignment();
+        bool acceptablename = CheckAssignmentName();
+        bool acceptabledate = CheckDueDate();
 
-        if ((ddlUserList.SelectedItem.Text != ddlUserList.Items[0].Text) && (assignment_id != -1))
+        if (acceptabledate == true && acceptablename == true)
         {
-            CreateAssignmentPerson(assignment_id);
+            int assignment_id = CreateNewAssignment();
+
+            if ((ddlUserList.SelectedItem.Text != ddlUserList.Items[0].Text) && (assignment_id != -1))
+            {
+                CreateAssignmentPerson(assignment_id);
+            }
+
+            if (assignment_id != -1)
+            {
+                Response.Redirect(String.Format("Assignment.aspx?Assignment={0}", assignment_id));
+            }
         }
-
-        if (assignment_id != -1)
+        else if (acceptabledate == false)
         {
-            Response.Redirect(String.Format("Assignment.aspx?Assignment={0}", assignment_id));
+            lbmessages.Text = "Due date is set to be after the projects completion!";
+        }
+        else if (acceptablename == false)
+        {
+            lbmessages.Text = "The project already contains an assignment with this name";
+        }
+    }
+
+    protected bool CheckAssignmentName()
+    {
+        try
+        {
+            string project_textid = Request.QueryString["Project"];
+            int project_id = int.Parse(project_textid);
+
+            var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+            string assignmentname = txtAssignmentName.Text;
+
+            List<assignment> projectassignments = rightproject.assignment.ToList();
+
+            foreach (var assignment in projectassignments)
+            {
+                if (assignmentname == assignment.name)
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            
+            lbmessages.Text = ex.Message;
+            return false;
+        }
+    }
+
+    protected bool CheckDueDate()
+    {
+        try
+        {
+            string project_textid = Request.QueryString["Project"];
+            int project_id = int.Parse(project_textid);
+
+            var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+            DateTime duedate = calendarDueDate.SelectedDate;
+
+            if (rightproject.due_date != null)
+            {
+                int datecheck = DateTime.Compare(duedate, (DateTime)rightproject.due_date);
+
+                if (datecheck < 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return true;
+            }
+
+        }
+        catch (Exception ex)
+        {
+            
+            lbmessages.Text = ex.Message;
+            return false;
         }
     }
 

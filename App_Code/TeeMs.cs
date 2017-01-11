@@ -186,6 +186,7 @@ public partial class project_group
     public int project_group_id { get; set; }
     public int project_id { get; set; }
     public int group_id { get; set; }
+    public bool supporting { get; set; }
 
     public virtual group group { get; set; }
     public virtual project project { get; set; }

@@ -203,7 +203,8 @@ public partial class CreateProject : System.Web.UI.Page
                 var projectgroup = new project_group
                     {
                         group_id = rightgroup.group_id,
-                        project_id = rightproject.project_id
+                        project_id = rightproject.project_id,
+                        supporting = false
                     };
 
                 rightgroup.project_group.Add(projectgroup);

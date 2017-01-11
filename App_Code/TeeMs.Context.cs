@@ -33,6 +33,6 @@ public partial class TeeMsEntities : DbContext
     public DbSet<organization> organization { get; set; }
     public DbSet<person> person { get; set; }
     public DbSet<project> project { get; set; }
-    public DbSet<project_group> project_group { get; set; }
     public DbSet<role> role { get; set; }
+    public DbSet<project_group> project_group { get; set; }
 }
