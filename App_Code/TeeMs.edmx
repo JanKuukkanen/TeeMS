@@ -8,6 +8,7 @@
         <EntityContainer Name="TeeMsModelStoreContainer">
           <EntitySet Name="assignment" EntityType="TeeMsModel.Store.assignment" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="assignment_component" EntityType="TeeMsModel.Store.assignment_component" store:Type="Tables" Schema="h3387" />
+          <EntitySet Name="assignment_component_person" EntityType="TeeMsModel.Store.assignment_component_person" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="assignment_person" EntityType="TeeMsModel.Store.assignment_person" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="group" EntityType="TeeMsModel.Store.group" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="group_member" EntityType="TeeMsModel.Store.group_member" store:Type="Tables" Schema="h3387" />
@@ -21,6 +22,14 @@
           <AssociationSet Name="fk_assignment_component_assignment1" Association="TeeMsModel.Store.fk_assignment_component_assignment1">
             <End Role="assignment" EntitySet="assignment" />
             <End Role="assignment_component" EntitySet="assignment_component" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_component_has_person_assignment_component1" Association="TeeMsModel.Store.fk_assignment_component_has_person_assignment_component1">
+            <End Role="assignment_component" EntitySet="assignment_component" />
+            <End Role="assignment_component_person" EntitySet="assignment_component_person" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_component_has_person_person1" Association="TeeMsModel.Store.fk_assignment_component_has_person_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="assignment_component_person" EntitySet="assignment_component_person" />
           </AssociationSet>
           <AssociationSet Name="fk_assignment_has_person_assignment1" Association="TeeMsModel.Store.fk_assignment_has_person_assignment1">
             <End Role="assignment" EntitySet="assignment" />
@@ -92,6 +101,20 @@
           <Property Name="edited" Type="timestamp" />
           <Property Name="amt_id" Type="int" Nullable="false" />
           <Property Name="project_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="assignment_component_person">
+          <Key>
+            <PropertyRef Name="assignment_component_person_id" />
+            <PropertyRef Name="amtc_id" />
+            <PropertyRef Name="amt_id" />
+            <PropertyRef Name="project_id" />
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Name="assignment_component_person_id" Type="int" Nullable="false" />
+          <Property Name="amtc_id" Type="int" Nullable="false" />
+          <Property Name="amt_id" Type="int" Nullable="false" />
+          <Property Name="project_id" Type="int" Nullable="false" />
+          <Property Name="person_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="assignment_person">
           <Key>
@@ -221,6 +244,34 @@
             <Dependent Role="assignment_component">
               <PropertyRef Name="amt_id" />
               <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_component_has_person_assignment_component1">
+          <End Role="assignment_component" Type="TeeMsModel.Store.assignment_component" Multiplicity="1" />
+          <End Role="assignment_component_person" Type="TeeMsModel.Store.assignment_component_person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment_component">
+              <PropertyRef Name="amtc_id" />
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment_component_person">
+              <PropertyRef Name="amtc_id" />
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_component_has_person_person1">
+          <End Role="person" Type="TeeMsModel.Store.person" Multiplicity="1" />
+          <End Role="assignment_component_person" Type="TeeMsModel.Store.assignment_component_person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="assignment_component_person">
+              <PropertyRef Name="person_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -407,6 +458,15 @@
             <End Role="project" EntitySet="project" />
             <End Role="project_group" EntitySet="project_group" />
           </AssociationSet>
+          <EntitySet Name="assignment_component_person" EntityType="TeeMsModel.assignment_component_person" />
+          <AssociationSet Name="fk_assignment_component_has_person_assignment_component1" Association="TeeMsModel.fk_assignment_component_has_person_assignment_component1">
+            <End Role="assignment_component" EntitySet="assignment_component" />
+            <End Role="assignment_component_person" EntitySet="assignment_component_person" />
+          </AssociationSet>
+          <AssociationSet Name="fk_assignment_component_has_person_person1" Association="TeeMsModel.fk_assignment_component_has_person_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="assignment_component_person" EntitySet="assignment_component_person" />
+          </AssociationSet>
         </EntityContainer>
         <EntityType Name="assignment">
           <Key>
@@ -441,6 +501,7 @@
           <Property Type="Int32" Name="amt_id" Nullable="false" />
           <Property Type="Int32" Name="project_id" Nullable="false" />
           <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_component_assignment1" FromRole="assignment_component" ToRole="assignment" />
+          <NavigationProperty Name="assignment_component_person" Relationship="TeeMsModel.fk_assignment_component_has_person_assignment_component1" FromRole="assignment_component" ToRole="assignment_component_person" />
         </EntityType>
         <EntityType Name="assignment_person">
           <Key>
@@ -534,6 +595,7 @@
           <NavigationProperty Name="assignment_person" Relationship="TeeMsModel.fk_assignment_has_person_person1" FromRole="person" ToRole="assignment_person" />
           <NavigationProperty Name="group_member" Relationship="TeeMsModel.fk_group_has_person_person1" FromRole="person" ToRole="group_member" />
           <NavigationProperty Name="role" Relationship="TeeMsModel.fk_person_role1" FromRole="person" ToRole="role" />
+          <NavigationProperty Name="assignment_component_person" Relationship="TeeMsModel.fk_assignment_component_has_person_person1" FromRole="person" ToRole="assignment_component_person" />
         </EntityType>
         <EntityType Name="project">
           <Key>
@@ -713,6 +775,50 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="assignment_component_person">
+          <Key>
+            <PropertyRef Name="assignment_component_person_id" />
+            <PropertyRef Name="amtc_id" />
+            <PropertyRef Name="amt_id" />
+            <PropertyRef Name="project_id" />
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Type="Int32" Name="assignment_component_person_id" Nullable="false" />
+          <Property Type="Int32" Name="amtc_id" Nullable="false" />
+          <Property Type="Int32" Name="amt_id" Nullable="false" />
+          <Property Type="Int32" Name="project_id" Nullable="false" />
+          <Property Type="Int32" Name="person_id" Nullable="false" />
+          <NavigationProperty Name="assignment_component" Relationship="TeeMsModel.fk_assignment_component_has_person_assignment_component1" FromRole="assignment_component_person" ToRole="assignment_component" />
+          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_assignment_component_has_person_person1" FromRole="assignment_component_person" ToRole="person" />
+        </EntityType>
+        <Association Name="fk_assignment_component_has_person_assignment_component1">
+          <End Type="TeeMsModel.assignment_component" Role="assignment_component" Multiplicity="1" />
+          <End Type="TeeMsModel.assignment_component_person" Role="assignment_component_person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment_component">
+              <PropertyRef Name="amtc_id" />
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="assignment_component_person">
+              <PropertyRef Name="amtc_id" />
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_assignment_component_has_person_person1">
+          <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
+          <End Type="TeeMsModel.assignment_component_person" Role="assignment_component_person" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="assignment_component_person">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -865,6 +971,17 @@
                 <ScalarProperty Name="group_id" ColumnName="group_id" />
                 <ScalarProperty Name="project_id" ColumnName="project_id" />
                 <ScalarProperty Name="project_group_id" ColumnName="project_group_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="assignment_component_person">
+            <EntityTypeMapping TypeName="TeeMsModel.assignment_component_person">
+              <MappingFragment StoreEntitySet="assignment_component_person">
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+                <ScalarProperty Name="amt_id" ColumnName="amt_id" />
+                <ScalarProperty Name="amtc_id" ColumnName="amtc_id" />
+                <ScalarProperty Name="assignment_component_person_id" ColumnName="assignment_component_person_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

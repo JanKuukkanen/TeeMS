@@ -64,8 +64,20 @@ public partial class CreateAssignment : System.Web.UI.Page
     {
         bool acceptablename = CheckAssignmentName();
         bool acceptabledate = CheckDueDate();
+        string project_id = String.Empty;
 
-        if (acceptabledate == true && acceptablename == true)
+        try
+        {
+            project_id = Request.QueryString["Project"];
+
+        }
+        catch (Exception ex)
+        {
+            
+            lbmessages.Text = ex.Message;
+        }
+
+        if (acceptabledate == true && acceptablename == true && project_id != String.Empty)
         {
             int assignment_id = CreateNewAssignment();
 
@@ -76,7 +88,7 @@ public partial class CreateAssignment : System.Web.UI.Page
 
             if (assignment_id != -1)
             {
-                Response.Redirect(String.Format("Assignment.aspx?Assignment={0}", assignment_id));
+                Response.Redirect(String.Format("Assignment.aspx?Assignment={0}?Project={1}", assignment_id, project_id));
             }
         }
         else if (acceptabledate == false)

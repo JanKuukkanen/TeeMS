@@ -34,11 +34,11 @@
         <EntityTypeShape EntityType="TeeMsModel.group" Width="1.5" PointX="1.125" PointY="0.875" />
         <EntityTypeShape EntityType="TeeMsModel.group_member" Width="1.5" PointX="4.125" PointY="2.375" />
         <EntityTypeShape EntityType="TeeMsModel.group_role" Width="1.5" PointX="7.125" PointY="3.875" />
-        <EntityTypeShape EntityType="TeeMsModel.login" Width="1.5" PointX="14.875" PointY="3.5" />
-        <EntityTypeShape EntityType="TeeMsModel.organization" Width="1.5" PointX="2.375" PointY="11.25" />
-        <EntityTypeShape EntityType="TeeMsModel.person" Width="1.5" PointX="5.375" PointY="12.75" />
+        <EntityTypeShape EntityType="TeeMsModel.login" Width="1.5" PointX="12.125" PointY="2" />
+        <EntityTypeShape EntityType="TeeMsModel.organization" Width="1.5" PointX="1.25" PointY="9.375" />
+        <EntityTypeShape EntityType="TeeMsModel.person" Width="1.5" PointX="6.25" PointY="7.625" />
         <EntityTypeShape EntityType="TeeMsModel.project" Width="1.5" PointX="3.75" PointY="6.625" />
-        <EntityTypeShape EntityType="TeeMsModel.role" Width="1.5" PointX="9.25" PointY="9.625" />
+        <EntityTypeShape EntityType="TeeMsModel.role" Width="1.5" PointX="9.25" PointY="7.75" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_component_assignment1" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_has_person_assignment1" />
         <AssociationConnector Association="TeeMsModel.fk_assignment_project1" />
@@ -51,6 +51,9 @@
         <EntityTypeShape EntityType="TeeMsModel.project_group" Width="1.5" PointX="7" PointY="1.375" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_group_group1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_group_project1" />
+        <EntityTypeShape EntityType="TeeMsModel.assignment_component_person" Width="1.5" PointX="9.25" PointY="10.375" />
+        <AssociationConnector Association="TeeMsModel.fk_assignment_component_has_person_assignment_component1" />
+        <AssociationConnector Association="TeeMsModel.fk_assignment_component_has_person_person1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

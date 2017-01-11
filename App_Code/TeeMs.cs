@@ -37,6 +37,11 @@ public partial class assignment
 
 public partial class assignment_component
 {
+    public assignment_component()
+    {
+        this.assignment_component_person = new HashSet<assignment_component_person>();
+    }
+
     public int amtc_id { get; set; }
     public string name { get; set; }
     public bool finished { get; set; }
@@ -45,6 +50,19 @@ public partial class assignment_component
     public int project_id { get; set; }
 
     public virtual assignment assignment { get; set; }
+    public virtual ICollection<assignment_component_person> assignment_component_person { get; set; }
+}
+
+public partial class assignment_component_person
+{
+    public int assignment_component_person_id { get; set; }
+    public int amtc_id { get; set; }
+    public int amt_id { get; set; }
+    public int project_id { get; set; }
+    public int person_id { get; set; }
+
+    public virtual assignment_component assignment_component { get; set; }
+    public virtual person person { get; set; }
 }
 
 public partial class assignment_person
@@ -139,6 +157,7 @@ public partial class person
     {
         this.assignment_person = new HashSet<assignment_person>();
         this.group_member = new HashSet<group_member>();
+        this.assignment_component_person = new HashSet<assignment_component_person>();
     }
 
     public int person_id { get; set; }
@@ -154,6 +173,7 @@ public partial class person
     public virtual ICollection<assignment_person> assignment_person { get; set; }
     public virtual ICollection<group_member> group_member { get; set; }
     public virtual role role { get; set; }
+    public virtual ICollection<assignment_component_person> assignment_component_person { get; set; }
 }
 
 public partial class project

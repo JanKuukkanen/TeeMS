@@ -12,8 +12,6 @@ public partial class Project : System.Web.UI.Page
 {
     private TeeMsEntities ctx;
     private FormsAuthenticationTicket ticket;
-
-    //private List<group> projectgroups_perm = new List<group>();
     
 
     protected void Page_Load(object sender, EventArgs e)
@@ -388,9 +386,11 @@ public partial class Project : System.Web.UI.Page
         {
             try
             {
+                string project_id = Request.QueryString["Project"];
+
                 var rightassignment = ctx.assignment.Where(a => a.amt_tag == ddlAssignmentList.SelectedIndex).SingleOrDefault();
 
-                Response.Redirect(String.Format("Assignment.aspx?Assignment={0}", rightassignment.amt_id));
+                Response.Redirect(String.Format("Assignment.aspx?Assignment={0}&Project={1}", rightassignment.amt_id, project_id));
             }
             catch (Exception ex)
             {
