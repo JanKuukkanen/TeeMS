@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Security;
+using System.Web.UI.HtmlControls;
 using System.Data;
 using System.Collections.Specialized;
 using TeeMs.UserContentManager;
@@ -18,8 +19,8 @@ public partial class Assignment : System.Web.UI.Page
     {
         ctx = new TeeMsEntities();
 
-        string project_id = "Hello";
-        string assignment_id = "Double Hello";
+        string project_id = "";
+        string assignment_id = "";
 
         try
         {
@@ -59,10 +60,131 @@ public partial class Assignment : System.Web.UI.Page
 
             titleAssignmentTitle.InnerText = rightassignment.name;
             h1AssignmentName.InnerText = rightassignment.name;
+
+            // Set the assignment description to textbox
+            if (rightassignment.description != null)
+            {
+                txtAssignmentDescription.Text = rightassignment.description;
+            }
+            else
+            {
+                txtAssignmentDescription.Text = String.Format("Assignment {0} does not have a description.", rightassignment.name);
+            }
+
+            // Fill Assignmentmember lists
+            FillAssignmentMemberList();
+            FillPanelAssignmentMemberList();
         }
         catch (Exception ex)
         {
             
+            lbMessages.Text = ex.Message;
+        }
+    }
+    protected void btnEditAssignmentDescription_Click(object sender, EventArgs e)
+    {
+        if (txtAssignmentDescription.ReadOnly == true)
+        {
+            txtAssignmentDescription.ReadOnly = false;
+            btnEditAssignmentDescription.Text = "Save changes";
+        }
+        else if (txtAssignmentDescription.ReadOnly == false)
+        {
+            try
+            {
+                string assignment_id = Request.QueryString["Assignment"];
+                int parsed_assignment_id = int.Parse(assignment_id);
+
+                var rightassignment = ctx.assignment.Where(a => a.amt_id == parsed_assignment_id).SingleOrDefault();
+
+                if (rightassignment != null)
+                {
+                    rightassignment.description = txtAssignmentDescription.Text;
+                    rightassignment.edited = DateTime.Now;
+
+                    ctx.SaveChanges();
+                }
+
+                txtAssignmentDescription.Text = rightassignment.description;
+                txtAssignmentDescription.ReadOnly = true;
+                btnEditAssignmentDescription.Text = "Edit description";
+            }
+            catch (Exception ex)
+            {
+
+                lbMessages.Text = ex.Message;
+            }
+        }
+    }
+
+    protected void FillAssignmentMemberList()
+    {
+        try
+        {
+            int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightassignment = ctx.assignment.Where(amt => amt.project_id == project_id && amt.amt_id == assignment_id).SingleOrDefault();
+            var assignmentpersons = ctx.assignment_person.Where(ap => ap.amt_id == rightassignment.amt_id).ToList();
+
+            List<person> persons = new List<person>();
+            List<int> ids = new List<int>();
+
+            foreach (var assignmentperson in assignmentpersons)
+            {
+                if (!ids.Contains(assignmentperson.person_id))
+                {
+                    persons.Add(ctx.person.Where(p => p.person_id == assignmentperson.person_id).SingleOrDefault());
+                    ids.Add(assignmentperson.person_id);
+                }
+            }
+
+            foreach (var person in persons)
+            {
+                HtmlGenericControl assignmentmemberdiv = new HtmlGenericControl("div");
+                assignmentmemberdiv.Attributes.Add("class", "w3-container");
+                assignmentmemberdiv.InnerText = person.username;
+
+                divMemberList.Controls.Add(assignmentmemberdiv);
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void FillPanelAssignmentMemberList()
+    {
+        try
+        {
+            int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightassignment = ctx.assignment.Where(amt => amt.project_id == project_id && amt.amt_id == assignment_id).SingleOrDefault();
+            var assignmentpersons = ctx.assignment_person.Where(ap => ap.amt_id == rightassignment.amt_id).ToList();
+
+            List<person> persons = new List<person>();
+            List<int> ids = new List<int>();
+
+            foreach (var assignmentperson in assignmentpersons)
+            {
+                if (!ids.Contains(assignmentperson.person_id))
+                {
+                    persons.Add(ctx.person.Where(p => p.person_id == assignmentperson.person_id).SingleOrDefault());
+                    ids.Add(assignmentperson.person_id);
+                }
+            }
+
+            foreach (var person in persons)
+            {
+                cblPanelAssignmentMembers.Items.Add(person.username); 
+            }
+        }
+        catch (Exception ex)
+        {
+
             lbMessages.Text = ex.Message;
         }
     }

@@ -1,5 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Assignment.aspx.cs" Inherits="Assignment" %>
 
+<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="ajaxToolkit" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
     <!-- Change title to show the assignment currently being viewed -->
     <title id="titleAssignmentTitle" runat="server">Undefined Assignment</title>
@@ -13,9 +15,9 @@
 
             <div>
                 <h2>Description</h2>
-                <asp:TextBox ID="txtAssignmentDescription" runat="server" TextMode="MultiLine" Height="100px" Width="450px" ReadOnly="false" ></asp:TextBox>
+                <asp:TextBox ID="txtAssignmentDescription" runat="server" TextMode="MultiLine" Height="100px" Width="450px" ReadOnly="true" ></asp:TextBox>
                 <br />
-                <asp:Button ID="btnEditAssignmentDescription" runat="server" Text="Edit description" CssClass="w3-btn" />
+                <asp:Button ID="btnEditAssignmentDescription" runat="server" Text="Edit description" CssClass="w3-btn" OnClick="btnEditAssignmentDescription_Click" />
             </div>
         </div>
 
@@ -24,17 +26,49 @@
                 <h2>Assignment members</h2>
             </div>
 
-            <div id="divMemberList">
-
+            <div id="divMemberList" runat="server">
+                
             </div>
         </div>
 
         <div id="divWorkflow" class="w3-container" style="float:left; width:100%; margin-top:40px;">
-            <div class="w3-container">
+            <div>
                 <h2>Workflow</h2>
             </div>
 
             <div id="divAssignmentComponents" class="w3-container">
+
+            </div>
+
+            <div id="divAddComponent">
+
+                <asp:ScriptManager ID="ScriptManager1" runat="server">
+                    </asp:ScriptManager>
+                    <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Show Modal Popup" CssClass="w3-btn" />
+ 
+                    <!-- ModalPopupExtender -->
+                    <ajaxToolkit:ModalPopupExtender ID="mpeAddComponent" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnShowAddComponentModal"
+                        CancelControlID="btnCloseAddComponentModal" BackgroundCssClass="w3-blue-grey w3-opacity">
+                    </ajaxToolkit:ModalPopupExtender>
+                    <asp:Panel ID="panelAddComponent" runat="server" CssClass="w3-purple">
+                        <div style="width:700px; margin:10px 10px 10px 10px;">
+                            <div style="float: left; width:50%;">
+                                <asp:TextBox ID="txtAddComponent" runat="server"></asp:TextBox>
+                                <br />
+                                <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" />
+                            </div>
+
+                            <div id="divPanelAssignmentMembers" style="float:left; width:50%;">
+                                <!-- List all assignment members -->
+                                <asp:CheckBoxList ID="cblPanelAssignmentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
+                            </div>
+
+                            <div style="margin-top: 40px; margin-left: 50%; margin-bottom:10px; float: left; width:100%;">
+                                <asp:Button ID="btnCloseAddComponentModal" runat="server" Text="Close" />
+                            </div>
+                        </div>
+                    </asp:Panel>
+                    <!-- ModalPopupExtender -->
 
             </div>
 
