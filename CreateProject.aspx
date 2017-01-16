@@ -4,7 +4,7 @@
     <title>Create Project</title>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
-    <div class="w3-container w3-twothird">
+    <div class="w3-container w3-rest">
 
         <div class="w3-container">
             <h1>Create a new project</h1>

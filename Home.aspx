@@ -4,7 +4,7 @@
     <title>Home</title>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
-    <div class="w3-twothird">
+    <div class="w3-rest">
         <div class="w3-container">
             <h1>Your Projects</h1>
             <div id="divYourProjects" runat="server">

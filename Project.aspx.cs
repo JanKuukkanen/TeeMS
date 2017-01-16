@@ -157,7 +157,8 @@ public partial class Project : System.Web.UI.Page
         }
     }
 
-    #region TITLE_AND_PICTURE_CHANGE_BUTTONS
+#region TITLE_AND_PICTURE_CHANGE_BUTTONS
+
     protected void lbtnTriggerTitleChange_Click(object sender, EventArgs e)
     {
         // Change the visibility of certain html elements to bring up a textbox
@@ -283,9 +284,11 @@ public partial class Project : System.Web.UI.Page
         divDuringChange.Visible = false;
         divDefault.Visible = true;
     }
-    #endregion
 
-    #region ASSIGNMENT_AND_GROUP_BUTTONS
+#endregion
+
+#region ASSIGNMENT_AND_GROUP_BUTTONS
+
     protected void btnAddGroup_Click(object sender, EventArgs e)
     {
         if (divSearch.Visible == false)
@@ -400,10 +403,11 @@ public partial class Project : System.Web.UI.Page
         }
     }
 
-    #endregion
+#endregion
 
-    #region SEARCH_FUNCTIONS
-    // Search the database for the persons the user is searching
+#region SEARCH_FUNCTIONS
+
+    // Search the database for the group the user is searching
     protected List<group> SearchGroups(string searchgroup)
     {
         bool add_to_grid = true;
@@ -446,12 +450,12 @@ public partial class Project : System.Web.UI.Page
 
     protected void gvGroups_SelectedIndexChanged(object sender, EventArgs e)
     {
-        // Add the selected member to the group
+        // Add the selected group to the project
         string group_name = (gvGroups.SelectedRow.Cells[0].Controls[0] as LinkButton).Text;
         string project_id = String.Empty;
 
 
-        // Fill the group_member database table as well
+        // Fill the project_group database table as well
         try
         {
             project_id = Request.QueryString["Project"];
@@ -460,8 +464,8 @@ public partial class Project : System.Web.UI.Page
 
             if (project_id != String.Empty)
             {
-                var addedgroup = ctx.group.Where(g => g.name == group_name).FirstOrDefault();
-                var addedproject = ctx.project.Where(pr => pr.project_id == to_add_projectid).FirstOrDefault();
+                var addedgroup = ctx.group.Where(g => g.name == group_name).SingleOrDefault();
+                var addedproject = ctx.project.Where(pr => pr.project_id == to_add_projectid).SingleOrDefault();
 
                 if (addedgroup != null && addedproject != null)
                 {
@@ -496,9 +500,10 @@ public partial class Project : System.Web.UI.Page
             Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
         }
     }
-    #endregion
 
-    #region REMOVAL_FUNCTIONS
+#endregion
+
+#region REMOVAL_FUNCTIONS
 
     protected void RemoveProjectGroup()
     {
@@ -541,5 +546,5 @@ public partial class Project : System.Web.UI.Page
         }
     }
 
-    #endregion
+#endregion
 }

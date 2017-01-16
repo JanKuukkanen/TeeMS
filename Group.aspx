@@ -6,7 +6,7 @@
     <script src="JS/Group.js" type="text/javascript"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
-    <div class="w3-container w3-twothird" style="width:auto;">
+    <div class="w3-container w3-rest" style="width:auto;">
 
         <div id="divDefault" runat="server" class="w3-container" visible="true" style="float:left; width:50%;">
             <div class="w3-container" style="float:left; width:50%">

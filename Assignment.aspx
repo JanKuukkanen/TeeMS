@@ -7,7 +7,7 @@
     <title id="titleAssignmentTitle" runat="server">Undefined Assignment</title>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
-    <div class="w3-container w3-twothird" style="width:auto;">
+    <div class="w3-container w3-rest" style="width:auto;">
         <div id="divTitle" class="w3-container" style="float:left; width:50%;">
             <div>
                 <h1 id="h1AssignmentName" runat="server">Undefined Assignment</h1>
@@ -26,8 +26,27 @@
                 <h2>Assignment members</h2>
             </div>
 
+            <!-- Memberlist on the Assignment.aspx frontpage -->
             <div id="divMemberList" runat="server">
-                
+                <asp:CheckBoxList ID="cblAssignmentMemberList" runat="server"></asp:CheckBoxList>
+            </div>
+
+            <div style="margin-top:10px;">
+                <asp:Button ID="btnAddAssignmentMember" runat="server" Text="Add Member" OnClick="btnAddAssignmentMember_Click" CssClass="w3-btn" />
+                <asp:Button ID="btnRemoveAssignmentMember" runat="server" Text="Remove Member" OnClick="btnRemoveAssignmentMember_Click" CssClass="w3-btn" />
+            </div>
+
+            <div id="divSearch" runat="server" visible="false" style="padding-left:5%; padding-right:10%;" >
+                    <h4>Search</h4>
+                    <asp:TextBox ID="txtSearchPersons" runat="server" /> <br />
+                    <asp:Button ID="btnSearchPersons" runat="server" Text="Search" OnClick="btnSearchPersons_Click" CssClass="w3-btn" Style="margin-top:5px;" />
+                    <hr style="color:#000;background-color:#000; height:5px;" />
+                    <asp:GridView ID="gvPersons" runat="server" OnSelectedIndexChanged="gvPersons_SelectedIndexChanged" AutoGenerateColumns="False">
+                        <Columns>
+                            <asp:ButtonField DataTextField="username" HeaderText="Username" CommandName="Select" />                            
+                            <asp:BoundField DataField="creation_date" HeaderText="Creation day" />
+                        </Columns>
+                    </asp:GridView>
             </div>
         </div>
 
@@ -59,7 +78,7 @@
                             </div>
 
                             <div id="divPanelAssignmentMembers" style="float:left; width:50%;">
-                                <!-- List all assignment members -->
+                                <!-- List all assignment members on the modal popup -->
                                 <asp:CheckBoxList ID="cblPanelAssignmentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
                             </div>
 

@@ -141,12 +141,10 @@ public partial class Assignment : System.Web.UI.Page
 
             foreach (var person in persons)
             {
-                HtmlGenericControl assignmentmemberdiv = new HtmlGenericControl("div");
-                assignmentmemberdiv.Attributes.Add("class", "w3-container");
-                assignmentmemberdiv.InnerText = person.username;
-
-                divMemberList.Controls.Add(assignmentmemberdiv);
+                cblAssignmentMemberList.Items.Add(person.username);
             }
+
+            Session["AssignmentMembers"] = persons;
         }
         catch (Exception ex)
         {
@@ -188,4 +186,215 @@ public partial class Assignment : System.Web.UI.Page
             lbMessages.Text = ex.Message;
         }
     }
+
+    #region ASSIGNMENT_BUTTONS
+
+    protected void btnAddAssignmentMember_Click(object sender, EventArgs e)
+    {
+        if (divSearch.Visible == false)
+        {
+            divSearch.Visible = true;
+            btnAddAssignmentMember.Text = "Close search";
+        }
+        else
+        {
+            divSearch.Visible = false;
+            btnAddAssignmentMember.Text = "Add Member";
+        }
+    }
+
+    protected void btnRemoveAssignmentMember_Click(object sender, EventArgs e)
+    {
+        string assignment_id = String.Empty;
+        string project_id = String.Empty;
+
+        try
+        {
+            assignment_id = Request.QueryString["Assignment"];
+            project_id = Request.QueryString["Project"];
+
+            int toremoveassignment = int.Parse(assignment_id);
+            int toremoveproject = int.Parse(project_id);
+
+            foreach (ListItem item in cblAssignmentMemberList.Items)
+            {
+                if (item.Selected == true)
+                {
+                    var rightperson = ctx.person.Where(p => p.username == item.Text).SingleOrDefault();
+                    var rightassignment = ctx.assignment.Where(amt => amt.amt_id == toremoveassignment).SingleOrDefault();
+
+                    if (rightperson != null && rightassignment != null)
+                    {
+                        var rightassignmentperson = ctx.assignment_person.Where(aspe => aspe.person_id == rightperson.person_id && aspe.amt_id == rightassignment.amt_id && aspe.project_id == toremoveproject).SingleOrDefault();
+
+                        if (rightassignmentperson != null)
+                        {
+                            ctx.assignment_person.Remove(rightassignmentperson);
+                            ctx.SaveChanges();
+
+                            Response.Redirect(String.Format(Request.ApplicationPath + "Assignment.aspx?Assignment={0}&Project={1}", rightassignment.amt_id, toremoveproject));
+                        }
+                    }  
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    #endregion
+
+    #region SEARCH_FUNCTIONS
+
+    protected void btnSearchPersons_Click(object sender, EventArgs e)
+    {
+        // Search the database for the persons the user is searching
+        string searchperson = txtSearchPersons.Text;
+
+        List<person> personstoadd = SearchPersons(searchperson);
+
+        DataTable dt = new DataTable();
+
+        dt.Columns.Add("username", typeof(string));
+        dt.Columns.Add("creation_date", typeof(string));
+
+        // Then fill the gridview with the results
+        try
+        {
+            if (personstoadd != null)
+            {
+                foreach (var person in personstoadd)
+                {
+                    dt.Rows.Add(person.username, person.creation_date);
+                    gvPersons.DataSource = dt;
+                    gvPersons.DataBind();
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    // Search the database for the persons the user is searching
+    protected List<person> SearchPersons(string searchperson)
+    {
+        bool check_username = true;
+        bool check_eligibility = false;
+
+        List<person> personstoadd = new List<person>();
+
+        UserContentManager contentmanager = new UserContentManager(ticket.Name);
+
+        try
+        {
+            string project_id = Request.QueryString["Project"];
+            List<person> projectusers = contentmanager.GetProjectUsers(project_id);
+
+            var persons = ctx.person.ToList();
+
+            if (persons != null && searchperson != String.Empty)
+            {
+                foreach (var person in persons)
+                {
+                    check_username = true;
+
+                    for (int i = 0; i < searchperson.Count(); i++)
+                    {
+                        if (searchperson[i] != person.username[i] && person.username[i] != null)
+                        {
+                            check_username = false;
+                        }
+                    }
+
+                    foreach (var projectperson in projectusers)
+                    {
+                        if (projectperson.person_id == person.person_id)
+                        {
+                            check_eligibility = true;
+                        }
+
+                        if (!personstoadd.Contains(person))
+                        {
+                            if (check_username == true && check_eligibility == true)
+                            {
+                                personstoadd.Add(person);
+                            }  
+                        }
+                    }
+                }
+            }
+
+            return personstoadd;
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+            return null;
+        }
+    }
+
+    protected void gvPersons_SelectedIndexChanged(object sender, EventArgs e)
+    {
+        // Add the selected person to the assignment
+        string username = (gvPersons.SelectedRow.Cells[0].Controls[0] as LinkButton).Text;
+        string assignment_id = String.Empty;
+        string project_id = String.Empty;
+
+
+        // Fill the group_member database table as well
+        try
+        {
+            assignment_id = Request.QueryString["Assignment"];
+            project_id = Request.QueryString["Project"];
+
+            int to_add_assignmentid = int.Parse(assignment_id);
+            int to_add_projectid = int.Parse(project_id);
+
+            if (assignment_id != String.Empty && project_id != String.Empty)
+            {
+                var addedperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
+                var addedassignment = ctx.assignment.Where(amt => amt.amt_id == to_add_assignmentid).SingleOrDefault();
+
+                if (addedperson != null && addedassignment != null)
+                {
+                    var aspe = new assignment_person
+                    {
+                        amt_id = addedassignment.amt_id,
+                        project_id = to_add_projectid,
+                        person_id = addedperson.person_id
+                    };
+
+                    addedassignment.edited = DateTime.Now;
+                    addedperson.edited = DateTime.Now;
+
+                    addedassignment.assignment_person.Add(aspe);
+                    addedperson.assignment_person.Add(aspe);
+                    ctx.SaveChanges();
+                }
+            }
+            else
+            {
+                lbMessages.Text = "No Person Specified";
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+
+        if (assignment_id != String.Empty && project_id != String.Empty)
+        {
+            Response.Redirect(String.Format(Request.ApplicationPath + "Assignment.aspx?Assignment={0}&Project={1}",assignment_id, project_id));
+        }
+    }
+
+#endregion
 }

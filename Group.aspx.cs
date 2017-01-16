@@ -99,7 +99,7 @@ public partial class Group : System.Web.UI.Page
         }
     }
 
-    #region BUTTONS
+#region BUTTONS
     protected void lbtnTriggerTitleChange_Click(object sender, EventArgs e)
     {
         // Change the visibility of certain html elements to bring up a textbox
@@ -324,9 +324,11 @@ public partial class Group : System.Web.UI.Page
             lbMessages.Text = ex.Message;
         }
     }
-    #endregion
 
-    #region SEARCH_FUNCTIONS
+#endregion
+
+#region SEARCH_FUNCTIONS
+
     // Search the database for the persons the user is searching
     protected List<person> SearchMembers(string searchmember)
     {
@@ -421,7 +423,8 @@ public partial class Group : System.Web.UI.Page
             Response.Redirect(String.Format(Request.ApplicationPath + "Group.aspx?Group={0}", group_id));
         }
     }
-    #endregion
+
+#endregion
 
     protected void ddlProjectList_SelectedIndexChanged(object sender, EventArgs e)
     {

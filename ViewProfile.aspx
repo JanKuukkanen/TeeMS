@@ -4,7 +4,7 @@
     <title>Profile</title>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
-    <div class="w3-container w3-twothird">
+    <div class="w3-container w3-rest">
         <h1>Profile</h1>
         <hr />
 
