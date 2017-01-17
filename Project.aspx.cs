@@ -438,6 +438,8 @@ public partial class Project : System.Web.UI.Page
                 }
             }
 
+            Session["SearchListGroups"] = grouptoadd;
+
             return grouptoadd;
         }
         catch (Exception ex)
@@ -458,6 +460,7 @@ public partial class Project : System.Web.UI.Page
         // Fill the project_group database table as well
         try
         {
+            List<group> searchlistgroups = (List<group>)Session["SearchListGroups"];
             project_id = Request.QueryString["Project"];
 
             int to_add_projectid = int.Parse(project_id);
@@ -467,7 +470,18 @@ public partial class Project : System.Web.UI.Page
                 var addedgroup = ctx.group.Where(g => g.name == group_name).SingleOrDefault();
                 var addedproject = ctx.project.Where(pr => pr.project_id == to_add_projectid).SingleOrDefault();
 
-                if (addedgroup != null && addedproject != null)
+                bool checklegit = false;
+
+                foreach (var group in searchlistgroups)
+                {
+                    if (group.group_id == addedgroup.group_id)
+                    {
+                        checklegit = true;
+                    }
+                }
+
+                // Add the selected group and project to a new project group
+                if (addedgroup != null && addedproject != null && checklegit == true)
                 {
                     var prg = new project_group
                     {
@@ -481,6 +495,36 @@ public partial class Project : System.Web.UI.Page
 
                     addedproject.project_group.Add(prg);
                     addedgroup.project_group.Add(prg);
+                }
+
+                // Insert a new project_person for each member of the selected group
+                if (addedgroup != null && addedproject != null && checklegit == true)
+                {
+                    var groupmember_ids = ctx.group_member.Where(gm => gm.group_id == addedgroup.group_id).ToList();
+                    List<person> groupmembers = new List<person>();
+
+                    foreach (var groupmember in groupmember_ids)
+                    {
+                        groupmembers.Add(ctx.person.Where(p => p.person_id == groupmember.person_id).SingleOrDefault());
+                    }
+
+                    foreach (var member in groupmembers)
+                    {
+                        var prope = new project_person
+                        {
+                            project_id = addedproject.project_id,
+                            person_id = member.person_id,
+                            group_id = addedgroup.group_id,
+                            project_person_supporting = true
+                        };
+
+                        member.edited = DateTime.Now;
+                        member.project_person.Add(prope);
+                        addedproject.project_person.Add(prope);
+                    }
+
+                    addedproject.edited = DateTime.Now;
+
                     ctx.SaveChanges();
                 }
             }
@@ -530,6 +574,19 @@ public partial class Project : System.Web.UI.Page
             }
 
             var rightprojectgroup = ctx.project_group.Where(pg => pg.project_id == project_id && pg.group_id == group_to_remove.group_id).SingleOrDefault();
+            var rightgroupmembers = ctx.group_member.Where(gm => gm.group_id == group_to_remove.group_id).ToList();
+
+            if (rightgroupmembers != null)
+            {
+                foreach (var member in rightgroupmembers)
+                {
+                    var rightperson = ctx.person.Where(p => p.person_id == member.person_id).SingleOrDefault();
+
+                    var rightprojectperson = ctx.project_person.Where(prope => prope.person_id == rightperson.person_id && prope.project_id == project_id).SingleOrDefault();
+
+                    ctx.project_person.Remove(rightprojectperson);
+                }
+            }
 
             if (rightprojectgroup != null)
             {

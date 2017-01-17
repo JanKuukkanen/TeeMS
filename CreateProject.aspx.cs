@@ -195,6 +195,7 @@ public partial class CreateProject : System.Web.UI.Page
     {
         try
         {
+            // Add the selected group and project to a new project group
             var rightgroup = ctx.group.Where(g => g.name == ddlGroupList.SelectedItem.Text).FirstOrDefault();
             var rightproject = ctx.project.Where(pr => pr.project_id == project_id).FirstOrDefault();
 
@@ -210,6 +211,37 @@ public partial class CreateProject : System.Web.UI.Page
                 rightgroup.project_group.Add(projectgroup);
                 rightproject.project_group.Add(projectgroup);
                 ctx.SaveChanges(); 
+            }
+
+            // Insert a new project_person for each member of the selected group
+            if (rightgroup != null && rightproject != null)
+            {
+                var groupmember_ids = ctx.group_member.Where(gm => gm.group_id == rightgroup.group_id).ToList();
+                List<person> groupmembers = new List<person>();
+
+                foreach (var groupmember in groupmember_ids)
+                {
+                    groupmembers.Add(ctx.person.Where(p => p.person_id == groupmember.person_id).SingleOrDefault());
+                }
+
+                foreach (var member in groupmembers)
+                {
+                    var prope = new project_person
+                    {
+                        project_id = rightproject.project_id,
+                        person_id = member.person_id,
+                        group_id = rightgroup.group_id,
+                        project_person_supporting = false
+                    };
+
+                    member.edited = DateTime.Now;
+                    member.project_person.Add(prope);
+                    rightproject.project_person.Add(prope);
+                }
+
+                rightproject.edited = DateTime.Now;
+
+                ctx.SaveChanges();
             }
         }
         catch (Exception ex)

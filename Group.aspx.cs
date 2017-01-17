@@ -275,6 +275,14 @@ public partial class Group : System.Web.UI.Page
             {
                 var rightgroupmember = ctx.group_member.Where(gm => gm.person_id == rightperson.person_id && gm.group_id == rightgroup.group_id).SingleOrDefault();
 
+                foreach (var projectperson in rightperson.project_person.ToList())
+                {
+                    if (projectperson.group_id == rightgroup.group_id)
+                    {
+                        ctx.project_person.Remove(projectperson);
+                    }
+                }
+
                 if (rightgroupmember != null)
                 {
                     ctx.group_member.Remove(rightgroupmember);

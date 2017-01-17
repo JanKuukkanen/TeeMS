@@ -82,6 +82,7 @@ public partial class group
     {
         this.group_member = new HashSet<group_member>();
         this.project_group = new HashSet<project_group>();
+        this.project_person = new HashSet<project_person>();
     }
 
     public int group_id { get; set; }
@@ -97,6 +98,7 @@ public partial class group
     public virtual ICollection<group_member> group_member { get; set; }
     public virtual organization organization { get; set; }
     public virtual ICollection<project_group> project_group { get; set; }
+    public virtual ICollection<project_person> project_person { get; set; }
 }
 
 public partial class group_member
@@ -158,6 +160,7 @@ public partial class person
         this.assignment_person = new HashSet<assignment_person>();
         this.group_member = new HashSet<group_member>();
         this.assignment_component_person = new HashSet<assignment_component_person>();
+        this.project_person = new HashSet<project_person>();
     }
 
     public int person_id { get; set; }
@@ -174,6 +177,7 @@ public partial class person
     public virtual ICollection<group_member> group_member { get; set; }
     public virtual role role { get; set; }
     public virtual ICollection<assignment_component_person> assignment_component_person { get; set; }
+    public virtual ICollection<project_person> project_person { get; set; }
 }
 
 public partial class project
@@ -182,6 +186,7 @@ public partial class project
     {
         this.assignment = new HashSet<assignment>();
         this.project_group = new HashSet<project_group>();
+        this.project_person = new HashSet<project_person>();
     }
 
     public int project_id { get; set; }
@@ -199,6 +204,7 @@ public partial class project
 
     public virtual ICollection<assignment> assignment { get; set; }
     public virtual ICollection<project_group> project_group { get; set; }
+    public virtual ICollection<project_person> project_person { get; set; }
 }
 
 public partial class project_group
@@ -209,6 +215,19 @@ public partial class project_group
     public bool supporting { get; set; }
 
     public virtual group group { get; set; }
+    public virtual project project { get; set; }
+}
+
+public partial class project_person
+{
+    public int project_person_id { get; set; }
+    public int project_id { get; set; }
+    public int person_id { get; set; }
+    public int group_id { get; set; }
+    public bool project_person_supporting { get; set; }
+
+    public virtual group group { get; set; }
+    public virtual person person { get; set; }
     public virtual project project { get; set; }
 }
 
