@@ -44,11 +44,17 @@ public partial class Projects : System.Web.UI.Page
             foreach (var project in userprojects)
             {
 
+                var projectassignments = project.assignment.ToList(); 
+
                 HtmlGenericControl projectdiv = new HtmlGenericControl("div");
                 HtmlGenericControl projectinnerdiv = new HtmlGenericControl("div");
+                HtmlGenericControl projectassignmentdiv = new HtmlGenericControl("div");
+                HtmlGenericControl projectassignmentinnerdiv = new HtmlGenericControl("div");
                 HtmlGenericControl projectlink = new HtmlGenericControl("a");
                 HtmlGenericControl projectimage = new HtmlGenericControl("img");
                 HtmlGenericControl projectcut = new HtmlGenericControl("hr");
+                HtmlGenericControl projectassignmenttitle = new HtmlGenericControl("h3");
+                HtmlGenericControl projectassignmentul = new HtmlGenericControl("ul");
 
                 projectdiv.Attributes.Add("class", "w3-container");
                 projectdiv.ID = "divProject" + project.project_id;
@@ -71,7 +77,34 @@ public partial class Projects : System.Web.UI.Page
 
                 projectcut.Attributes.Add("style", "color:#000;background-color:#000; height:5px;");
 
+                projectassignmentdiv.Attributes.Add("class", "w3-container");
+
+                projectassignmenttitle.InnerText = "Assignments";
+
+                projectassignmentdiv.Controls.Add(projectassignmenttitle);
+
+                projectassignmentinnerdiv.Attributes.Add("style", "width:15%;");
+
+                projectassignmentul.Attributes.Add("class", "w3-ul w3-border");
+                projectassignmentul.Attributes.Add("id", "projectassignmentsul");
+
+                foreach (var assignment in projectassignments)
+                {
+                    HtmlGenericControl projectassignmentli = new HtmlGenericControl("li");
+                    HtmlGenericControl projectassignmentlink = new HtmlGenericControl("a");
+
+                    projectassignmentlink.Attributes.Add("href", String.Format("Assignment.aspx?Assignment={0}&Project={1}", assignment.amt_id, project.project_id));
+                    projectassignmentlink.InnerText = assignment.name;
+
+                    projectassignmentli.Controls.Add(projectassignmentlink);
+                    projectassignmentul.Controls.Add(projectassignmentli);
+                }
+
+                projectassignmentinnerdiv.Controls.Add(projectassignmentul);
+                projectassignmentdiv.Controls.Add(projectassignmentinnerdiv);
+
                 projectdiv.Controls.Add(projectinnerdiv);
+                projectdiv.Controls.Add(projectassignmentdiv);
                 projectdiv.Controls.Add(projectcut);
 
                 divYourProjects.Controls.Add(projectdiv);

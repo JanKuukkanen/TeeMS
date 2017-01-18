@@ -156,11 +156,18 @@ public partial class Groups : System.Web.UI.Page
 
             foreach (var group in usergroups)
             {
+
+                var groupmembers = group.group_member.ToList();
+
                 HtmlGenericControl groupdiv = new HtmlGenericControl("div");
                 HtmlGenericControl groupinnerdiv = new HtmlGenericControl("div");
+                HtmlGenericControl groupmemberdiv = new HtmlGenericControl("div");
+                HtmlGenericControl groupmemberinnerdiv = new HtmlGenericControl("div");
                 HtmlGenericControl grouplink = new HtmlGenericControl("a");
                 HtmlGenericControl groupimage = new HtmlGenericControl("img");
                 HtmlGenericControl groupcut = new HtmlGenericControl("hr");
+                HtmlGenericControl groupmembertitle = new HtmlGenericControl("h3");
+                HtmlGenericControl groupmemberul = new HtmlGenericControl("ul");
 
                 groupdiv.Attributes.Add("class", "w3-container");
                 groupdiv.ID = "divGroup" + group.group_id;
@@ -195,7 +202,36 @@ public partial class Groups : System.Web.UI.Page
 
                 groupcut.Attributes.Add("style", "color:#000;background-color:#000; height:5px;");
 
+                groupmemberdiv.Attributes.Add("class", "w3-container");
+
+                groupmembertitle.InnerText = "Group Members";
+
+                groupmemberdiv.Controls.Add(groupmembertitle);
+
+                groupmemberinnerdiv.Attributes.Add("style", "width:50%;");
+
+                groupmemberul.Attributes.Add("class", "w3-ul");
+                groupmemberul.Attributes.Add("id", "groupmemberul");
+
+                foreach (var member in groupmembers)
+                {
+                    HtmlGenericControl groupmemberli = new HtmlGenericControl("li");
+                    HtmlGenericControl groupmemberlink = new HtmlGenericControl("a");
+
+                    groupmemberlink.Attributes.Add("href", String.Format("ViewUser.aspx?Person={0}", member.person.person_id));
+                    groupmemberlink.InnerText = member.person.username;
+
+                    groupmemberli.Attributes.Add("class", "w3-border");
+
+                    groupmemberli.Controls.Add(groupmemberlink);
+                    groupmemberul.Controls.Add(groupmemberli);
+                }
+
+                groupmemberinnerdiv.Controls.Add(groupmemberul);
+                groupmemberdiv.Controls.Add(groupmemberinnerdiv);
+
                 groupdiv.Controls.Add(groupinnerdiv);
+                groupdiv.Controls.Add(groupmemberdiv);
                 groupdiv.Controls.Add(groupcut);
 
                 divYourGroups.Controls.Add(groupdiv);

@@ -1,0 +1,67 @@
+﻿bod
+{
+
+}
+
+#logo
+{
+    width:100%;
+    height:auto;
+}
+
+#navbar li
+{
+    padding:6px 2px 6px 16px;
+}
+
+    #navbar li:hover
+    {
+        background-color:gray;
+    }
+
+    #navbar li a
+    {
+        text-decoration:none;
+        display: block;
+    }
+
+#projectassignmentsul li
+{
+    padding:0;
+}
+
+    #projectassignmentsul li:hover
+    {
+        background-color:gray;
+    }
+
+    #projectassignmentsul li a
+    {
+        text-decoration:none;
+        padding:6px 2px 6px 16px;
+        display: block;
+    }
+
+#groupmemberul
+{
+    width:auto;
+}
+
+    #groupmemberul li
+    {
+        width:15%;
+        padding:0;
+        display: inline-block;
+    }
+
+    #groupmemberul li:hover
+    {
+        background-color:gray;
+    }
+
+        #groupmemberul li a
+        {
+            text-decoration:none;
+            padding:6px 2px 6px 16px;
+            display: block;
+        }
