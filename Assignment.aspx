@@ -55,7 +55,7 @@
                 <h2>Workflow</h2>
             </div>
 
-            <div id="divAssignmentComponents" class="w3-container">
+            <div id="divAssignmentComponents" runat="server" class="w3-container">
 
             </div>
 
@@ -63,7 +63,7 @@
 
                 <asp:ScriptManager ID="ScriptManager1" runat="server">
                     </asp:ScriptManager>
-                    <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Show Modal Popup" CssClass="w3-btn" />
+                    <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Create new component" CssClass="w3-btn" />
  
                     <!-- ModalPopupExtender -->
                     <ajaxToolkit:ModalPopupExtender ID="mpeAddComponent" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnShowAddComponentModal"
@@ -72,9 +72,11 @@
                     <asp:Panel ID="panelAddComponent" runat="server" CssClass="w3-purple">
                         <div style="width:700px; margin:10px 10px 10px 10px;">
                             <div style="float: left; width:50%;">
+                                <asp:Label ID="lbAddComponentName" runat="server" Text="Name: "></asp:Label>
                                 <asp:TextBox ID="txtAddComponent" runat="server"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="ComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
                                 <br />
-                                <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" />
+                                <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
                             </div>
 
                             <div id="divPanelAssignmentMembers" style="float:left; width:50%;">

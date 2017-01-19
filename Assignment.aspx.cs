@@ -179,6 +179,8 @@ public partial class Assignment : System.Web.UI.Page
             {
                 cblPanelAssignmentMembers.Items.Add(person.username); 
             }
+
+            Session["assignmentpersons"] = persons;
         }
         catch (Exception ex)
         {
@@ -243,6 +245,113 @@ public partial class Assignment : System.Web.UI.Page
 
             lbMessages.Text = ex.Message;
         }
+    }
+
+    #endregion
+
+    #region ASSIGNMENT_MODAL_POPUP
+
+    protected void btnAddComponent_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string componentname = txtAddComponent.Text;
+
+            List<person> assignmentpersonlist = (List<person>)Session["assignmentpersons"];
+            List<person> personstoadd = new List<person>();
+
+            foreach (ListItem item in cblPanelAssignmentMembers.Items)
+            {
+                if (item.Selected == true)
+                {
+                    personstoadd.Add(assignmentpersonlist.Where(amper => amper.username == item.Text).SingleOrDefault());
+                }
+            }
+
+            CreateNewComponent(componentname, personstoadd);
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void CreateNewComponent(string componentname, List<person> personstoadd)
+    {
+        try
+        {
+            int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightassignment = ctx.assignment.Where(amt => amt.amt_id == assignment_id).SingleOrDefault();
+
+            if (rightassignment != null)
+            {
+                // Create new assignment_component
+                assignment_component newcomponent = new assignment_component
+                {
+                    amt_id = assignment_id,
+                    project_id = project_id,
+                    name = componentname,
+                    finished = false,
+                    edited = DateTime.Now
+                };
+
+                ctx.assignment_component.Add(newcomponent);
+
+                // Create new assignment_component_persons
+                foreach (var person in personstoadd)
+                {
+                    assignment_component_person componentmember = new assignment_component_person
+                    {
+                        amtc_id = newcomponent.amtc_id,
+                        amt_id = assignment_id,
+                        project_id = project_id,
+                        person_id = person.person_id
+                    };
+
+                    ctx.assignment_component_person.Add(componentmember);
+                    person.assignment_component_person.Add(componentmember);
+                    newcomponent.assignment_component_person.Add(componentmember);
+                }
+
+                ctx.SaveChanges();
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    #endregion
+
+    #region FILL_COMPONENT_LIST
+
+    protected void FillComponentList()
+    {
+        try 
+	    {	        
+		    int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightassignment = ctx.assignment.Where(amt => amt.amt_id == assignment_id).SingleOrDefault();
+
+            foreach (var assignmentcomponent in rightassignment.assignment_component.ToList())
+            {
+                HtmlGenericControl componentdiv = new HtmlGenericControl("div");
+                HtmlGenericControl componentul = new HtmlGenericControl("ul");
+
+                // Jatketaan tästä
+            }
+	    }
+	    catch (Exception ex)
+	    {
+		
+		    lbMessages.Text = ex.Message;
+	    }
     }
 
     #endregion
