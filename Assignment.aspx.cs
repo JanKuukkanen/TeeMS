@@ -48,6 +48,10 @@ public partial class Assignment : System.Web.UI.Page
                 lbMessages.Text = ex.Message;
             }
         }
+        else if (IsPostBack)
+        {
+            FillComponentList();
+        }
     }
 
     protected void FillControls(int project_id, int assignment_id)
@@ -74,6 +78,7 @@ public partial class Assignment : System.Web.UI.Page
             // Fill Assignmentmember lists
             FillAssignmentMemberList();
             FillPanelAssignmentMemberList();
+            FillComponentList();
         }
         catch (Exception ex)
         {
@@ -108,6 +113,8 @@ public partial class Assignment : System.Web.UI.Page
                 txtAssignmentDescription.Text = rightassignment.description;
                 txtAssignmentDescription.ReadOnly = true;
                 btnEditAssignmentDescription.Text = "Edit description";
+
+                lbMessages.Text = String.Empty;
             }
             catch (Exception ex)
             {
@@ -268,7 +275,14 @@ public partial class Assignment : System.Web.UI.Page
                 }
             }
 
-            CreateNewComponent(componentname, personstoadd);
+            if (personstoadd.Count != 0)
+            {
+                CreateNewComponent(componentname, personstoadd); 
+            }
+            else if (personstoadd.Count == 0)
+            {
+                lbMessages.Text = "You must have atleast 1 person selected!";
+            }
         }
         catch (Exception ex)
         {
@@ -317,6 +331,8 @@ public partial class Assignment : System.Web.UI.Page
                 }
 
                 ctx.SaveChanges();
+
+                lbMessages.Text = String.Empty;
             }
         }
         catch (Exception ex)
@@ -337,14 +353,60 @@ public partial class Assignment : System.Web.UI.Page
 		    int assignment_id = int.Parse(Request.QueryString["Assignment"]);
             int project_id = int.Parse(Request.QueryString["Project"]);
 
+            UserContentManager contentmanager = new UserContentManager(ticket.Name);
+
             var rightassignment = ctx.assignment.Where(amt => amt.amt_id == assignment_id).SingleOrDefault();
 
             foreach (var assignmentcomponent in rightassignment.assignment_component.ToList())
             {
+                List<person> assignmentpersons = contentmanager.GetAssignmentUsers(rightassignment.amt_id);
+                List<person> assignmentcomponentpersons = new List<person>();
+
+                List<assignment_component_person> amtcompers = assignmentcomponent.assignment_component_person.ToList();
+
+                foreach (var amtcomper in amtcompers)
+                {
+                    foreach (var assignmentperson in assignmentpersons)
+                    {
+                        if (assignmentperson.person_id == amtcomper.person_id)
+                        {
+                            assignmentcomponentpersons.Add(assignmentperson);
+                        }
+                    }
+                }
+
+                lbMessages.Text = assignmentpersons.Count.ToString();
+
                 HtmlGenericControl componentdiv = new HtmlGenericControl("div");
+                HtmlGenericControl componentborderdiv = new HtmlGenericControl("div");
+                HtmlGenericControl componentlabeldiv = new HtmlGenericControl("div"); ;
                 HtmlGenericControl componentul = new HtmlGenericControl("ul");
 
-                // Jatketaan tästä
+                componentdiv.Attributes.Add("class", "divComponent");
+                componentborderdiv.Attributes.Add("class", "divComponentBorder");
+
+                componentlabeldiv.InnerText = assignmentcomponent.name;
+                componentlabeldiv.Attributes.Add("class", "divComponentLabel");
+
+                componentul.Attributes.Add("id", "assignmentcomponentul");
+
+                foreach (var componentperson in assignmentcomponentpersons)
+                {
+                    HtmlGenericControl componentli = new HtmlGenericControl("li");
+                    HtmlGenericControl componentpersonlink = new HtmlGenericControl("a");
+
+                    componentpersonlink.Attributes.Add("href", String.Format("ViewUser.aspx?Person={0}", componentperson.person_id));
+                    componentpersonlink.InnerText = componentperson.username;
+
+                    componentli.Controls.Add(componentpersonlink);
+                    componentul.Controls.Add(componentli);
+                }
+
+                componentborderdiv.Controls.Add(componentlabeldiv);
+                componentborderdiv.Controls.Add(componentul);
+                componentdiv.Controls.Add(componentborderdiv);
+
+                divAssignmentComponents.Controls.Add(componentdiv);
             }
 	    }
 	    catch (Exception ex)
@@ -382,6 +444,8 @@ public partial class Assignment : System.Web.UI.Page
                     gvPersons.DataBind();
                 }
             }
+
+            lbMessages.Text = String.Empty;
         }
         catch (Exception ex)
         {

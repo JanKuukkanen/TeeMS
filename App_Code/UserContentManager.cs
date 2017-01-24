@@ -134,6 +134,7 @@ namespace TeeMs.UserContentManager
             }
         }
 
+        // Get all project assignments
         public List<assignment> GetProjectAssignments()
         {
             try
@@ -141,6 +142,31 @@ namespace TeeMs.UserContentManager
                 List<assignment> projectassignments = new List<assignment>();
 
                 return projectassignments;
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+        // Get all persons currently working on the assignment
+        public List<person> GetAssignmentUsers(int assignment_id)
+        {
+            try
+            {
+                List<person> persons_to_return = new List<person>();
+
+                var rightassignment = ctx.assignment.Where(amt => amt.amt_id == assignment_id).SingleOrDefault();
+
+                List<assignment_person> assignmentpersons = ctx.assignment_person.Where(aspe => aspe.amt_id == rightassignment.amt_id).ToList();
+
+                foreach (var assignmentperson in assignmentpersons)
+                {
+                    persons_to_return.Add(ctx.person.Where(p => p.person_id == assignmentperson.person_id).SingleOrDefault());
+                }
+
+                return persons_to_return;
             }
             catch (Exception ex)
             {

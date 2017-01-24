@@ -55,7 +55,7 @@
                 <h2>Workflow</h2>
             </div>
 
-            <div id="divAssignmentComponents" runat="server" class="w3-container">
+            <div id="divAssignmentComponents" runat="server" class="w3-container" >
 
             </div>
 
@@ -73,8 +73,8 @@
                         <div style="width:700px; margin:10px 10px 10px 10px;">
                             <div style="float: left; width:50%;">
                                 <asp:Label ID="lbAddComponentName" runat="server" Text="Name: "></asp:Label>
-                                <asp:TextBox ID="txtAddComponent" runat="server"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="ComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
+                                <asp:TextBox ID="txtAddComponent" runat="server" ValidationGroup="ModalValidation"></asp:TextBox>
+                                <asp:RequiredFieldValidator ID="ComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
                                 <br />
                                 <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
                             </div>
@@ -84,7 +84,7 @@
                                 <asp:CheckBoxList ID="cblPanelAssignmentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
                             </div>
 
-                            <div style="margin-top: 40px; margin-left: 50%; margin-bottom:10px; float: left; width:100%;">
+                            <div style="margin-left: 45%; margin-bottom:10px; float: left; width:100%;">
                                 <asp:Button ID="btnCloseAddComponentModal" runat="server" Text="Close" />
                             </div>
                         </div>

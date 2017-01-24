@@ -19,11 +19,11 @@
         background-color:gray;
     }
 
-    #navbar li a
-    {
-        text-decoration:none;
-        display: block;
-    }
+        #navbar li a
+        {
+            text-decoration:none;
+            display: block;
+        }
 
 #projectassignmentsul li
 {
@@ -35,12 +35,60 @@
         background-color:gray;
     }
 
-    #projectassignmentsul li a
+        #projectassignmentsul li a
+        {
+            text-decoration:none;
+            padding:6px 2px 6px 16px;
+            display: block;
+        }
+
+#assignmentcomponentul 
+{
+    display:inline-block;
+    float:left;
+    padding:0;
+    margin-left:10px;
+    margin-right:5px;
+    margin-top:5px;
+    margin-bottom:5px;
+}
+
+    #assignmentcomponentul li
     {
-        text-decoration:none;
-        padding:6px 2px 6px 16px;
-        display: block;
+        padding:0;
+        display: inline-block;
+        margin-left:5px;
+        border: thin solid gray;
     }
+
+    #assignmentcomponentul li:hover
+    {
+        background-color:gray;
+    }
+
+        #assignmentcomponentul li a
+        {
+            text-decoration:none;
+            display: block;
+        }
+
+.divComponent
+{
+    display: block;
+}
+
+    .divComponentBorder
+    {
+        border: thin solid black;
+        display: inline-block;
+    }
+
+        .divComponentLabel
+        {
+            display:inline-block;
+            float:left;
+            margin-top:5px;
+        }
 
 #groupmemberul
 {
