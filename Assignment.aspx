@@ -53,6 +53,7 @@
         <div id="divWorkflow" class="w3-container" style="float:left; width:100%; margin-top:40px;">
             <div>
                 <h2>Workflow</h2>
+                <h4>Assignment Components</h4>
             </div>
 
             <div id="divAssignmentComponents" runat="server" class="w3-container" >
@@ -62,34 +63,66 @@
             <div id="divAddComponent">
 
                 <asp:ScriptManager ID="ScriptManager1" runat="server">
-                    </asp:ScriptManager>
-                    <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Create new component" CssClass="w3-btn" />
+                </asp:ScriptManager>
+                <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Create new component" CssClass="w3-btn" />
  
-                    <!-- ModalPopupExtender -->
-                    <ajaxToolkit:ModalPopupExtender ID="mpeAddComponent" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnShowAddComponentModal"
-                        CancelControlID="btnCloseAddComponentModal" BackgroundCssClass="w3-blue-grey w3-opacity">
-                    </ajaxToolkit:ModalPopupExtender>
-                    <asp:Panel ID="panelAddComponent" runat="server" CssClass="w3-purple">
-                        <div style="width:700px; margin:10px 10px 10px 10px;">
-                            <div style="float: left; width:50%;">
-                                <asp:Label ID="lbAddComponentName" runat="server" Text="Name: "></asp:Label>
-                                <asp:TextBox ID="txtAddComponent" runat="server" ValidationGroup="ModalValidation"></asp:TextBox>
-                                <asp:RequiredFieldValidator ID="ComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
-                                <br />
-                                <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
-                            </div>
-
-                            <div id="divPanelAssignmentMembers" style="float:left; width:50%;">
-                                <!-- List all assignment members on the modal popup -->
-                                <asp:CheckBoxList ID="cblPanelAssignmentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
-                            </div>
-
-                            <div style="margin-left: 45%; margin-bottom:10px; float: left; width:100%;">
-                                <asp:Button ID="btnCloseAddComponentModal" runat="server" Text="Close" />
-                            </div>
+                <!-- ModalPopupExtender -->
+                <ajaxToolkit:ModalPopupExtender ID="mpeAddComponent" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnShowAddComponentModal"
+                    CancelControlID="btnCloseAddComponentModal" BackgroundCssClass="w3-blue-grey w3-opacity">
+                </ajaxToolkit:ModalPopupExtender>
+                <asp:Panel ID="panelAddComponent" runat="server" CssClass="w3-purple">
+                    <div style="width:700px; margin:10px 10px 10px 10px;">
+                        <div style="float: left; width:50%;">
+                            <asp:Label ID="lbAddComponentName" runat="server" Text="Name: "></asp:Label>
+                            <asp:TextBox ID="txtAddComponent" runat="server" ValidationGroup="ModalValidation"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="ComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
+                            <br />
+                            <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
                         </div>
-                    </asp:Panel>
-                    <!-- ModalPopupExtender -->
+
+                        <div id="divPanelAssignmentMembers" style="float:left; width:50%;">
+                            <!-- List all assignment members on the modal popup -->
+                            <asp:CheckBoxList ID="cblPanelAssignmentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
+                        </div>
+
+                        <div style="margin-left: 45%; margin-bottom:10px; float: left; width:100%;">
+                            <asp:Button ID="btnCloseAddComponentModal" runat="server" Text="Close" />
+                        </div>
+                    </div>
+                </asp:Panel>
+                <!-- ModalPopupExtender -->
+
+            </div>
+
+            <div id="divDisplayComponent">
+
+                <asp:Button ID="btnHiddenModalTarget" runat="server" Style="display:none;" />
+
+                <!-- ModalPopupExtender -->
+                <ajaxToolkit:ModalPopupExtender ID="mpeTestModal" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnHiddenModalTarget"
+                    CancelControlID="btnCloseAddComponentModal" BackgroundCssClass="w3-blue-grey w3-opacity">
+                </ajaxToolkit:ModalPopupExtender>
+                <asp:Panel ID="panel1" runat="server" CssClass="w3-purple">
+                    <div style="width:700px; margin:10px 10px 10px 10px;">
+                        <div style="float: left; width:50%;">
+                            <asp:Label ID="Label1" runat="server" Text="Name: "></asp:Label>
+                            <asp:TextBox ID="TextBox1" runat="server" ValidationGroup="ModalValidation"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
+                            <br />
+                            <asp:Button ID="Button1" runat="server" Text="Add Component" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
+                        </div>
+
+                        <div id="div1" style="float:left; width:50%;">
+                            <!-- List all assignment members on the modal popup -->
+                            <asp:CheckBoxList ID="CheckBoxList1" runat="server" Style="float:right;"></asp:CheckBoxList>
+                        </div>
+
+                        <div style="margin-left: 45%; margin-bottom:10px; float: left; width:100%;">
+                            <asp:Button ID="Button2" runat="server" Text="Close" />
+                        </div>
+                    </div>
+                </asp:Panel>
+                <!-- ModalPopupExtender -->
 
             </div>
 

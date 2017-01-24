@@ -8,6 +8,8 @@ using System.Web.Security;
 using System.Web.UI.HtmlControls;
 using System.Data;
 using System.Collections.Specialized;
+using System.Text.RegularExpressions;
+using AjaxControlToolkit;
 using TeeMs.UserContentManager;
 
 public partial class Assignment : System.Web.UI.Page
@@ -332,12 +334,14 @@ public partial class Assignment : System.Web.UI.Page
 
                 ctx.SaveChanges();
 
+                divAssignmentComponents.Controls.Clear();
+                FillComponentList();
                 lbMessages.Text = String.Empty;
             }
         }
         catch (Exception ex)
         {
-            
+
             lbMessages.Text = ex.Message;
         }
     }
@@ -375,20 +379,26 @@ public partial class Assignment : System.Web.UI.Page
                     }
                 }
 
-                lbMessages.Text = assignmentpersons.Count.ToString();
-
                 HtmlGenericControl componentdiv = new HtmlGenericControl("div");
                 HtmlGenericControl componentborderdiv = new HtmlGenericControl("div");
-                HtmlGenericControl componentlabeldiv = new HtmlGenericControl("div"); ;
+                HtmlGenericControl componentlabeldiv = new HtmlGenericControl("div");
                 HtmlGenericControl componentul = new HtmlGenericControl("ul");
+                LinkButton componentlabelbutton = new LinkButton();
 
                 componentdiv.Attributes.Add("class", "divComponent");
                 componentborderdiv.Attributes.Add("class", "divComponentBorder");
 
-                componentlabeldiv.InnerText = assignmentcomponent.name;
                 componentlabeldiv.Attributes.Add("class", "divComponentLabel");
 
+                componentlabelbutton.ID = String.Format("lbtnComponentName{0}", assignmentcomponent.amtc_id);
+                componentlabelbutton.Text = assignmentcomponent.name;
+                componentlabelbutton.CommandArgument = "Hello";
+                componentlabelbutton.Command += new CommandEventHandler(LinkButtonClick);
+                componentlabelbutton.CssClass = "ComponentLabels";
+
                 componentul.Attributes.Add("id", "assignmentcomponentul");
+
+                componentlabeldiv.Controls.Add(componentlabelbutton);
 
                 foreach (var componentperson in assignmentcomponentpersons)
                 {
@@ -414,6 +424,28 @@ public partial class Assignment : System.Web.UI.Page
 		
 		    lbMessages.Text = ex.Message;
 	    }
+    }
+
+    // When the user clicks an assignment component linkbutton it will make a new
+    // modalpopup show up and display info on the chosen assignment component
+    private void LinkButtonClick(object sender, CommandEventArgs e)
+    {
+        // Parse the correct assignment component id from the linkbutton's id
+        var btn = sender as LinkButton;
+        string parseid = Regex.Match(btn.ID, @"\d").Value;
+        int assignmentcomponentid = int.Parse(parseid);
+
+        try
+        {
+            var rightassignmentcomponent = ctx.assignment_component.Where(amtc => amtc.amtc_id == assignmentcomponentid).SingleOrDefault();
+
+            mpeTestModal.Show();
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
     }
 
     #endregion
