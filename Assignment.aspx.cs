@@ -388,6 +388,15 @@ public partial class Assignment : System.Web.UI.Page
                 componentdiv.Attributes.Add("class", "divComponent");
                 componentborderdiv.Attributes.Add("class", "divComponentBorder");
 
+                if (assignmentcomponent.finished == false)
+                {
+                    componentborderdiv.Attributes.Add("style", "background-color:#6fa9d6;"); 
+                }
+                else if (assignmentcomponent.finished == true)
+                {
+                    componentborderdiv.Attributes.Add("style", "background-color:#28fc60;"); 
+                }
+
                 componentlabeldiv.Attributes.Add("class", "divComponentLabel");
 
                 componentlabelbutton.ID = String.Format("lbtnComponentName{0}", assignmentcomponent.amtc_id);
@@ -439,7 +448,147 @@ public partial class Assignment : System.Web.UI.Page
         {
             var rightassignmentcomponent = ctx.assignment_component.Where(amtc => amtc.amtc_id == assignmentcomponentid).SingleOrDefault();
 
-            mpeTestModal.Show();
+            int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightassignment = ctx.assignment.Where(amt => amt.project_id == project_id && amt.amt_id == assignment_id).SingleOrDefault();
+            var assignmentpersons = ctx.assignment_person.Where(ap => ap.amt_id == rightassignment.amt_id).ToList();
+
+            txtShowComponentName.Text = rightassignmentcomponent.name;
+
+            List<person> persons = new List<person>();
+            List<int> ids = new List<int>();
+
+            foreach (var assignmentperson in assignmentpersons)
+            {
+                if (!ids.Contains(assignmentperson.person_id))
+                {
+                    persons.Add(ctx.person.Where(p => p.person_id == assignmentperson.person_id).SingleOrDefault());
+                    ids.Add(assignmentperson.person_id);
+                }
+            }
+
+            cblShowComponentMembers.Items.Clear();
+            int personnro = 0;
+
+            foreach (var person in persons)
+            {
+                cblShowComponentMembers.Items.Add(person.username);
+
+                if (rightassignmentcomponent.assignment_component_person.Any(acompe => acompe.person_id == person.person_id))
+                {
+                    cblShowComponentMembers.Items[personnro].Selected = true;
+                }
+
+                personnro++;
+            }
+
+            Session["assignmentcomponentpersons"] = persons;
+            Session["rightassignmentcomponent"] = rightassignmentcomponent;
+
+            mpeShowComponentModal.Show();
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void btnSaveChanges_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            List<person> assignmentcomponentpersonlist = (List<person>)Session["assignmentcomponentpersons"];
+            assignment_component rightassignmentcomponent = (assignment_component)Session["rightassignmentcomponent"];
+
+            List<person> members_to_remove = new List<person>();
+            List<person> members_to_add = new List<person>();
+
+            foreach (ListItem item in cblShowComponentMembers.Items)
+            {
+                if (item.Selected == false && rightassignmentcomponent.assignment_component_person.Any(acompe => acompe.person.username == item.Text))
+                {
+                    members_to_remove.Add(assignmentcomponentpersonlist.Where(p => p.username == item.Text).SingleOrDefault());
+                }
+                else if (item.Selected == true && !rightassignmentcomponent.assignment_component_person.Any(acompe => acompe.person.username == item.Text))
+                {
+                    members_to_add.Add(assignmentcomponentpersonlist.Where(p => p.username == item.Text).SingleOrDefault());
+                }
+            }
+
+            bool madechanges = false;
+
+            if (members_to_remove != null)
+            {
+                RemoveComponentMembers(members_to_remove, rightassignmentcomponent);
+                madechanges = true;
+            }
+
+            if (members_to_add != null)
+            {
+                AddComponentMembers(members_to_add, rightassignmentcomponent);
+                madechanges = true;
+            }
+
+            if (madechanges == true)
+            {
+                divAssignmentComponents.Controls.Clear();
+                FillComponentList();
+                lbMessages.Text = String.Empty;
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void RemoveComponentMembers(List<person> members, assignment_component rightassignmentcomponent)
+    {
+        try
+        {
+            foreach (var member in members)
+            {
+                var assignmentcomponentperson_to_remove = ctx.assignment_component_person.Where(acompe => acompe.person_id == member.person_id && acompe.amtc_id == rightassignmentcomponent.amtc_id).SingleOrDefault();
+
+                ctx.assignment_component_person.Remove(assignmentcomponentperson_to_remove); 
+            }
+
+            ctx.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+                
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void AddComponentMembers(List<person> members, assignment_component rightassignmentcomponent)
+    {
+        try
+        {
+            int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            // Create new assignment_component_persons
+            foreach (var member in members)
+            {
+                assignment_component_person componentmember = new assignment_component_person
+                {
+                    amtc_id = rightassignmentcomponent.amtc_id,
+                    amt_id = assignment_id,
+                    project_id = project_id,
+                    person_id = member.person_id
+                };
+
+                ctx.assignment_component_person.Add(componentmember);
+                member.assignment_component_person.Add(componentmember);
+                rightassignmentcomponent.assignment_component_person.Add(componentmember);
+            }
+
+            ctx.SaveChanges();
         }
         catch (Exception ex)
         {
@@ -602,4 +751,5 @@ public partial class Assignment : System.Web.UI.Page
     }
 
 #endregion
+
 }

@@ -75,7 +75,7 @@
                         <div style="float: left; width:50%;">
                             <asp:Label ID="lbAddComponentName" runat="server" Text="Name: "></asp:Label>
                             <asp:TextBox ID="txtAddComponent" runat="server" ValidationGroup="ModalValidation"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="ComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
+                            <asp:RequiredFieldValidator ID="rfvComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
                             <br />
                             <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
                         </div>
@@ -99,26 +99,26 @@
                 <asp:Button ID="btnHiddenModalTarget" runat="server" Style="display:none;" />
 
                 <!-- ModalPopupExtender -->
-                <ajaxToolkit:ModalPopupExtender ID="mpeTestModal" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnHiddenModalTarget"
-                    CancelControlID="btnCloseAddComponentModal" BackgroundCssClass="w3-blue-grey w3-opacity">
+                <ajaxToolkit:ModalPopupExtender ID="mpeShowComponentModal" runat="server" PopupControlID="panelShowComponent" TargetControlID="btnHiddenModalTarget"
+                    CancelControlID="btnCloseShowComponent" BackgroundCssClass="w3-blue-grey w3-opacity">
                 </ajaxToolkit:ModalPopupExtender>
-                <asp:Panel ID="panel1" runat="server" CssClass="w3-purple">
+                <asp:Panel ID="panelShowComponent" runat="server" CssClass="w3-purple">
                     <div style="width:700px; margin:10px 10px 10px 10px;">
                         <div style="float: left; width:50%;">
-                            <asp:Label ID="Label1" runat="server" Text="Name: "></asp:Label>
-                            <asp:TextBox ID="TextBox1" runat="server" ValidationGroup="ModalValidation"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="RequiredFieldValidator1" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
+                            <asp:Label ID="lbShowComponentName" runat="server" Text="Name: "></asp:Label>
+                            <asp:TextBox ID="txtShowComponentName" runat="server" ValidationGroup="ShowModalValidation"></asp:TextBox>
+                            <asp:RequiredFieldValidator ID="rfvShowComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ShowModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
                             <br />
-                            <asp:Button ID="Button1" runat="server" Text="Add Component" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
+                            <asp:Button ID="btnSaveChanges" runat="server" Text="Save changes" OnClick="btnSaveChanges_Click" Style="margin-top:10px;" />
                         </div>
 
                         <div id="div1" style="float:left; width:50%;">
                             <!-- List all assignment members on the modal popup -->
-                            <asp:CheckBoxList ID="CheckBoxList1" runat="server" Style="float:right;"></asp:CheckBoxList>
+                            <asp:CheckBoxList ID="cblShowComponentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
                         </div>
 
                         <div style="margin-left: 45%; margin-bottom:10px; float: left; width:100%;">
-                            <asp:Button ID="Button2" runat="server" Text="Close" />
+                            <asp:Button ID="btnCloseShowComponent" runat="server" Text="Close" />
                         </div>
                     </div>
                 </asp:Panel>
