@@ -236,6 +236,15 @@ public partial class Assignment : System.Web.UI.Page
 
                     if (rightperson != null && rightassignment != null)
                     {
+                        var assignmentcomponentpersons = rightperson.assignment_component_person.ToList();
+
+                        foreach (var member in assignmentcomponentpersons)
+                        {
+                            var rightassignmentcomponentperson = ctx.assignment_component_person.Where(acompe => acompe.amtc_id == member.amtc_id).SingleOrDefault();
+
+                            ctx.assignment_component_person.Remove(rightassignmentcomponentperson);
+                        }
+
                         var rightassignmentperson = ctx.assignment_person.Where(aspe => aspe.person_id == rightperson.person_id && aspe.amt_id == rightassignment.amt_id && aspe.project_id == toremoveproject).SingleOrDefault();
 
                         if (rightassignmentperson != null)
@@ -254,6 +263,12 @@ public partial class Assignment : System.Web.UI.Page
 
             lbMessages.Text = ex.Message;
         }
+    }
+
+    protected void btnDeleteAssignment_Click(object sender, EventArgs e)
+    {
+        // Delete Assignment and assignment persons, Assignment components associated with the deleted assignment and assignment components persons associated with that assignment component
+
     }
 
     #endregion
@@ -284,6 +299,13 @@ public partial class Assignment : System.Web.UI.Page
             else if (personstoadd.Count == 0)
             {
                 lbMessages.Text = "You must have atleast 1 person selected!";
+            }
+
+            txtAddComponent.Text = "";
+
+            foreach (ListItem member in cblPanelAssignmentMembers.Items)
+            {
+                member.Selected = false;
             }
         }
         catch (Exception ex)
@@ -348,7 +370,7 @@ public partial class Assignment : System.Web.UI.Page
 
     #endregion
 
-    #region FILL_COMPONENT_LIST
+    #region COMPONENT_LIST_FUNCTIONS
 
     protected void FillComponentList()
     {
@@ -441,7 +463,7 @@ public partial class Assignment : System.Web.UI.Page
     {
         // Parse the correct assignment component id from the linkbutton's id
         var btn = sender as LinkButton;
-        string parseid = Regex.Match(btn.ID, @"\d").Value;
+        string parseid = Regex.Match(btn.ID, @"-?\d+\.?\d*$").Value;
         int assignmentcomponentid = int.Parse(parseid);
 
         try
@@ -455,6 +477,15 @@ public partial class Assignment : System.Web.UI.Page
             var assignmentpersons = ctx.assignment_person.Where(ap => ap.amt_id == rightassignment.amt_id).ToList();
 
             txtShowComponentName.Text = rightassignmentcomponent.name;
+
+            if (rightassignmentcomponent.finished == true)
+            {
+                cbComponentFinished.Checked = true;
+            }
+            else
+            {
+                cbComponentFinished.Checked = false;
+            }
 
             List<person> persons = new List<person>();
             List<int> ids = new List<int>();
@@ -500,7 +531,9 @@ public partial class Assignment : System.Web.UI.Page
         try
         {
             List<person> assignmentcomponentpersonlist = (List<person>)Session["assignmentcomponentpersons"];
-            assignment_component rightassignmentcomponent = (assignment_component)Session["rightassignmentcomponent"];
+            assignment_component sessionassignmentcomponent = (assignment_component)Session["rightassignmentcomponent"];
+
+            var rightassignmentcomponent = ctx.assignment_component.Where(amtc => amtc.amtc_id == sessionassignmentcomponent.amtc_id).SingleOrDefault();
 
             List<person> members_to_remove = new List<person>();
             List<person> members_to_add = new List<person>();
@@ -528,6 +561,14 @@ public partial class Assignment : System.Web.UI.Page
             if (members_to_add != null)
             {
                 AddComponentMembers(members_to_add, rightassignmentcomponent);
+                madechanges = true;
+            }
+
+            if (rightassignmentcomponent.finished != cbComponentFinished.Checked)
+            {
+                rightassignmentcomponent.finished = cbComponentFinished.Checked;
+                ctx.SaveChanges();
+
                 madechanges = true;
             }
 
@@ -595,6 +636,39 @@ public partial class Assignment : System.Web.UI.Page
             
             lbMessages.Text = ex.Message;
         }
+    }
+
+    protected void btnRemoveAssignmentComponent_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            var sessionassignmentcomponent = (assignment_component)Session["rightassignmentcomponent"];
+
+            foreach (var componentmember in sessionassignmentcomponent.assignment_component_person.ToList())
+            {
+                var rightassignmentcomponentperson = ctx.assignment_component_person.Where(acompe => acompe.assignment_component_person_id == componentmember.assignment_component_person_id).SingleOrDefault();
+
+                ctx.assignment_component_person.Remove(rightassignmentcomponentperson);
+            }
+
+            var rightassignmentcomponent = ctx.assignment_component.Where(amtc => amtc.amtc_id == sessionassignmentcomponent.amtc_id).SingleOrDefault();
+
+            ctx.assignment_component.Remove(rightassignmentcomponent);
+
+            ctx.SaveChanges();
+
+            divAssignmentComponents.Controls.Clear();
+            FillComponentList();
+            lbMessages.Text = String.Empty;
+
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+
+
     }
 
     #endregion

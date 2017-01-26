@@ -75,7 +75,7 @@
 
 .divComponent
 {
-    display: block;
+    display: inline-block;
 }
 
     .divComponentBorder
@@ -83,6 +83,7 @@
         border: thin solid black;
         display: inline-block;
         min-width:20%;
+        margin-left:5px;
     }
 
         .divComponentLabel
