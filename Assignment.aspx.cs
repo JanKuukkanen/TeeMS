@@ -265,10 +265,56 @@ public partial class Assignment : System.Web.UI.Page
         }
     }
 
-    protected void btnDeleteAssignment_Click(object sender, EventArgs e)
+    protected void btnConfirmDeleteAssignment_Click(object sender, EventArgs e)
     {
         // Delete Assignment and assignment persons, Assignment components associated with the deleted assignment and assignment components persons associated with that assignment component
+        try
+        {
+            int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
 
+            var rightassignment = ctx.assignment.Where(amt => amt.amt_id == assignment_id).SingleOrDefault();
+            var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+
+            if (rightassignment != null && rightproject != null)
+	        {
+		        var assignmentcomponents = rightassignment.assignment_component.ToList();
+
+                    foreach (var component in assignmentcomponents)
+                    {
+                        var rightcomponent = ctx.assignment_component.Where(amtc => amtc.amtc_id == component.amtc_id).SingleOrDefault();
+                        var assignmentcomponentpersons = rightcomponent.assignment_component_person.ToList();
+
+                        foreach (var componentperson in assignmentcomponentpersons)
+                        {
+                            var rightcomponentperson = ctx.assignment_component_person.Where(acompe => acompe.assignment_component_person_id == componentperson.assignment_component_person_id).SingleOrDefault();
+
+                            ctx.assignment_component_person.Remove(rightcomponentperson);
+                        }
+
+                        ctx.assignment_component.Remove(rightcomponent);
+                    }
+
+                    var assignmentpersons = rightassignment.assignment_person.ToList();
+
+                    foreach (var assignmentperson in assignmentpersons)
+                    {
+                        var rightassignmentperson = ctx.assignment_person.Where(aspe => aspe.assignment_person_id == assignmentperson.assignment_person_id).SingleOrDefault();
+
+                        ctx.assignment_person.Remove(rightassignmentperson);
+                    }
+
+                ctx.assignment.Remove(rightassignment);
+                ctx.SaveChanges();
+
+                Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", rightproject.project_id));
+	        }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
     }
 
     #endregion
@@ -394,7 +440,7 @@ public partial class Assignment : System.Web.UI.Page
                 {
                     foreach (var assignmentperson in assignmentpersons)
                     {
-                        if (assignmentperson.person_id == amtcomper.person_id)
+                        if (assignmentperson.person_id == amtcomper.person_id && !assignmentcomponentpersons.Contains(assignmentperson))
                         {
                             assignmentcomponentpersons.Add(assignmentperson);
                         }

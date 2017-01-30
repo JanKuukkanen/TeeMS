@@ -50,7 +50,29 @@
             </div>
 
             <div style="margin-top:50px;">
-                <asp:Button ID="btnDeleteAssignment" runat="server" Text="Delete Assignment" OnClick="btnDeleteAssignment_Click" CssClass="w3-btn w3-red" />
+                <asp:Button ID="btnDeleteAssignment" runat="server" Text="Delete Assignment" CssClass="w3-btn w3-red" />
+                <ajaxToolkit:ConfirmButtonExtender ID="cbtnDeleteAssignment" runat="server" TargetControlID="btnDeleteAssignment" ConfirmText="Are you sure you wish to delete this assignment?"
+                 DisplayModalPopupID="mpeConfirmDeleteAssignment" />
+
+                <!-- ModalPopupExtender -->
+                <ajaxToolkit:ModalPopupExtender ID="mpeConfirmDeleteAssignment" runat="server" PopupControlID="panelConfirmDeleteAssignment" TargetControlID="btnDeleteAssignment"
+                    CancelControlID="btnCancelDeleteAssignment" BackgroundCssClass="w3-blue-grey w3-opacity">
+                </ajaxToolkit:ModalPopupExtender>
+                <asp:Panel ID="panelConfirmDeleteAssignment" runat="server" CssClass="w3-purple">
+                    <div style="width:500px; margin:10px 10px 10px 10px;">
+
+                        <div id="div2" style="margin:auto; width:400px;">
+                            <!-- Display confirmnation text -->
+                            <asp:Label ID="lbConfirmDeleteAssignment" runat="server" Text="Are you sure you wish to delete this assignment?" />
+                        </div>
+
+                        <div style=" margin-left:30%; margin-bottom:10px; margin-top:10px; width:400px;">
+                            <asp:Button ID="btnConfirmDeleteAssignment" runat="server" Text="Confirm" OnClick="btnConfirmDeleteAssignment_Click" CssClass="w3-btn" />
+                            <asp:Button ID="btnCancelDeleteAssignment" runat="server" Text="Cancel" CssClass="w3-btn" />
+                        </div>
+                    </div>
+                </asp:Panel>
+                <!-- ModalPopupExtender -->
             </div>
         </div>
 

@@ -28,7 +28,7 @@
         <AssociationConnector Association="TeeMs.fk_group_member_group_role1" />
         <AssociationConnector Association="TeeMs.fk_person_role1" />
         <AssociationConnector Association="TeeMs.fk_project_has_group_project1" />
-        <EntityTypeShape EntityType="TeeMsModel.assignment" Width="1.5" PointX="9.625" PointY="4.75" />
+        <EntityTypeShape EntityType="TeeMsModel.assignment" Width="1.5" PointX="9.625" PointY="4.375" />
         <EntityTypeShape EntityType="TeeMsModel.assignment_component" Width="1.5" PointX="11.875" PointY="1.625" />
         <EntityTypeShape EntityType="TeeMsModel.assignment_person" Width="1.5" PointX="12.75" PointY="5.5" />
         <EntityTypeShape EntityType="TeeMsModel.group" Width="1.5" PointX="1.125" PointY="0.875" />
