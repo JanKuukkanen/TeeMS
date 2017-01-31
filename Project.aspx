@@ -92,13 +92,23 @@
                     <h3>Due date</h3>
                     <asp:Calendar ID="calendarDueDate" runat="server"></asp:Calendar>
 
-                    <!-- Number of charts will be displayed here -->
+                    <!-- Information on the projects progress will be displayed here -->
 
                 </div>
 
                 <!-- This will be the comments section -->
-                <div id="divComments">
+                <div id="divProjectComments" style="margin-top:40px";>
+                    <h3>Comments</h3>
 
+                    <div id="divProjectCommentMessages" runat="server">
+
+                    </div>
+
+                    <div>
+                        <asp:TextBox ID="txtWriteComment" runat="server" TextMode="MultiLine" Width="400" Height="150" />
+                        <br />
+                        <asp:Button ID="btnSaveComment" runat="server" Text="Send Comment" CssClass="w3-btn" />
+                    </div>
                 </div>
 
                 <div>

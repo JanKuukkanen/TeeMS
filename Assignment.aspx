@@ -154,10 +154,18 @@
 
             </div>
 
-            <div id="divOverAllProgressChart">
+            <div id="divAssignmentComments" style="margin-top:40px";>
                 <h3>Comments</h3>
 
-                
+                <div id="divAssignmentCommentMessages" runat="server">
+
+                </div>
+
+                <div>
+                    <asp:TextBox ID="txtWriteComment" runat="server" TextMode="MultiLine" Width="400" Height="150" />
+                    <br />
+                    <asp:Button ID="btnSaveComment" runat="server" Text="Send Comment" CssClass="w3-btn" />
+                </div>
             </div>
 
             <div>
