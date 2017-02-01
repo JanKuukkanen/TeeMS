@@ -58,6 +58,10 @@
         <AssociationConnector Association="TeeMsModel.fk_project_person_group1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_person_person1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_person_project1" />
+        <EntityTypeShape EntityType="TeeMsModel.comment" Width="1.5" PointX="12" PointY="9.5" />
+        <AssociationConnector Association="TeeMsModel.fk_comment_assignment1" />
+        <AssociationConnector Association="TeeMsModel.fk_comment_person1" />
+        <AssociationConnector Association="TeeMsModel.fk_comment_project1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -53,6 +53,7 @@ public partial class Assignment : System.Web.UI.Page
         else if (IsPostBack)
         {
             FillComponentList();
+            FillComments();
         }
     }
 
@@ -81,6 +82,7 @@ public partial class Assignment : System.Web.UI.Page
             FillAssignmentMemberList();
             FillPanelAssignmentMemberList();
             FillComponentList();
+            FillComments();
         }
         catch (Exception ex)
         {
@@ -88,6 +90,14 @@ public partial class Assignment : System.Web.UI.Page
             lbMessages.Text = ex.Message;
         }
     }
+
+    protected void btnBackToProject_Click(object sender, EventArgs e)
+    {
+        int project_id = int.Parse(Request.QueryString["Project"]);
+
+        Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
+    }
+
     protected void btnEditAssignmentDescription_Click(object sender, EventArgs e)
     {
         if (txtAssignmentDescription.ReadOnly == true)
@@ -872,4 +882,83 @@ public partial class Assignment : System.Web.UI.Page
 
 #endregion
 
+    #region COMMENT_FUNCTIONS
+
+    protected void btnSaveComment_Click(object sender, EventArgs e)
+    {
+        string comment = txtWriteComment.Text;
+
+        try
+        {
+            if (comment != String.Empty)
+            {
+                int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+                int project_id = int.Parse(Request.QueryString["Project"]);
+                string username = ticket.Name;
+
+                var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
+
+                comment newcomment = new comment
+                {
+                    comment_content = comment,
+                    creation_date = DateTime.Now,
+                    person_id = rightperson.person_id,
+                    project_id = project_id,
+                    amt_id = assignment_id,
+                    assignment_project_id = project_id
+                };
+
+                ctx.comment.Add(newcomment);
+                ctx.SaveChanges();
+
+                txtWriteComment.Text = String.Empty;
+                FillComments();
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void FillComments()
+    {
+        try
+        {
+            divAssignmentCommentMessages.Controls.Clear();
+
+            var commentlist = ctx.comment.Where(co => co.amt_id != null).ToList();
+            int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            foreach (var comment in commentlist)
+            {
+                if (comment.project_id == project_id && comment.amt_id == assignment_id)
+                {
+                    HtmlGenericControl commentdiv = new HtmlGenericControl("div");
+                    HtmlGenericControl commentcontentdiv = new HtmlGenericControl("div");
+                    Label usernamelabel = new Label();
+
+                    commentdiv.Attributes.Add("Style", "border: thin solid black; margin-top:10px; width:40%;");
+
+                    usernamelabel.Text = String.Format("Posted by {0} on {1}", comment.person.username, comment.creation_date.ToString("d/M/yyyy HH:mm"));
+                    usernamelabel.Font.Bold = true;
+                    commentcontentdiv.InnerText = comment.comment_content;
+
+                    commentdiv.Controls.Add(usernamelabel);
+                    commentdiv.Controls.Add(commentcontentdiv);
+
+                    divAssignmentCommentMessages.Controls.Add(commentdiv); 
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    #endregion
 }

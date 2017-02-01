@@ -10,6 +10,7 @@
     <div class="w3-container w3-rest" style="width:auto;">
         <div id="divTitle" class="w3-container" style="float:left; width:50%;">
             <div>
+                <asp:Button ID="btnBackToProject" runat="server" Text="Back to project page" OnClick="btnBackToProject_Click" CssClass="w3-btn w3-blue-gray" />
                 <h1 id="h1AssignmentName" runat="server">Undefined Assignment</h1>
             </div>
 
@@ -161,10 +162,12 @@
 
                 </div>
 
-                <div>
-                    <asp:TextBox ID="txtWriteComment" runat="server" TextMode="MultiLine" Width="400" Height="150" />
+                <div style="margin-top:40px;">
+                    <asp:TextBox ID="txtWriteComment" runat="server" TextMode="MultiLine" Width="400" Height="100" ValidationGroup="CommentValidation" />
+                    <asp:RequiredFieldValidator ID="rfvCommentContentRequired" runat="server" ControlToValidate="txtWriteComment" ErrorMessage="Write a comment before sending!" 
+                                                ToolTip="Write a comment before sending." ForeColor="Red" ValidationGroup="CommentValidation" />
                     <br />
-                    <asp:Button ID="btnSaveComment" runat="server" Text="Send Comment" CssClass="w3-btn" />
+                    <asp:Button ID="btnSaveComment" runat="server" Text="Send Comment" OnClick="btnSaveComment_Click" CssClass="w3-btn" />
                 </div>
             </div>
 

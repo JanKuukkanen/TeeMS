@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Security;
+using System.Web.UI.HtmlControls;
 using System.Data;
 using TeeMs.UserContentManager;
 
@@ -36,6 +37,10 @@ public partial class Project : System.Web.UI.Page
         if (!IsPostBack)
         {
             FillControls(int.Parse(project_id));
+        }
+        else if (IsPostBack)
+        {
+            FillComments();
         }
     }
 
@@ -113,6 +118,8 @@ public partial class Project : System.Web.UI.Page
                 calendarDueDate.SelectedDate = (DateTime)rightproject.due_date;
                 calendarDueDate.VisibleDate = (DateTime)rightproject.due_date; 
             }
+
+            FillComments();
         }
         catch (Exception ex)
         {
@@ -604,4 +611,81 @@ public partial class Project : System.Web.UI.Page
     }
 
 #endregion
+
+#region COMMENT_FUNCTIONS
+
+    protected void btnSaveComment_Click(object sender, EventArgs e)
+    {
+        string comment = txtWriteComment.Text;
+
+        try
+        {
+            if (comment != String.Empty)
+            {
+                int project_id = int.Parse(Request.QueryString["Project"]);
+                string username = ticket.Name;
+
+                var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
+
+                comment newcomment = new comment
+                {
+                    comment_content = comment,
+                    creation_date = DateTime.Now,
+                    person_id = rightperson.person_id,
+                    project_id = project_id
+                };
+
+                ctx.comment.Add(newcomment);
+                ctx.SaveChanges();
+
+                txtWriteComment.Text = String.Empty;
+                FillComments();
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void FillComments()
+    {
+        try
+        {
+            divProjectCommentMessages.Controls.Clear();
+
+            var commentlist = ctx.comment.Where(co => co.amt_id == null).ToList();
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            foreach (var comment in commentlist)
+            {
+                if (comment.project_id == project_id)
+                {
+                    HtmlGenericControl commentdiv = new HtmlGenericControl("div");
+                    HtmlGenericControl commentcontentdiv = new HtmlGenericControl("div");
+                    Label usernamelabel = new Label();
+
+                    commentdiv.Attributes.Add("Style", "border: thin solid black; margin-top:10px;");
+
+                    usernamelabel.Text = String.Format("Posted by {0} on {1}", comment.person.username, comment.creation_date.ToString("d/M/yyyy HH:mm"));
+                    usernamelabel.Font.Bold = true;
+                    commentcontentdiv.InnerText = comment.comment_content;
+
+                    commentdiv.Controls.Add(usernamelabel);
+                    commentdiv.Controls.Add(commentcontentdiv);
+
+                    divProjectCommentMessages.Controls.Add(commentdiv); 
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+#endregion
+    
 }

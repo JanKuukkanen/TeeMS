@@ -16,6 +16,7 @@ public partial class assignment
     {
         this.assignment_component = new HashSet<assignment_component>();
         this.assignment_person = new HashSet<assignment_person>();
+        this.comment = new HashSet<comment>();
     }
 
     public int amt_id { get; set; }
@@ -33,6 +34,7 @@ public partial class assignment
     public virtual ICollection<assignment_component> assignment_component { get; set; }
     public virtual ICollection<assignment_person> assignment_person { get; set; }
     public virtual project project { get; set; }
+    public virtual ICollection<comment> comment { get; set; }
 }
 
 public partial class assignment_component
@@ -74,6 +76,22 @@ public partial class assignment_person
 
     public virtual assignment assignment { get; set; }
     public virtual person person { get; set; }
+}
+
+public partial class comment
+{
+    public int comment_id { get; set; }
+    public string comment_content { get; set; }
+    public System.DateTime creation_date { get; set; }
+    public Nullable<System.DateTime> edited { get; set; }
+    public int person_id { get; set; }
+    public int project_id { get; set; }
+    public Nullable<int> amt_id { get; set; }
+    public Nullable<int> assignment_project_id { get; set; }
+
+    public virtual assignment assignment { get; set; }
+    public virtual person person { get; set; }
+    public virtual project project { get; set; }
 }
 
 public partial class group
@@ -161,6 +179,7 @@ public partial class person
         this.group_member = new HashSet<group_member>();
         this.assignment_component_person = new HashSet<assignment_component_person>();
         this.project_person = new HashSet<project_person>();
+        this.comment = new HashSet<comment>();
     }
 
     public int person_id { get; set; }
@@ -178,6 +197,7 @@ public partial class person
     public virtual role role { get; set; }
     public virtual ICollection<assignment_component_person> assignment_component_person { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
+    public virtual ICollection<comment> comment { get; set; }
 }
 
 public partial class project
@@ -187,6 +207,7 @@ public partial class project
         this.assignment = new HashSet<assignment>();
         this.project_group = new HashSet<project_group>();
         this.project_person = new HashSet<project_person>();
+        this.comment = new HashSet<comment>();
     }
 
     public int project_id { get; set; }
@@ -205,6 +226,7 @@ public partial class project
     public virtual ICollection<assignment> assignment { get; set; }
     public virtual ICollection<project_group> project_group { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
+    public virtual ICollection<comment> comment { get; set; }
 }
 
 public partial class project_group

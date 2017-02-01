@@ -10,6 +10,7 @@
           <EntitySet Name="assignment_component" EntityType="TeeMsModel.Store.assignment_component" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="assignment_component_person" EntityType="TeeMsModel.Store.assignment_component_person" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="assignment_person" EntityType="TeeMsModel.Store.assignment_person" store:Type="Tables" Schema="h3387" />
+          <EntitySet Name="comment" EntityType="TeeMsModel.Store.comment" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="group" EntityType="TeeMsModel.Store.group" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="group_member" EntityType="TeeMsModel.Store.group_member" store:Type="Tables" Schema="h3387" />
           <EntitySet Name="group_role" EntityType="TeeMsModel.Store.group_role" store:Type="Tables" Schema="h3387" />
@@ -43,6 +44,18 @@
           <AssociationSet Name="fk_assignment_project1" Association="TeeMsModel.Store.fk_assignment_project1">
             <End Role="project" EntitySet="project" />
             <End Role="assignment" EntitySet="assignment" />
+          </AssociationSet>
+          <AssociationSet Name="fk_comment_assignment1" Association="TeeMsModel.Store.fk_comment_assignment1">
+            <End Role="assignment" EntitySet="assignment" />
+            <End Role="comment" EntitySet="comment" />
+          </AssociationSet>
+          <AssociationSet Name="fk_comment_person1" Association="TeeMsModel.Store.fk_comment_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="comment" EntitySet="comment" />
+          </AssociationSet>
+          <AssociationSet Name="fk_comment_project1" Association="TeeMsModel.Store.fk_comment_project1">
+            <End Role="project" EntitySet="project" />
+            <End Role="comment" EntitySet="comment" />
           </AssociationSet>
           <AssociationSet Name="fk_group_has_person_group1" Association="TeeMsModel.Store.fk_group_has_person_group1">
             <End Role="group" EntitySet="group" />
@@ -140,6 +153,21 @@
           <Property Name="amt_id" Type="int" Nullable="false" />
           <Property Name="project_id" Type="int" Nullable="false" />
           <Property Name="person_id" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="comment">
+          <Key>
+            <PropertyRef Name="comment_id" />
+            <PropertyRef Name="person_id" />
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Name="comment_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="comment_content" Type="varchar" Nullable="false" MaxLength="255" />
+          <Property Name="creation_date" Type="datetime" Nullable="false" />
+          <Property Name="edited" Type="timestamp" />
+          <Property Name="person_id" Type="int" Nullable="false" />
+          <Property Name="project_id" Type="int" Nullable="false" />
+          <Property Name="amt_id" Type="int" />
+          <Property Name="assignment_project_id" Type="int" />
         </EntityType>
         <EntityType Name="group">
           <Key>
@@ -335,6 +363,44 @@
               <PropertyRef Name="project_id" />
             </Principal>
             <Dependent Role="assignment">
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_comment_assignment1">
+          <End Role="assignment" Type="TeeMsModel.Store.assignment" Multiplicity="0..1" />
+          <End Role="comment" Type="TeeMsModel.Store.comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="comment">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="assignment_project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_comment_person1">
+          <End Role="person" Type="TeeMsModel.Store.person" Multiplicity="1" />
+          <End Role="comment" Type="TeeMsModel.Store.comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="comment">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_comment_project1">
+          <End Role="project" Type="TeeMsModel.Store.project" Multiplicity="1" />
+          <End Role="comment" Type="TeeMsModel.Store.comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="project">
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="comment">
               <PropertyRef Name="project_id" />
             </Dependent>
           </ReferentialConstraint>
@@ -542,6 +608,19 @@
             <End Role="project" EntitySet="project" />
             <End Role="project_person" EntitySet="project_person" />
           </AssociationSet>
+          <EntitySet Name="comment" EntityType="TeeMsModel.comment" />
+          <AssociationSet Name="fk_comment_assignment1" Association="TeeMsModel.fk_comment_assignment1">
+            <End Role="assignment" EntitySet="assignment" />
+            <End Role="comment" EntitySet="comment" />
+          </AssociationSet>
+          <AssociationSet Name="fk_comment_person1" Association="TeeMsModel.fk_comment_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="comment" EntitySet="comment" />
+          </AssociationSet>
+          <AssociationSet Name="fk_comment_project1" Association="TeeMsModel.fk_comment_project1">
+            <End Role="project" EntitySet="project" />
+            <End Role="comment" EntitySet="comment" />
+          </AssociationSet>
           </EntityContainer>
         <EntityType Name="assignment">
           <Key>
@@ -562,6 +641,7 @@
           <NavigationProperty Name="assignment_component" Relationship="TeeMsModel.fk_assignment_component_assignment1" FromRole="assignment" ToRole="assignment_component" />
           <NavigationProperty Name="assignment_person" Relationship="TeeMsModel.fk_assignment_has_person_assignment1" FromRole="assignment" ToRole="assignment_person" />
           <NavigationProperty Name="project" Relationship="TeeMsModel.fk_assignment_project1" FromRole="assignment" ToRole="project" />
+          <NavigationProperty Name="comment" Relationship="TeeMsModel.fk_comment_assignment1" FromRole="assignment" ToRole="comment" />
         </EntityType>
         <EntityType Name="assignment_component">
           <Key>
@@ -673,6 +753,7 @@
           <NavigationProperty Name="role" Relationship="TeeMsModel.fk_person_role1" FromRole="person" ToRole="role" />
           <NavigationProperty Name="assignment_component_person" Relationship="TeeMsModel.fk_assignment_component_has_person_person1" FromRole="person" ToRole="assignment_component_person" />
           <NavigationProperty Name="project_person" Relationship="TeeMsModel.fk_project_has_person_person1" FromRole="person" ToRole="project_person" />
+          <NavigationProperty Name="comment" Relationship="TeeMsModel.fk_comment_person1" FromRole="person" ToRole="comment" />
         </EntityType>
         <EntityType Name="project">
           <Key>
@@ -693,6 +774,7 @@
           <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_assignment_project1" FromRole="project" ToRole="assignment" />
           <NavigationProperty Name="project_group" Relationship="TeeMsModel.fk_project_has_group_project1" FromRole="project" ToRole="project_group" />
           <NavigationProperty Name="project_person" Relationship="TeeMsModel.fk_project_has_person_project1" FromRole="project" ToRole="project_person" />
+          <NavigationProperty Name="comment" Relationship="TeeMsModel.fk_comment_project1" FromRole="project" ToRole="comment" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -949,6 +1031,62 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="comment">
+          <Key>
+            <PropertyRef Name="comment_id" />
+            <PropertyRef Name="person_id" />
+            <PropertyRef Name="project_id" />
+          </Key>
+          <Property Type="Int32" Name="comment_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="comment_content" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="creation_date" Nullable="false" />
+          <Property Type="DateTime" Name="edited" />
+          <Property Type="Int32" Name="person_id" Nullable="false" />
+          <Property Type="Int32" Name="project_id" Nullable="false" />
+          <Property Type="Int32" Name="amt_id" />
+          <Property Type="Int32" Name="assignment_project_id" />
+          <NavigationProperty Name="assignment" Relationship="TeeMsModel.fk_comment_assignment1" FromRole="comment" ToRole="assignment" />
+          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_comment_person1" FromRole="comment" ToRole="person" />
+          <NavigationProperty Name="project" Relationship="TeeMsModel.fk_comment_project1" FromRole="comment" ToRole="project" />
+        </EntityType>
+        <Association Name="fk_comment_assignment1">
+          <End Type="TeeMsModel.assignment" Role="assignment" Multiplicity="0..1" />
+          <End Type="TeeMsModel.comment" Role="comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="assignment">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="comment">
+              <PropertyRef Name="amt_id" />
+              <PropertyRef Name="assignment_project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_comment_person1">
+          <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
+          <End Type="TeeMsModel.comment" Role="comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="comment">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_comment_project1">
+          <End Type="TeeMsModel.project" Role="project" Multiplicity="1" />
+          <End Type="TeeMsModel.comment" Role="comment" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="project">
+              <PropertyRef Name="project_id" />
+            </Principal>
+            <Dependent Role="comment">
+              <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1123,6 +1261,20 @@
                 <ScalarProperty Name="person_id" ColumnName="person_id" />
                 <ScalarProperty Name="project_id" ColumnName="project_id" />
                 <ScalarProperty Name="project_person_id" ColumnName="project_person_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="comment">
+            <EntityTypeMapping TypeName="TeeMsModel.comment">
+              <MappingFragment StoreEntitySet="comment">
+                <ScalarProperty Name="assignment_project_id" ColumnName="assignment_project_id" />
+                <ScalarProperty Name="amt_id" ColumnName="amt_id" />
+                <ScalarProperty Name="project_id" ColumnName="project_id" />
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="edited" ColumnName="edited" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="comment_content" ColumnName="comment_content" />
+                <ScalarProperty Name="comment_id" ColumnName="comment_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
