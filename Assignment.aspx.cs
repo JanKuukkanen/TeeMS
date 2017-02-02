@@ -928,9 +928,14 @@ public partial class Assignment : System.Web.UI.Page
         {
             divAssignmentCommentMessages.Controls.Clear();
 
+            string username = ticket.Name;
+            var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
+
             var commentlist = ctx.comment.Where(co => co.amt_id != null).ToList();
             int assignment_id = int.Parse(Request.QueryString["Assignment"]);
             int project_id = int.Parse(Request.QueryString["Project"]);
+
+            List<HtmlGenericControl> divlist = new List<HtmlGenericControl>();
 
             foreach (var comment in commentlist)
             {
@@ -938,20 +943,203 @@ public partial class Assignment : System.Web.UI.Page
                 {
                     HtmlGenericControl commentdiv = new HtmlGenericControl("div");
                     HtmlGenericControl commentcontentdiv = new HtmlGenericControl("div");
+                    HtmlGenericControl commentbuttonsdiv = new HtmlGenericControl("div");
+                    HtmlGenericControl commenttextboxdiv = new HtmlGenericControl("div");
                     Label usernamelabel = new Label();
 
-                    commentdiv.Attributes.Add("Style", "border: thin solid black; margin-top:10px; width:40%;");
+                    TextBox commentedittxt = new TextBox();
+                    HtmlGenericControl br = new HtmlGenericControl("br");
+                    LinkButton commentsavebutton = new LinkButton();
+                    LinkButton commentcancelbutton = new LinkButton();
+
+                    LinkButton commenteditbutton = new LinkButton();
+                    LinkButton commentdeletebutton = new LinkButton();
+
+                    commentdiv.ID = String.Format("commentdiv{0}", comment.comment_id);
+                    commentdiv.Attributes.Add("Style", "border: thin solid black; margin-top:10px;");
+
+                    commenttextboxdiv.ID = String.Format("commenttextboxdiv{0}", comment.comment_id);
+                    commenttextboxdiv.Attributes.Add("Style", "border: thin solid black; margin-top:10px;");
+                    commenttextboxdiv.Visible = false;
 
                     usernamelabel.Text = String.Format("Posted by {0} on {1}", comment.person.username, comment.creation_date.ToString("d/M/yyyy HH:mm"));
                     usernamelabel.Font.Bold = true;
                     commentcontentdiv.InnerText = comment.comment_content;
 
+                    commentedittxt.ID = String.Format("txt{0}", comment.comment_id);
+                    commentedittxt.Text = comment.comment_content;
+                    commentedittxt.TextMode = TextBoxMode.MultiLine;
+                    commentedittxt.Width = 400;
+                    commentedittxt.Height = 100;
+
+                    commentsavebutton.ID = String.Format("Savebtn{0}", comment.comment_id);
+                    commentsavebutton.Text = "Save Changes";
+                    commentsavebutton.CommandArgument = "Hello";
+                    commentsavebutton.Command += new CommandEventHandler(SaveCommentClick);
+                    commentsavebutton.CssClass = "w3-btn";
+
+                    commentcancelbutton.ID = String.Format("Cancelbtn{0}", comment.comment_id);
+                    commentcancelbutton.Text = "Cancel";
+                    commentcancelbutton.CommandArgument = "Hello";
+                    commentcancelbutton.Command += new CommandEventHandler(CancelCommentClick);
+                    commentcancelbutton.CssClass = "w3-btn";
+                    commentcancelbutton.Attributes.Add("style", "margin-left:10px;");
+
+                    commenteditbutton.ID = String.Format("lbtnEditComment{0}", comment.comment_id);
+                    commenteditbutton.Text = "Edit";
+                    commenteditbutton.CommandArgument = "Hello";
+                    commenteditbutton.Command += new CommandEventHandler(EditCommentClick);
+                    commenteditbutton.CssClass = "CommentLinkButtons";
+
+                    commentdeletebutton.ID = String.Format("lbtnDeleteComment{0}", comment.comment_id);
+                    commentdeletebutton.Text = "Delete";
+                    commentdeletebutton.CommandArgument = "Hello";
+                    commentdeletebutton.Command += new CommandEventHandler(DeleteCommentClick);
+                    commentdeletebutton.CssClass = "CommentLinkButtons";
+                    commentdeletebutton.Attributes.Add("style", "margin-left:10px;");
+
                     commentdiv.Controls.Add(usernamelabel);
                     commentdiv.Controls.Add(commentcontentdiv);
 
-                    divAssignmentCommentMessages.Controls.Add(commentdiv); 
+                    if (comment.person_id == rightperson.person_id)
+                    {
+                        commenttextboxdiv.Controls.Add(commentedittxt);
+                        commenttextboxdiv.Controls.Add(br);
+                        commenttextboxdiv.Controls.Add(commentsavebutton);
+                        commenttextboxdiv.Controls.Add(commentcancelbutton);
+
+                        commentbuttonsdiv.Controls.Add(commenteditbutton);
+                        commentbuttonsdiv.Controls.Add(commentdeletebutton);
+                    }
+
+                    divAssignmentCommentMessages.Controls.Add(commentdiv);
+                    divAssignmentCommentMessages.Controls.Add(commenttextboxdiv);
+                    divAssignmentCommentMessages.Controls.Add(commentbuttonsdiv);
+
+                    divlist.Add(commentdiv);
+                    divlist.Add(commenttextboxdiv);
                 }
             }
+
+            Session["Divs"] = divlist;
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void EditCommentClick(object sender, CommandEventArgs e)
+    {
+        // Parse the correct comment id from the linkbutton's id
+        var btn = sender as LinkButton;
+        string parseid = Regex.Match(btn.ID, @"-?\d+\.?\d*$").Value;
+        int commentid = int.Parse(parseid);
+
+        try
+        {
+            var divlist = (List<HtmlGenericControl>)Session["Divs"];
+
+            var rightcommentdiv = divlist.Where(div => div.ID == String.Format("commentdiv{0}", commentid)).SingleOrDefault();
+            var rightcommenttextboxdiv = divlist.Where(div => div.ID == String.Format("commenttextboxdiv{0}", commentid)).SingleOrDefault();
+
+            rightcommenttextboxdiv.Visible = true;
+            rightcommentdiv.Visible = false;
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void DeleteCommentClick(object sender, CommandEventArgs e)
+    {
+        // Parse the correct comment id from the linkbutton's id
+        var btn = sender as LinkButton;
+        string parseid = Regex.Match(btn.ID, @"-?\d+\.?\d*$").Value;
+        int commentid = int.Parse(parseid);
+
+        try
+        {
+            string username = ticket.Name;
+            var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
+            var rightcomment = ctx.comment.Where(com => com.comment_id == commentid).SingleOrDefault();
+
+            if (rightcomment.person_id == rightperson.person_id)
+            {
+                ctx.comment.Remove(rightcomment);
+                ctx.SaveChanges();
+
+                FillComments();
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void SaveCommentClick(object sender, CommandEventArgs e)
+    {
+        // Parse the correct comment id from the linkbutton's id
+        var btn = sender as LinkButton;
+        string parseid = Regex.Match(btn.ID, @"-?\d+\.?\d*$").Value;
+        int commentid = int.Parse(parseid);
+
+        try
+        {
+            string username = ticket.Name;
+            var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
+            var rightcomment = ctx.comment.Where(com => com.comment_id == commentid).SingleOrDefault();
+
+            if (rightcomment.person_id == rightperson.person_id)
+            {
+                var divlist = (List<HtmlGenericControl>)Session["Divs"];
+
+                var rightcommentdiv = divlist.Where(div => div.ID == String.Format("commentdiv{0}", commentid)).SingleOrDefault();
+                var rightcommenttextboxdiv = divlist.Where(div => div.ID == String.Format("commenttextboxdiv{0}", commentid)).SingleOrDefault();
+
+                TextBox divtxt = rightcommenttextboxdiv.Controls[0] as TextBox;
+
+                string newcontent = divtxt.Text;
+
+                rightcomment.comment_content = newcontent;
+                rightcomment.edited = DateTime.Now;
+
+                ctx.SaveChanges();
+
+                rightcommenttextboxdiv.Visible = false;
+                rightcommentdiv.Visible = true;
+
+                FillComments();
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void CancelCommentClick(object sender, CommandEventArgs e)
+    {
+        // Parse the correct comment id from the linkbutton's id
+        var btn = sender as LinkButton;
+        string parseid = Regex.Match(btn.ID, @"-?\d+\.?\d*$").Value;
+        int commentid = int.Parse(parseid);
+
+        try
+        {
+            var divlist = (List<HtmlGenericControl>)Session["Divs"];
+
+            var rightcommentdiv = divlist.Where(div => div.ID == String.Format("commentdiv{0}", commentid)).SingleOrDefault();
+            var rightcommenttextboxdiv = divlist.Where(div => div.ID == String.Format("commenttextboxdiv{0}", commentid)).SingleOrDefault();
+
+            rightcommenttextboxdiv.Visible = false;
+            rightcommentdiv.Visible = true;
         }
         catch (Exception ex)
         {
