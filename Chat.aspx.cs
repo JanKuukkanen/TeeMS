@@ -4,11 +4,13 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using Microsoft.AspNet.SignalR;
+using SignalRChat;
 
 public partial class Chat : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        var context = GlobalHost.ConnectionManager.GetHubContext<TeeMsHub>();
     }
 }

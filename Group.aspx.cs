@@ -355,7 +355,7 @@ public partial class Group : System.Web.UI.Page
 
                     for (int i = 0; i < searchmember.Count(); i++)
                     {
-                        if (searchmember[i] != person.username[i] && person.username[i] != null)
+                        if (searchmember[i] != person.username[i])
                         {
                             add_to_grid = false;
                         }
