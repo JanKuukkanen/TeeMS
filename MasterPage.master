@@ -14,7 +14,7 @@
 <body>
     <form id="form1" runat="server">
     <meta name="viewport" content="width=device-width" />
-    <img id="logo" src="Images/MP_logo.png" />
+    <img id="logo" src="Images/MP_Logo.png" />
 
     <div class="w3-third" style="width:10%;">
         <ul id="navbar" class="w3-ul">
