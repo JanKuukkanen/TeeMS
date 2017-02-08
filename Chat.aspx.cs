@@ -37,8 +37,6 @@ public partial class Chat : System.Web.UI.Page
         {
             FillControls();
         }
-
-        var context = GlobalHost.ConnectionManager.GetHubContext<TeeMsHub>();
     }
 
     protected void FillControls()
@@ -48,27 +46,7 @@ public partial class Chat : System.Web.UI.Page
 
     #region JAVASCRIPT
 
-    [WebMethod]
-    public static string SendUserInfo()
-    {
-        var UserDataRetriever = new Chat();
-        string username = UserDataRetriever.GetUserData();
 
-        return username;
-    }
-
-    public string GetUserData()
-    {
-        try
-        {
-            return "In progress";
-        }
-        catch (Exception ex)
-        {
-            
-            return ex.Message;
-        }
-    }
 
     #endregion
 }

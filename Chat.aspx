@@ -4,17 +4,22 @@
     <title>Chat</title>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
-    <div class="w3-rest">
-        <div class="container">
-            <input type="text" id="message" />
-            <input type="button" id="sendmessage" value="Send" />
-            <input type="hidden" id="displayname" />
-            <ul id="discussion">
-            </ul>
-        </div>
+    <div class="w3-rest w3-container">
+        <div style="width:60%;">
+            <div id="divChatScreen" style="border:2px solid black; overflow:auto; height:500px;">
+                <ul id="discussion">
+                </ul>
+            </div>
 
-        <div>
-            <asp:Label ID="lbMessages" runat="server" />
+            <div class="container">
+                <input type="text" id="message" />
+                <input type="button" id="sendmessage" value="Send" class="w3-btn" />
+                <input type="hidden" id="displayname" />
+            </div>
+
+            <div>
+                <asp:Label ID="lbMessages" runat="server" />
+            </div>
         </div>
     </div>
 
@@ -30,43 +35,6 @@
         <!--Add script to update the page and send messages.-->
         <script type="text/javascript">
 
-            $.when(ajax1()).done(function (a1) {
-                // the code here will be executed when all ajax requests resolve.
-                // a1 is a list of length 3 containing the response text,
-                // status, and jqXHR object for the ajax call.
-                var username = "Hehehe";
-
-                username = a1.d;
-
-                if (username != null) {
-                    console.log(username);
-                }
-                else {
-                    console.log("Whassa Matta?");
-                }
-            });
-
-            function ajax1() {
-                // NOTE:  This function must return the value 
-                //        from calling the $.ajax() method.
-
-                var username = "Ei onnistu :(";
-
-                return $.ajax({
-                    "async" : "false",
-                    "type": "POST",
-                    "url": "/Chat.aspx/SendUserInfo",
-                    "contentType": "application/json; charset=utf-8",
-                    "dataType": "json",
-                    "success": function (response) {
-                        username = response.d;
-                    },
-                    "failure": function (response) {
-                        console.log("Something went wrong!");
-                    }
-                });
-            }
-
             $(function () {
                 // Declare a proxy to reference the hub.
                 var chat = $.connection.teeMsHub;
@@ -80,7 +48,7 @@
                         + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
                 };
                 // Get the user name and store it to prepend to messages.
-                $('#displayname').val(prompt('Enter your name:', ''));
+                //$('#displayname').val(prompt('Enter your name:', ''));
                 // Set initial focus to message input box.  
                 $('#message').focus();
                 // Start the connection.
@@ -90,6 +58,10 @@
                         chat.server.send($('#displayname').val(), $('#message').val());
                         // Clear text box and reset focus for next comment. 
                         $('#message').val('').focus();
+
+                        // Scroll to the bottom of the divChatScreen
+                        var chatscreen = document.getElementById('divChatScreen');
+                        setTimeout(function () { chatscreen.scrollTop = chatscreen.scrollHeight; }, 200);
                     });
                 });
             });
