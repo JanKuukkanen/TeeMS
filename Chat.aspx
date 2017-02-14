@@ -6,12 +6,17 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
     <div class="w3-rest w3-container">
         <div style="width:60%;">
-            <div id="divChatScreen" style="border:2px solid black; overflow:auto; height:500px;">
+            <div id="divChatScreen" style="border:2px solid black; overflow:auto; height:500px; float:left; width:70%;">
                 <ul id="discussion">
                 </ul>
             </div>
 
-            <div class="container">
+            <div id="divChatMemberScreen" style="border:2px solid black; overflow:auto; height:500px; float:left; width:30%;">
+                <ul id="chatMembers">
+                </ul>
+            </div>
+
+            <div class="container" style="float:left; width:100%;">
                 <input type="text" id="message" />
                 <input type="button" id="sendmessage" value="Send" class="w3-btn" />
                 <input type="hidden" id="displayname" />
@@ -53,6 +58,10 @@
                 $('#message').focus();
                 // Start the connection.
                 $.connection.hub.start().done(function () {
+
+                    // Call the connect method on the hub
+                    var chatmembers = chat.server.connect();
+
                     $('#sendmessage').click(function () {
                         // Call the Send method on the hub. 
                         chat.server.send($('#displayname').val(), $('#message').val());

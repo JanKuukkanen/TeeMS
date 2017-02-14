@@ -189,7 +189,7 @@ public partial class CreateAssignment : System.Web.UI.Page
             for (int i = 0; i <= ctx.assignment.Count(); i++)
             {
                 assignment compareAssignment = new assignment();
-                var checkAssignment = ctx.assignment.Where(gr => gr.amt_tag == i).FirstOrDefault();
+                var checkAssignment = ctx.assignment.Where(gr => gr.amt_id == i).FirstOrDefault();
 
                 if (checkAssignment == compareAssignment)
                 {
@@ -214,7 +214,6 @@ public partial class CreateAssignment : System.Web.UI.Page
             {
                 name = name,
                 description = description,
-                amt_tag = addedrow,
                 creation_date = DateTime.Today,
                 assignment_due_date = duedate,
                 percent_done = percent_done,
@@ -222,6 +221,24 @@ public partial class CreateAssignment : System.Web.UI.Page
                 privacy = 1,
                 project_id = project_id
             };
+
+            var assignmentlist = ctx.assignment.ToList();
+
+            if (assignmentlist != null)
+            {
+                int tagindex = 100;
+
+                foreach (var assignment in assignmentlist)
+                {
+                    tagindex = (int)assignment.amt_tag + 1;
+                }
+
+                newassignment.amt_tag = tagindex;
+            }
+            else
+            {
+                newassignment.amt_tag = 100;
+            }
 
             ctx.assignment.Add(newassignment);
             ctx.SaveChanges();
@@ -231,7 +248,15 @@ public partial class CreateAssignment : System.Web.UI.Page
         catch (Exception ex)
         {
 
-            lbmessages.Text = ex.Message;
+            if (ex.InnerException != null)
+            {
+                lbmessages.Text = ex.InnerException.ToString();
+            }
+            else
+            {
+                lbmessages.Text = ex.Message;
+            }
+
             return -1;
         }
     }

@@ -4,15 +4,18 @@
     <title>Login</title>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
-    <asp:Login ID="loginUser"  runat="server" OnAuthenticate="loginUser_Authenticate"></asp:Login> <hr style="border-top: 1px solid black" />
+    <div class="w3-rest w3-container">
+        <asp:Login ID="loginUser" runat="server" OnAuthenticate="loginUser_Authenticate"></asp:Login>
+        <hr style="border-top: 1px solid black" />
 
-    <div class="w3-container">
-    <asp:Label ID="lbRegister" runat="server" Text="Don't have an account?" />
-    <a href="Register.aspx">Register a new account</a>
-    </div>
+        <div class="w3-container">
+            <asp:Label ID="lbRegister" runat="server" Text="Don't have an account?" />
+            <a href="Register.aspx">Register a new account</a>
+        </div>
 
-    <div class="w3-container">
-        <asp:Label ID="lbMessages" runat="server" />
+        <div class="w3-container">
+            <asp:Label ID="lbMessages" runat="server" />
+        </div>
     </div>
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="footer" Runat="Server">

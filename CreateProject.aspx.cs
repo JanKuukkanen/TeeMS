@@ -137,7 +137,7 @@ public partial class CreateProject : System.Web.UI.Page
                 for (int i = 0; i <= ctx.project.Count(); i++)
                 {
                     project compareProject = new project();
-                    var checkProject = ctx.project.Where(gr => gr.project_tag == i).FirstOrDefault();
+                    var checkProject = ctx.project.Where(gr => gr.project_id == i).FirstOrDefault();
 
                     if (checkProject == compareProject)
                     {
@@ -163,7 +163,6 @@ public partial class CreateProject : System.Web.UI.Page
                 {
                     name = projectname,
                     description = projectdesc,
-                    project_tag = addedrow,
                     project_creator = rightperson.username,
                     creation_date = DateTime.Now,
                     due_date = duedate,
@@ -172,6 +171,24 @@ public partial class CreateProject : System.Web.UI.Page
                     privacy = 1,
                     picture_url = pictureuri
                 };
+
+                var projectlist = ctx.project.ToList();
+
+                if (projectlist != null)
+                {
+                    int tagindex = 100;
+
+                    foreach (var project in projectlist)
+                    {
+                        tagindex = (int)project.project_tag + 1;
+                    }
+
+                    newproject.project_tag = tagindex;
+                }
+                else
+                {
+                    newproject.project_tag = 100;
+                }
 
                 ctx.project.Add(newproject);
                 ctx.SaveChanges();

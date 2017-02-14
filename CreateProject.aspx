@@ -11,12 +11,18 @@
             <hr />
         </div>
 
-        <div class="w3-container" style="float:left;">
+        <div class="w3-container" style="float:left; width:100%;">
             <div class="w3-container">
-                <asp:Label ID="lbProjectName" runat="server" Text="Project Name: " />
-                <asp:TextBox ID="txtProjectName" runat="server"></asp:TextBox>
-                <asp:RequiredFieldValidator ID="rfvNameRequired" runat="server" ErrorMessage="Project name required" ControlToValidate="txtProjectName"></asp:RequiredFieldValidator>
-                <br />
+                <div style="width:30%; float:left;">
+                    <asp:Label ID="lbProjectName" runat="server" Text="Project Name: " />
+                    <asp:TextBox ID="txtProjectName" runat="server"></asp:TextBox>
+                    <asp:RequiredFieldValidator ID="rfvNameRequired" runat="server" ErrorMessage="Project name required" ControlToValidate="txtProjectName"></asp:RequiredFieldValidator>
+                </div>
+
+                <div class="w3-rest" style="float:left;">
+                    <asp:Label ID="lbPictureURI" runat="server" Text="Picture URL:" />
+                    <asp:TextBox ID="txtPictureURI" runat="server" />
+                </div>
             </div>
 
             <div class="w3-container" style="margin-top: 40px;">
@@ -43,11 +49,6 @@
             <div class="w3-container">
                 <asp:Label ID="lbmessages" runat="server" />
             </div>
-        </div>
-
-        <div class="w3-container">
-            <asp:Label ID="lbPictureURI" runat="server" Text="Picture URL:" />
-            <asp:TextBox ID="txtPictureURI" runat="server" />
         </div>
 
     </div>

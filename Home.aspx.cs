@@ -48,7 +48,7 @@ public partial class Home : System.Web.UI.Page
         for (int i = 0; i <= ctx.group.Count(); i++)
         {
             group compareGroup = new group();
-            var checkGroup = ctx.group.Where(gr => gr.group_tag == i).SingleOrDefault();
+            var checkGroup = ctx.group.Where(gr => gr.group_id == i).SingleOrDefault();
 
             if (checkGroup == compareGroup)
             {
@@ -94,11 +94,28 @@ public partial class Home : System.Web.UI.Page
             var g = new group
             {
                 name = newgroupname,
-                group_tag = addedrow,
                 creator = ticket.Name,
                 privacy = 1,
                 creation_date = DateTime.Now,
             };
+
+            var grouplist = ctx.group.ToList();
+
+            if (grouplist != null)
+            {
+                int tagindex = 100;
+
+                foreach (var group in grouplist)
+                {
+                    tagindex = (int)group.group_tag + 1;
+                }
+
+                g.group_tag = tagindex;
+            }
+            else
+            {
+                g.group_tag = 100;
+            }
 
             ctx.group.Add(g);
             ctx.SaveChanges();

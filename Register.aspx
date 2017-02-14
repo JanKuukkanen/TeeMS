@@ -5,7 +5,7 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
 
-    <div class="w3-rest">
+    <div class="w3-rest w3-container">
 
         <div style="margin-right:40%">
             <h3 class="w3-gray" style="padding-left:20%; margin-right:auto;">Sign up for your new account</h3>

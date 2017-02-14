@@ -99,6 +99,8 @@ public partial class Project : System.Web.UI.Page
             }
             ddlAssignmentList.Items.Insert(0, "Choose Assignment");
 
+            Session["ProjectAssignments"] = projectassignments;
+
             // Set project picture
             string pictureuri = Request.ApplicationPath + "Images/no_image.png";
 
@@ -399,10 +401,16 @@ public partial class Project : System.Web.UI.Page
             try
             {
                 string project_id = Request.QueryString["Project"];
+                int index = ddlAssignmentList.SelectedIndex;
 
-                var rightassignment = ctx.assignment.Where(a => a.amt_tag == ddlAssignmentList.SelectedIndex).SingleOrDefault();
+                List<assignment> projectassignments = (List<assignment>)Session["ProjectAssignments"];
 
-                Response.Redirect(String.Format("Assignment.aspx?Assignment={0}&Project={1}", rightassignment.amt_id, project_id));
+                var rightassignment = projectassignments[index - 1];
+
+                if (rightassignment.name == ddlAssignmentList.Items[index].Text)
+                {
+                    Response.Redirect(String.Format("Assignment.aspx?Assignment={0}&Project={1}", rightassignment.amt_id, project_id)); 
+                }
             }
             catch (Exception ex)
             {

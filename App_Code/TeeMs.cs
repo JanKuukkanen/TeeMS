@@ -22,7 +22,7 @@ public partial class assignment
     public int amt_id { get; set; }
     public string name { get; set; }
     public string description { get; set; }
-    public int amt_tag { get; set; }
+    public Nullable<int> amt_tag { get; set; }
     public System.DateTime creation_date { get; set; }
     public Nullable<System.DateTime> assignment_due_date { get; set; }
     public string percent_done { get; set; }
@@ -51,8 +51,8 @@ public partial class assignment_component
     public int amt_id { get; set; }
     public int project_id { get; set; }
 
-    public virtual assignment assignment { get; set; }
     public virtual ICollection<assignment_component_person> assignment_component_person { get; set; }
+    public virtual assignment assignment { get; set; }
 }
 
 public partial class assignment_component_person
@@ -74,8 +74,8 @@ public partial class assignment_person
     public int project_id { get; set; }
     public int person_id { get; set; }
 
-    public virtual assignment assignment { get; set; }
     public virtual person person { get; set; }
+    public virtual assignment assignment { get; set; }
 }
 
 public partial class comment
@@ -89,9 +89,20 @@ public partial class comment
     public Nullable<int> amt_id { get; set; }
     public Nullable<int> assignment_project_id { get; set; }
 
-    public virtual assignment assignment { get; set; }
     public virtual person person { get; set; }
+    public virtual assignment assignment { get; set; }
     public virtual project project { get; set; }
+}
+
+public partial class connection
+{
+    public int connection_id { get; set; }
+    public bool connected { get; set; }
+    public string connection_username { get; set; }
+    public Nullable<System.DateTime> connection_time { get; set; }
+    public int person_person_id { get; set; }
+
+    public virtual person person { get; set; }
 }
 
 public partial class group
@@ -105,7 +116,7 @@ public partial class group
 
     public int group_id { get; set; }
     public string name { get; set; }
-    public int group_tag { get; set; }
+    public Nullable<int> group_tag { get; set; }
     public string creator { get; set; }
     public int privacy { get; set; }
     public System.DateTime creation_date { get; set; }
@@ -126,9 +137,9 @@ public partial class group_member
     public int person_id { get; set; }
     public int grouprole_id { get; set; }
 
-    public virtual group group { get; set; }
     public virtual person person { get; set; }
     public virtual group_role group_role { get; set; }
+    public virtual group group { get; set; }
 }
 
 public partial class group_role
@@ -152,6 +163,16 @@ public partial class login
     public string login_name { get; set; }
     public string password { get; set; }
     public string salt { get; set; }
+}
+
+public partial class message
+{
+    public int message_id { get; set; }
+    public string message_content { get; set; }
+    public System.DateTime creation_date { get; set; }
+    public int person_person_id { get; set; }
+
+    public virtual person person { get; set; }
 }
 
 public partial class organization
@@ -180,6 +201,8 @@ public partial class person
         this.assignment_component_person = new HashSet<assignment_component_person>();
         this.project_person = new HashSet<project_person>();
         this.comment = new HashSet<comment>();
+        this.connection = new HashSet<connection>();
+        this.message = new HashSet<message>();
     }
 
     public int person_id { get; set; }
@@ -198,6 +221,8 @@ public partial class person
     public virtual ICollection<assignment_component_person> assignment_component_person { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
     public virtual ICollection<comment> comment { get; set; }
+    public virtual ICollection<connection> connection { get; set; }
+    public virtual ICollection<message> message { get; set; }
 }
 
 public partial class project
@@ -205,15 +230,15 @@ public partial class project
     public project()
     {
         this.assignment = new HashSet<assignment>();
+        this.comment = new HashSet<comment>();
         this.project_group = new HashSet<project_group>();
         this.project_person = new HashSet<project_person>();
-        this.comment = new HashSet<comment>();
     }
 
     public int project_id { get; set; }
     public string name { get; set; }
     public string description { get; set; }
-    public int project_tag { get; set; }
+    public Nullable<int> project_tag { get; set; }
     public string project_creator { get; set; }
     public System.DateTime creation_date { get; set; }
     public Nullable<System.DateTime> due_date { get; set; }
@@ -224,9 +249,9 @@ public partial class project
     public Nullable<System.DateTime> edited { get; set; }
 
     public virtual ICollection<assignment> assignment { get; set; }
+    public virtual ICollection<comment> comment { get; set; }
     public virtual ICollection<project_group> project_group { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
-    public virtual ICollection<comment> comment { get; set; }
 }
 
 public partial class project_group
@@ -248,8 +273,8 @@ public partial class project_person
     public int group_id { get; set; }
     public bool project_person_supporting { get; set; }
 
-    public virtual group group { get; set; }
     public virtual person person { get; set; }
+    public virtual group group { get; set; }
     public virtual project project { get; set; }
 }
 

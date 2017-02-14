@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Security;
+using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 
 namespace SignalRChat
@@ -15,6 +16,11 @@ namespace SignalRChat
         public void Hello()
         {
             Clients.All.hello();
+        }
+
+        public override Task OnConnected()
+        {
+            return base.OnConnected();
         }
 
         public void Send(string name, string message)
