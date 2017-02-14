@@ -100,7 +100,7 @@ public partial class connection
     public bool connected { get; set; }
     public string connection_username { get; set; }
     public Nullable<System.DateTime> connection_time { get; set; }
-    public int person_person_id { get; set; }
+    public int person_id { get; set; }
 
     public virtual person person { get; set; }
 }
@@ -170,7 +170,7 @@ public partial class message
     public int message_id { get; set; }
     public string message_content { get; set; }
     public System.DateTime creation_date { get; set; }
-    public int person_person_id { get; set; }
+    public int person_id { get; set; }
 
     public virtual person person { get; set; }
 }

@@ -52,6 +52,19 @@
                     $('#discussion').append('<li><strong>' + encodedName
                         + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
                 };
+
+                // Create a function that the hub can call to fill the chat memberlist
+                chat.client.fillMemberList = function (jsonmemberlist) {
+                    var memberlist = JSON.parse(jsonmemberlist);
+
+                    console.log("Hello");
+
+                    // Iterate through the memberlist object using key-value pairs
+                    $.each(memberlist, function (key, value) {
+                        $('#chatMembers').append('<li><strong>' + value + '</strong>' + '</li>');
+                    });
+                };
+
                 // Get the user name and store it to prepend to messages.
                 //$('#displayname').val(prompt('Enter your name:', ''));
                 // Set initial focus to message input box.  
@@ -59,8 +72,8 @@
                 // Start the connection.
                 $.connection.hub.start().done(function () {
 
-                    // Call the connect method on the hub
-                    var chatmembers = chat.server.connect();
+                    // Get chat members from the server
+                    chat.server.getChatMembers();
 
                     $('#sendmessage').click(function () {
                         // Call the Send method on the hub. 

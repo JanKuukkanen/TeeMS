@@ -48,10 +48,6 @@
         <AssociationConnector Association="TeeMsModel.fk_project_has_person_person1" />
         <EntityTypeShape EntityType="TeeMsModel.comment" Width="1.5" PointX="12" PointY="9.5" />
         <AssociationConnector Association="TeeMsModel.fk_comment_person1" />
-        <EntityTypeShape EntityType="TeeMsModel.connection" Width="1.5" PointX="5.625" PointY="11.25" />
-        <EntityTypeShape EntityType="TeeMsModel.message" Width="1.5" PointX="7.625" PointY="12.25" />
-        <AssociationConnector Association="TeeMsModel.fk_connection_person1" />
-        <AssociationConnector Association="TeeMsModel.fk_message_person1" />
         <EntityTypeShape EntityType="TeeMsModel.assignment" Width="1.5" PointX="9.75" PointY="4.375" />
         <EntityTypeShape EntityType="TeeMsModel.group" Width="1.5" PointX="0.625" PointY="0.75" />
         <EntityTypeShape EntityType="TeeMsModel.project" Width="1.5" PointX="5.25" PointY="4.625" />
@@ -66,6 +62,10 @@
         <AssociationConnector Association="TeeMsModel.fk_project_person_group1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_group_project1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_person_project1" />
+        <EntityTypeShape EntityType="TeeMsModel.connection" Width="1.5" PointX="5.625" PointY="10.625" />
+        <EntityTypeShape EntityType="TeeMsModel.message" Width="1.5" PointX="7.75" PointY="12" />
+        <AssociationConnector Association="TeeMsModel.fk_connection_person1" />
+        <AssociationConnector Association="TeeMsModel.fk_message_person1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

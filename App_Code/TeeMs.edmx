@@ -182,13 +182,13 @@
         <EntityType Name="connection">
           <Key>
             <PropertyRef Name="connection_id" />
-            <PropertyRef Name="person_person_id" />
+            <PropertyRef Name="person_id" />
           </Key>
-          <Property Name="connection_id" Type="int" Nullable="false" />
+          <Property Name="connection_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="connected" Type="bool" Nullable="false" />
           <Property Name="connection_username" Type="varchar" Nullable="false" MaxLength="255" />
           <Property Name="connection_time" Type="datetime" />
-          <Property Name="person_person_id" Type="int" Nullable="false" />
+          <Property Name="person_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="group">
           <Key>
@@ -236,12 +236,12 @@
         <EntityType Name="message">
           <Key>
             <PropertyRef Name="message_id" />
-            <PropertyRef Name="person_person_id" />
+            <PropertyRef Name="person_id" />
           </Key>
-          <Property Name="message_id" Type="int" Nullable="false" />
+          <Property Name="message_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="message_content" Type="varchar" Nullable="false" MaxLength="255" />
           <Property Name="creation_date" Type="datetime" Nullable="false" />
-          <Property Name="person_person_id" Type="int" Nullable="false" />
+          <Property Name="person_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="organization">
           <Key>
@@ -444,7 +444,7 @@
               <PropertyRef Name="person_id" />
             </Principal>
             <Dependent Role="connection">
-              <PropertyRef Name="person_person_id" />
+              <PropertyRef Name="person_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -504,7 +504,7 @@
               <PropertyRef Name="person_id" />
             </Principal>
             <Dependent Role="message">
-              <PropertyRef Name="person_person_id" />
+              <PropertyRef Name="person_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -629,16 +629,6 @@
             <End Role="person" EntitySet="person" />
             <End Role="comment" EntitySet="comment" />
           </AssociationSet>
-          <EntitySet Name="connection" EntityType="TeeMsModel.connection" />
-          <EntitySet Name="message" EntityType="TeeMsModel.message" />
-          <AssociationSet Name="fk_connection_person1" Association="TeeMsModel.fk_connection_person1">
-            <End Role="person" EntitySet="person" />
-            <End Role="connection" EntitySet="connection" />
-          </AssociationSet>
-          <AssociationSet Name="fk_message_person1" Association="TeeMsModel.fk_message_person1">
-            <End Role="person" EntitySet="person" />
-            <End Role="message" EntitySet="message" />
-          </AssociationSet>
           <EntitySet Name="assignment" EntityType="TeeMsModel.assignment" />
           <EntitySet Name="group" EntityType="TeeMsModel.group" />
           <EntitySet Name="project" EntityType="TeeMsModel.project" />
@@ -685,6 +675,16 @@
           <AssociationSet Name="fk_project_has_person_project1" Association="TeeMsModel.fk_project_has_person_project1">
             <End Role="project" EntitySet="project" />
             <End Role="project_person" EntitySet="project_person" />
+          </AssociationSet>
+          <EntitySet Name="connection" EntityType="TeeMsModel.connection" />
+          <EntitySet Name="message" EntityType="TeeMsModel.message" />
+          <AssociationSet Name="fk_connection_person1" Association="TeeMsModel.fk_connection_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="connection" EntitySet="connection" />
+          </AssociationSet>
+          <AssociationSet Name="fk_message_person1" Association="TeeMsModel.fk_message_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="message" EntitySet="message" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="assignment_component">
@@ -956,53 +956,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="connection">
-          <Key>
-            <PropertyRef Name="connection_id" />
-            <PropertyRef Name="person_person_id" />
-          </Key>
-          <Property Type="Int32" Name="connection_id" Nullable="false" />
-          <Property Type="Boolean" Name="connected" Nullable="false" />
-          <Property Type="String" Name="connection_username" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="connection_time" />
-          <Property Type="Int32" Name="person_person_id" Nullable="false" />
-          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_connection_person1" FromRole="connection" ToRole="person" />
-        </EntityType>
-        <EntityType Name="message">
-          <Key>
-            <PropertyRef Name="message_id" />
-            <PropertyRef Name="person_person_id" />
-          </Key>
-          <Property Type="Int32" Name="message_id" Nullable="false" />
-          <Property Type="String" Name="message_content" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="creation_date" Nullable="false" />
-          <Property Type="Int32" Name="person_person_id" Nullable="false" />
-          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_message_person1" FromRole="message" ToRole="person" />
-        </EntityType>
-        <Association Name="fk_connection_person1">
-          <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
-          <End Type="TeeMsModel.connection" Role="connection" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="person">
-              <PropertyRef Name="person_id" />
-            </Principal>
-            <Dependent Role="connection">
-              <PropertyRef Name="person_person_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="fk_message_person1">
-          <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
-          <End Type="TeeMsModel.message" Role="message" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="person">
-              <PropertyRef Name="person_id" />
-            </Principal>
-            <Dependent Role="message">
-              <PropertyRef Name="person_person_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="assignment">
           <Key>
             <PropertyRef Name="amt_id" />
@@ -1201,6 +1154,53 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="connection">
+          <Key>
+            <PropertyRef Name="connection_id" />
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Type="Int32" Name="connection_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="Boolean" Name="connected" Nullable="false" />
+          <Property Type="String" Name="connection_username" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="connection_time" />
+          <Property Type="Int32" Name="person_id" Nullable="false" />
+          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_connection_person1" FromRole="connection" ToRole="person" />
+        </EntityType>
+        <EntityType Name="message">
+          <Key>
+            <PropertyRef Name="message_id" />
+            <PropertyRef Name="person_id" />
+          </Key>
+          <Property Type="Int32" Name="message_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="message_content" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="creation_date" Nullable="false" />
+          <Property Type="Int32" Name="person_id" Nullable="false" />
+          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_message_person1" FromRole="message" ToRole="person" />
+        </EntityType>
+        <Association Name="fk_connection_person1">
+          <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
+          <End Type="TeeMsModel.connection" Role="connection" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="connection">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_message_person1">
+          <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
+          <End Type="TeeMsModel.message" Role="message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="message">
+              <PropertyRef Name="person_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1342,27 +1342,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="connection">
-            <EntityTypeMapping TypeName="TeeMsModel.connection">
-              <MappingFragment StoreEntitySet="connection">
-                <ScalarProperty Name="person_person_id" ColumnName="person_person_id" />
-                <ScalarProperty Name="connection_time" ColumnName="connection_time" />
-                <ScalarProperty Name="connection_username" ColumnName="connection_username" />
-                <ScalarProperty Name="connected" ColumnName="connected" />
-                <ScalarProperty Name="connection_id" ColumnName="connection_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="message">
-            <EntityTypeMapping TypeName="TeeMsModel.message">
-              <MappingFragment StoreEntitySet="message">
-                <ScalarProperty Name="person_person_id" ColumnName="person_person_id" />
-                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
-                <ScalarProperty Name="message_content" ColumnName="message_content" />
-                <ScalarProperty Name="message_id" ColumnName="message_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="assignment">
             <EntityTypeMapping TypeName="TeeMsModel.assignment">
               <MappingFragment StoreEntitySet="assignment">
@@ -1410,6 +1389,27 @@
                 <ScalarProperty Name="description" ColumnName="description" />
                 <ScalarProperty Name="name" ColumnName="name" />
                 <ScalarProperty Name="project_id" ColumnName="project_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="connection">
+            <EntityTypeMapping TypeName="TeeMsModel.connection">
+              <MappingFragment StoreEntitySet="connection">
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="connection_time" ColumnName="connection_time" />
+                <ScalarProperty Name="connection_username" ColumnName="connection_username" />
+                <ScalarProperty Name="connected" ColumnName="connected" />
+                <ScalarProperty Name="connection_id" ColumnName="connection_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="message">
+            <EntityTypeMapping TypeName="TeeMsModel.message">
+              <MappingFragment StoreEntitySet="message">
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="message_content" ColumnName="message_content" />
+                <ScalarProperty Name="message_id" ColumnName="message_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -35,9 +35,9 @@ public partial class TeeMsEntities : DbContext
     public DbSet<assignment_component_person> assignment_component_person { get; set; }
     public DbSet<project_person> project_person { get; set; }
     public DbSet<comment> comment { get; set; }
-    public DbSet<connection> connection { get; set; }
-    public DbSet<message> message { get; set; }
     public DbSet<assignment> assignment { get; set; }
     public DbSet<group> group { get; set; }
     public DbSet<project> project { get; set; }
+    public DbSet<connection> connection { get; set; }
+    public DbSet<message> message { get; set; }
 }
