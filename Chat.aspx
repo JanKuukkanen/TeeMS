@@ -55,6 +55,9 @@
 
                 // Create a function that the hub can call to fill the chat memberlist
                 chat.client.fillMemberList = function (jsonmemberlist) {
+
+                    $('#chatMembers').empty();
+
                     var memberlist = JSON.parse(jsonmemberlist);
 
                     console.log("Hello");

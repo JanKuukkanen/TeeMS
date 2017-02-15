@@ -11,6 +11,7 @@ namespace SignalRChat
 {
     public class TeeMsHub : Hub
     {
+        // First we'll set set the database entity context and formsauthentication ticket
         private TeeMsEntities ctx;
         private FormsAuthenticationTicket ticket;
 
@@ -19,12 +20,14 @@ namespace SignalRChat
             Clients.All.hello();
         }
 
-        public override Task OnConnected()
+        // Method to call when a client connects to the hub and forms a hubproxy
+        public override async Task OnConnected()
         {
             try 
 	        {
                 ctx = new TeeMsEntities();
-                HttpCookie authcookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                HttpContextBase httpctx = Context.Request.GetHttpContext();
+                HttpCookie authcookie = httpctx.Request.Cookies[FormsAuthentication.FormsCookieName];
                 ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
                 var connectionlist = ctx.connection.ToList();
@@ -76,7 +79,7 @@ namespace SignalRChat
 
                 GetChatMembers();
 
-                return base.OnConnected();
+                await base.OnConnected();
 	        }
 	        catch (Exception ex)
 	        {
@@ -85,12 +88,14 @@ namespace SignalRChat
 	        }
         }
 
-        public override Task OnReconnected()
+        // Method to call when a client reconnects to the hub
+        public override async Task OnReconnected()
         {
             try
             {
                 ctx = new TeeMsEntities();
-                HttpCookie authcookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                HttpContextBase httpctx = Context.Request.GetHttpContext();
+                HttpCookie authcookie = httpctx.Request.Cookies[FormsAuthentication.FormsCookieName];
                 ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
                 var connectionlist = ctx.connection.ToList();
@@ -108,7 +113,7 @@ namespace SignalRChat
                     }
                 }
 
-                return base.OnReconnected();
+                await base.OnReconnected();
             }
             catch (Exception ex)
             {
@@ -117,16 +122,21 @@ namespace SignalRChat
             }
         }
 
-        public override Task OnDisconnected(bool stopCalled)
+        // Method to call when a client disconnects from the hub either gracefully or not
+        public override async Task OnDisconnected(bool stopCalled)
         {
             try
             {
-                HttpCookie authcookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                ctx = new TeeMsEntities();
+                // We'll use Context.Request.GetHttpContext because during a disconnect HttpContext.Current can be null
+                HttpContextBase httpctx = Context.Request.GetHttpContext();
+                HttpCookie authcookie = httpctx.Request.Cookies[FormsAuthentication.FormsCookieName];
                 ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
                 var connectionlist = ctx.connection.ToList();
-                var rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
+                var rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault(); 
 
+                // We'll set the connection property in the database to false and enter the time of disconnect
                 foreach (var connection in connectionlist)
                 {
                     if (connection.person_id == rightperson.person_id)
@@ -140,7 +150,9 @@ namespace SignalRChat
                     }
                 }
 
-                return base.OnDisconnected(stopCalled);
+                GetChatMembers();
+
+                await base.OnDisconnected(stopCalled);
             }
             catch (Exception ex)
             {
@@ -171,29 +183,12 @@ namespace SignalRChat
         {
             try
             {
-                HttpCookie authcookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
+                HttpContextBase httpctx = Context.Request.GetHttpContext();
+                HttpCookie authcookie = httpctx.Request.Cookies[FormsAuthentication.FormsCookieName];
                 ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
                 // Call the broadcastMessage method to update clients.
                 Clients.All.broadcastMessage(ticket.Name, message);
-            }
-            catch (Exception ex)
-            {
-                
-                throw ex;
-            }
-        }
-
-        public string Authenticate()
-        {
-            try
-            {
-                HttpCookie authcookie = HttpContext.Current.Request.Cookies[FormsAuthentication.FormsCookieName];
-                ticket = FormsAuthentication.Decrypt(authcookie.Value);
-
-                var rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
-
-                return rightperson.username;
             }
             catch (Exception ex)
             {
