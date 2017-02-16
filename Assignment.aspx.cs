@@ -19,6 +19,7 @@ public partial class Assignment : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        // set the database context using entity framework
         ctx = new TeeMsEntities();
 
         string project_id = "";
@@ -100,6 +101,8 @@ public partial class Assignment : System.Web.UI.Page
 
     protected void btnEditAssignmentDescription_Click(object sender, EventArgs e)
     {
+        // Switch the assignment description textbox to be editable or non editable depending on it's current state
+        // and save any possible changes made in the ddescription
         if (txtAssignmentDescription.ReadOnly == true)
         {
             txtAssignmentDescription.ReadOnly = false;
@@ -257,6 +260,7 @@ public partial class Assignment : System.Web.UI.Page
 
                         var rightassignmentperson = ctx.assignment_person.Where(aspe => aspe.person_id == rightperson.person_id && aspe.amt_id == rightassignment.amt_id && aspe.project_id == toremoveproject).SingleOrDefault();
 
+                        // If the assignmentperson was found remove it from the database and redirect the user to the assignmnet page
                         if (rightassignmentperson != null)
                         {
                             ctx.assignment_person.Remove(rightassignmentperson);

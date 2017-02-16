@@ -14,6 +14,7 @@ public partial class CreateProject : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        // set the database context using entity framework
         ctx = new TeeMsEntities();
 
         try
@@ -75,6 +76,7 @@ public partial class CreateProject : System.Web.UI.Page
 
     protected int CreateNewProject()
     {
+        // Initialize usercontentmanager class with the users username
         UserContentManager contentmanager = new UserContentManager(ticket.Name);
 
         string projectname = txtProjectName.Text;

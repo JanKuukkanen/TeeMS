@@ -6,18 +6,23 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
     <div class="w3-rest w3-container">
         <div style="width:60%;">
-            <div id="divChatScreen" style="border:2px solid black; overflow:auto; height:500px; float:left; width:70%;">
+
+            <div id="divGroupChatList" style="border:2px solid black; overflow:auto; height:500px; float:left; width:20%;">
+                
+            </div>
+
+            <div id="divChatScreen" style="border:2px solid black; overflow:auto; height:500px; float:left; width:60%;">
                 <ul id="discussion">
                 </ul>
             </div>
 
-            <div id="divChatMemberScreen" style="border:2px solid black; overflow:auto; height:500px; float:left; width:30%;">
+            <div id="divChatMemberScreen" style="border:2px solid black; overflow:auto; height:500px; float:left; width:20%;">
                 <ul id="chatMembers">
                 </ul>
             </div>
 
             <div class="container" style="float:left; width:100%;">
-                <input type="text" id="message" />
+                <input type="text" id="message" style="width:50%;" />
                 <input type="button" id="sendmessage" value="Send" class="w3-btn" />
                 <input type="hidden" id="displayname" />
             </div>

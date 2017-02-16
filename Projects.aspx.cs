@@ -33,7 +33,7 @@ public partial class Projects : System.Web.UI.Page
     protected void FillDivs()
     {
         // Fill your projects section with the users projects and assignments
-        // and fill your groups with the users groups
+        // and fill your groups section with the users groups
         UserContentManager contentmanager = new UserContentManager(ticket.Name);
 
         try

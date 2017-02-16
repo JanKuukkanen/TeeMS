@@ -172,6 +172,7 @@ public partial class Home : System.Web.UI.Page
             List<group> usergroups = contentmanager.GetUserGroups();
             List<project> userprojects = contentmanager.GetUserProjects();
 
+            // First fill the projects section of the page
             foreach (var project in userprojects)
             {
 
@@ -186,11 +187,23 @@ public partial class Home : System.Web.UI.Page
 
                 projectinnerdiv.Attributes.Add("class", "w3-container");
 
-                projectimage.Attributes.Add("src", project.picture_url);
                 projectimage.Attributes.Add("alt", "Project image");
                 projectimage.Attributes.Add("height", "150px");
                 projectimage.Attributes.Add("width", "150px");
                 projectimage.Attributes.Add("style", "float:left;");
+
+                // if the group has an exsiting picture in the database, we'll fetch it
+                if (project.picture_url != null)
+                {
+                    if (project.picture_url != String.Empty)
+                    {
+                        projectimage.Attributes.Add("src", project.picture_url);
+                    }
+                }
+                else
+                {
+                    projectimage.Attributes.Add("src", Request.ApplicationPath + "Images/no_image.png");
+                }
 
                 projectinnerdiv.Controls.Add(projectimage);
 
@@ -208,6 +221,7 @@ public partial class Home : System.Web.UI.Page
                 divYourProjects.Controls.Add(projectdiv);
             }
 
+            // Next we'll fill the groups section of the page
             foreach (var group in usergroups)
             {
                 HtmlGenericControl groupdiv = new HtmlGenericControl("div");
@@ -221,12 +235,12 @@ public partial class Home : System.Web.UI.Page
 
                 groupinnerdiv.Attributes.Add("class", "w3-container");
 
-                groupimage.Attributes.Add("src", group.group_picture_url);
                 groupimage.Attributes.Add("alt", "Group image");
                 groupimage.Attributes.Add("height", "150px");
                 groupimage.Attributes.Add("width", "150px");
                 groupimage.Attributes.Add("style", "float:left;");
 
+                // if the group has an exsiting picture in the database, we'll fetch it
                 if (group.group_picture_url != null)
                 {
                     if (group.group_picture_url != String.Empty)

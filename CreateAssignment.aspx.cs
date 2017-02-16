@@ -14,6 +14,7 @@ public partial class CreateAssignment : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        // set the database context using entity framework
         ctx = new TeeMsEntities();
 
         try
