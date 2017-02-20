@@ -8,7 +8,8 @@
         <div style="width:60%;">
 
             <div id="divGroupChatList" style="border:2px solid black; overflow:auto; height:500px; float:left; width:20%;">
-                
+                <ul id="chatGroups">
+                </ul>
             </div>
 
             <div id="divChatScreen" style="border:2px solid black; overflow:auto; height:500px; float:left; width:60%;">
@@ -65,11 +66,28 @@
 
                     var memberlist = JSON.parse(jsonmemberlist);
 
-                    console.log("Hello");
-
                     // Iterate through the memberlist object using key-value pairs
                     $.each(memberlist, function (key, value) {
                         $('#chatMembers').append('<li><strong>' + value + '</strong>' + '</li>');
+                    });
+                };
+
+                // Create a function that the hub can call to fill the chat grouplist
+                chat.client.fillGroupList = function (jsongrouplist) {
+                    $('#chatGroups').empty();
+
+                    var grouplist = JSON.parse(jsongrouplist);
+
+                    // Iterate through the grouplist object using key-value pairs
+                    $.each(grouplist, function (key, value) {
+                        $('#chatGroups').append('<li>' + $('<button/>', {
+                            text: value, id: 'btn_' + key, click:
+                                function () { chat.server.joinGroup(value);}
+                        }) + '</li>');
+                        $('#chatGroups').append('<li><input type="button" id="' + key + '" value="' + value + '" class="w3-btn" /></li>');
+
+                        // Store the grouplist
+                        localStorage.setItem(key, value);
                     });
                 };
 
@@ -79,9 +97,6 @@
                 $('#message').focus();
                 // Start the connection.
                 $.connection.hub.start().done(function () {
-
-                    // Get chat members from the server
-                    chat.server.getChatMembers();
 
                     $('#sendmessage').click(function () {
                         // Call the Send method on the hub. 

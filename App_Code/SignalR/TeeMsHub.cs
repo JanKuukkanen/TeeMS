@@ -77,7 +77,12 @@ namespace SignalRChat
                     ctx.SaveChanges();
                 }
 
-                GetChatMembers();
+                List<string> grouplist = GetMemberGroups(rightperson);
+
+                if (grouplist != null)
+                {
+                    await JoinGroup(grouplist[0]); 
+                }
 
                 await base.OnConnected();
 	        }
@@ -150,8 +155,6 @@ namespace SignalRChat
                     }
                 }
 
-                GetChatMembers();
-
                 await base.OnDisconnected(stopCalled);
             }
             catch (Exception ex)
@@ -159,6 +162,17 @@ namespace SignalRChat
 
                 throw ex;
             }
+        }
+
+        public async Task JoinGroup(string groupname)
+        {
+            await Groups.Add(Context.ConnectionId, groupname);
+            Clients.Group(groupname).addContosoChatMessageToPage(Context.ConnectionId + " added to group");
+        }
+
+        public Task LeaveGroup(string groupName)
+        {
+            return Groups.Remove(Context.ConnectionId, groupName);
         }
 
         public void GetChatMembers()
@@ -169,8 +183,42 @@ namespace SignalRChat
 
                 string connectionjson = JsonConvert.SerializeObject(memberlist);
 
-                // Call fillMemberList method to get the memberlist
+                // Call fillMemberList method on the clients side
                 Clients.All.fillMemberList(connectionjson);
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+        public List<string> GetMemberGroups(person rightperson)
+        {
+            try
+            {
+                var groupmemberlist = rightperson.group_member.ToList();
+
+                List<group> grouplist = new List<group>();
+
+                foreach (var groupmember in groupmemberlist)
+                {
+                    grouplist.Add(groupmember.group);
+                }
+
+                List<string> groupnamelist = new List<string>();
+
+                foreach (var group in grouplist)
+                {
+                    groupnamelist.Add(group.name);
+                }
+
+                string groupjson = JsonConvert.SerializeObject(groupnamelist);
+
+                // Call fillGroupList method on the clients side
+                Clients.All.fillGroupList(groupjson);
+
+                return groupnamelist;
             }
             catch (Exception ex)
             {
