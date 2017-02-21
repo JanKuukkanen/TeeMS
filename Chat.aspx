@@ -8,6 +8,10 @@
         <div style="width:60%;">
 
             <div id="divGroupChatList" style="border:2px solid black; overflow:auto; height:500px; float:left; width:20%;">
+                <div id="divChatGroups" class="w3-container">
+
+                </div>
+
                 <ul id="chatGroups">
                 </ul>
             </div>
@@ -80,15 +84,23 @@
 
                     // Iterate through the grouplist object using key-value pairs
                     $.each(grouplist, function (key, value) {
-                        $('#chatGroups').append('<li>' + $('<button/>', {
-                            text: value, id: 'btn_' + key, click:
-                                function () { chat.server.joinGroup(value);}
-                        }) + '</li>');
-                        $('#chatGroups').append('<li><input type="button" id="' + key + '" value="' + value + '" class="w3-btn" /></li>');
+                        //Create an input type dynamically.   
+                        var element = document.createElement("input");
+                        //Assign different attributes to the element. 
+                        element.type = "button";
+                        element.value = value;
+                        element.id = key;
+                        element.className = "w3-btn";
+                        element.onclick = function () {
+                            chat.server.joinGroup(value);
+                        };
+
+                        divChatGroups.appendChild(element);
 
                         // Store the grouplist
                         localStorage.setItem(key, value);
-                    });
+                    })
+                        //$('#chatGroups').append('<li><input type="button" id="' + key + '" value="' + value + '" class="w3-btn" /></li>');
                 };
 
                 // Get the user name and store it to prepend to messages.

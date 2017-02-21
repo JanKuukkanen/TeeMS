@@ -26,12 +26,9 @@ namespace SignalRChat
             try 
 	        {
                 ctx = new TeeMsEntities();
-                HttpContextBase httpctx = Context.Request.GetHttpContext();
-                HttpCookie authcookie = httpctx.Request.Cookies[FormsAuthentication.FormsCookieName];
-                ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
                 var connectionlist = ctx.connection.ToList();
-                var rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
 
                 if (connectionlist.Count != 0)
                 {
@@ -99,12 +96,9 @@ namespace SignalRChat
             try
             {
                 ctx = new TeeMsEntities();
-                HttpContextBase httpctx = Context.Request.GetHttpContext();
-                HttpCookie authcookie = httpctx.Request.Cookies[FormsAuthentication.FormsCookieName];
-                ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
                 var connectionlist = ctx.connection.ToList();
-                var rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
 
                 foreach (var connection in connectionlist)
                 {
@@ -133,13 +127,9 @@ namespace SignalRChat
             try
             {
                 ctx = new TeeMsEntities();
-                // We'll use Context.Request.GetHttpContext because during a disconnect HttpContext.Current can be null
-                HttpContextBase httpctx = Context.Request.GetHttpContext();
-                HttpCookie authcookie = httpctx.Request.Cookies[FormsAuthentication.FormsCookieName];
-                ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
                 var connectionlist = ctx.connection.ToList();
-                var rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault(); 
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault(); 
 
                 // We'll set the connection property in the database to false and enter the time of disconnect
                 foreach (var connection in connectionlist)
@@ -167,7 +157,7 @@ namespace SignalRChat
         public async Task JoinGroup(string groupname)
         {
             await Groups.Add(Context.ConnectionId, groupname);
-            Clients.Group(groupname).addContosoChatMessageToPage(Context.ConnectionId + " added to group");
+            Clients.Group(groupname).broadcastMessage("ChatControl", Context.ConnectionId + " added to group: " + groupname);
         }
 
         public Task LeaveGroup(string groupName)
@@ -216,7 +206,7 @@ namespace SignalRChat
                 string groupjson = JsonConvert.SerializeObject(groupnamelist);
 
                 // Call fillGroupList method on the clients side
-                Clients.All.fillGroupList(groupjson);
+                Clients.Client(Context.ConnectionId).fillGroupList(groupjson);
 
                 return groupnamelist;
             }
@@ -231,16 +221,36 @@ namespace SignalRChat
         {
             try
             {
-                HttpContextBase httpctx = Context.Request.GetHttpContext();
-                HttpCookie authcookie = httpctx.Request.Cookies[FormsAuthentication.FormsCookieName];
-                ticket = FormsAuthentication.Decrypt(authcookie.Value);
+                if (Context.User.Identity.IsAuthenticated)
+                {
+                    string username = Context.User.Identity.Name;
 
-                // Call the broadcastMessage method to update clients.
-                Clients.All.broadcastMessage(ticket.Name, message);
+                    // Call the broadcastMessage method to update clients.
+                    Clients.All.broadcastMessage(username, message);
+                }
             }
             catch (Exception ex)
             {
                 
+                throw ex;
+            }
+        }
+
+        public void Send(string name, string message, string groupname)
+        {
+            try
+            {
+                if (Context.User.Identity.IsAuthenticated)
+                {
+                    string username = Context.User.Identity.Name;
+
+                    // Call the broadcastMessage method to update clients.
+                    Clients.Group(groupname).broadcastMessage(name, message);
+                }
+            }
+            catch (Exception ex)
+            {
+
                 throw ex;
             }
         }
