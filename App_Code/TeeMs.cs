@@ -17,6 +17,7 @@ public partial class assignment
         this.assignment_component = new HashSet<assignment_component>();
         this.assignment_person = new HashSet<assignment_person>();
         this.comment = new HashSet<comment>();
+        this.connection = new HashSet<connection>();
     }
 
     public int amt_id { get; set; }
@@ -35,6 +36,7 @@ public partial class assignment
     public virtual ICollection<assignment_person> assignment_person { get; set; }
     public virtual project project { get; set; }
     public virtual ICollection<comment> comment { get; set; }
+    public virtual ICollection<connection> connection { get; set; }
 }
 
 public partial class assignment_component
@@ -101,8 +103,15 @@ public partial class connection
     public string connection_username { get; set; }
     public Nullable<System.DateTime> connection_time { get; set; }
     public int person_id { get; set; }
+    public Nullable<int> group_id { get; set; }
+    public Nullable<int> project_id { get; set; }
+    public Nullable<int> amt_id { get; set; }
+    public Nullable<int> assignment_project_id { get; set; }
 
+    public virtual assignment assignment { get; set; }
+    public virtual group group { get; set; }
     public virtual person person { get; set; }
+    public virtual project project { get; set; }
 }
 
 public partial class group
@@ -112,6 +121,7 @@ public partial class group
         this.group_member = new HashSet<group_member>();
         this.project_group = new HashSet<project_group>();
         this.project_person = new HashSet<project_person>();
+        this.connection = new HashSet<connection>();
     }
 
     public int group_id { get; set; }
@@ -128,6 +138,7 @@ public partial class group
     public virtual organization organization { get; set; }
     public virtual ICollection<project_group> project_group { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
+    public virtual ICollection<connection> connection { get; set; }
 }
 
 public partial class group_member
@@ -201,8 +212,8 @@ public partial class person
         this.assignment_component_person = new HashSet<assignment_component_person>();
         this.project_person = new HashSet<project_person>();
         this.comment = new HashSet<comment>();
-        this.connection = new HashSet<connection>();
         this.message = new HashSet<message>();
+        this.connection = new HashSet<connection>();
     }
 
     public int person_id { get; set; }
@@ -221,8 +232,8 @@ public partial class person
     public virtual ICollection<assignment_component_person> assignment_component_person { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
     public virtual ICollection<comment> comment { get; set; }
-    public virtual ICollection<connection> connection { get; set; }
     public virtual ICollection<message> message { get; set; }
+    public virtual ICollection<connection> connection { get; set; }
 }
 
 public partial class project
@@ -233,6 +244,7 @@ public partial class project
         this.comment = new HashSet<comment>();
         this.project_group = new HashSet<project_group>();
         this.project_person = new HashSet<project_person>();
+        this.connection = new HashSet<connection>();
     }
 
     public int project_id { get; set; }
@@ -252,6 +264,7 @@ public partial class project
     public virtual ICollection<comment> comment { get; set; }
     public virtual ICollection<project_group> project_group { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
+    public virtual ICollection<connection> connection { get; set; }
 }
 
 public partial class project_group

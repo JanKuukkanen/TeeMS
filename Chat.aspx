@@ -92,7 +92,11 @@
                         element.id = key;
                         element.className = "w3-btn";
                         element.onclick = function () {
-                            chat.server.joinGroup(value);
+
+                            // Call server side methods without the generated proxy
+                            chat.invoke('leaveGroup');
+                            chat.invoke('joinGroup', value);
+                            // contosoChatHubProxy.invoke('newContosoChatMessage', { UserName: userName, Message: message}).done(function () {
                         };
 
                         divChatGroups.appendChild(element);
@@ -100,7 +104,6 @@
                         // Store the grouplist
                         localStorage.setItem(key, value);
                     })
-                        //$('#chatGroups').append('<li><input type="button" id="' + key + '" value="' + value + '" class="w3-btn" /></li>');
                 };
 
                 // Get the user name and store it to prepend to messages.
@@ -120,6 +123,7 @@
                         var chatscreen = document.getElementById('divChatScreen');
                         setTimeout(function () { chatscreen.scrollTop = chatscreen.scrollHeight; }, 200);
                     });
+
                 });
             });
         </script>

@@ -78,7 +78,8 @@ namespace SignalRChat
 
                 if (grouplist != null)
                 {
-                    await JoinGroup(grouplist[0]); 
+                    await JoinGroup(grouplist[0]);
+                    GetChatMembers(grouplist[0]);
                 }
 
                 await base.OnConnected();
@@ -156,29 +157,97 @@ namespace SignalRChat
 
         public async Task JoinGroup(string groupname)
         {
-            await Groups.Add(Context.ConnectionId, groupname);
-            Clients.Group(groupname).broadcastMessage("ChatControl", Context.ConnectionId + " added to group: " + groupname);
-        }
-
-        public Task LeaveGroup(string groupName)
-        {
-            return Groups.Remove(Context.ConnectionId, groupName);
-        }
-
-        public void GetChatMembers()
-        {
             try
             {
-                List<string> memberlist = ctx.connection.Where(con => con.connected == true).Select(con => con.connection_username).ToList();
+                ctx = new TeeMsEntities();
 
-                string connectionjson = JsonConvert.SerializeObject(memberlist);
+                await Groups.Add(Context.ConnectionId, groupname);
 
-                // Call fillMemberList method on the clients side
-                Clients.All.fillMemberList(connectionjson);
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                var rightgroup = rightperson.group_member.Where(gm => gm.group.name == groupname).SingleOrDefault();
+
+                rightconnection.group_id = rightgroup.group_id;
+                ctx.SaveChanges();
+
+                Clients.Group(groupname).broadcastMessage("ChatControl", rightperson.username + " Joined group: " + groupname);
+
+                GetChatMembers(rightgroup.group.name);
             }
             catch (Exception ex)
             {
                 
+                throw ex;
+            }
+        }
+
+        public async Task LeaveGroup()
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                var rightgroup = rightconnection.group;
+
+                await Groups.Remove(Context.ConnectionId, rightgroup.name);
+
+                rightconnection.group_id = null;
+                ctx.SaveChanges();
+
+                Clients.OthersInGroup(rightgroup.name).broadcastMessage("ChatControl", rightperson.username + " Left group");
+                ChatMemberLeft(rightgroup.name);
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+        public void GetChatMembers(string groupname)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightgroup = rightperson.group_member.Where(gm => gm.group.name == groupname).SingleOrDefault();
+
+                List<string> memberlist = ctx.connection.Where(con => con.connected == true && con.group_id == rightgroup.group_id).Select(con => con.connection_username).ToList();
+
+                string connectionjson = JsonConvert.SerializeObject(memberlist);
+
+                // Call fillMemberList method on the clients side
+                Clients.Group(groupname).fillMemberList(connectionjson);
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+        public void ChatMemberLeft(string groupname)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightgroup = rightperson.group_member.Where(gm => gm.group.name == groupname).SingleOrDefault();
+
+                List<string> memberlist = ctx.connection.Where(con => con.connected == true && con.group_id == rightgroup.group_id).Select(con => con.connection_username).ToList();
+
+                string connectionjson = JsonConvert.SerializeObject(memberlist);
+
+                // Call fillMemberList method on the clients side
+                Clients.OthersInGroup(groupname).fillMemberList(connectionjson);
+            }
+            catch (Exception ex)
+            {
+
                 throw ex;
             }
         }
