@@ -286,16 +286,20 @@ namespace SignalRChat
             }
         }
 
-        public void Send(string name, string message)
+        public void Send(string message)
         {
             try
             {
                 if (Context.User.Identity.IsAuthenticated)
                 {
-                    string username = Context.User.Identity.Name;
+                    ctx = new TeeMsEntities();
+
+                    var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                    var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                    var rightgroup = rightconnection.group;
 
                     // Call the broadcastMessage method to update clients.
-                    Clients.All.broadcastMessage(username, message);
+                    Clients.Group(rightgroup.name).broadcastMessage(rightperson.username, message);
                 }
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Chat.aspx.cs" Inherits="Chat" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+    <link href="CSS/Chat.css" rel="stylesheet" type="text/css" />
     <title>Chat</title>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
@@ -90,13 +91,18 @@
                         element.type = "button";
                         element.value = value;
                         element.id = key;
-                        element.className = "w3-btn";
+                        element.className = "ChatGrouppButtons";
                         element.onclick = function () {
-
                             // Call server side methods without the generated proxy
                             chat.invoke('leaveGroup');
                             chat.invoke('joinGroup', value);
-                            // contosoChatHubProxy.invoke('newContosoChatMessage', { UserName: userName, Message: message}).done(function () {
+
+                            var elements = document.getElementsByClassName('ChatGrouppButtons');
+                            for (var i = 0; i < elements.length; i++) {
+                                elements[i].style.backgroundColor = "purple";
+                            }
+
+                            document.getElementById(key).style.backgroundColor = "black";
                         };
 
                         divChatGroups.appendChild(element);
@@ -115,7 +121,7 @@
 
                     $('#sendmessage').click(function () {
                         // Call the Send method on the hub. 
-                        chat.server.send($('#displayname').val(), $('#message').val());
+                        chat.server.send($('#message').val());
                         // Clear text box and reset focus for next comment. 
                         $('#message').val('').focus();
 

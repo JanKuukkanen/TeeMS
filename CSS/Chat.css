@@ -1,0 +1,16 @@
+﻿body {
+}
+
+.ChatGrouppButtons
+{
+    width:100%;
+    height:50px;
+    margin-top:5px;
+    background-color:purple;
+    color:white;
+}
+
+.ChatGrouppButtons:active
+{
+    background-color:black;
+}
