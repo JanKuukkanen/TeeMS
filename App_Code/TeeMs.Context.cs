@@ -38,6 +38,6 @@ public partial class TeeMsEntities : DbContext
     public DbSet<assignment> assignment { get; set; }
     public DbSet<group> group { get; set; }
     public DbSet<project> project { get; set; }
-    public DbSet<message> message { get; set; }
     public DbSet<connection> connection { get; set; }
+    public DbSet<message> message { get; set; }
 }

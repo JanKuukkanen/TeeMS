@@ -122,6 +122,7 @@ public partial class group
         this.project_group = new HashSet<project_group>();
         this.project_person = new HashSet<project_person>();
         this.connection = new HashSet<connection>();
+        this.message = new HashSet<message>();
     }
 
     public int group_id { get; set; }
@@ -139,6 +140,7 @@ public partial class group
     public virtual ICollection<project_group> project_group { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
     public virtual ICollection<connection> connection { get; set; }
+    public virtual ICollection<message> message { get; set; }
 }
 
 public partial class group_member
@@ -182,7 +184,9 @@ public partial class message
     public string message_content { get; set; }
     public System.DateTime creation_date { get; set; }
     public int person_id { get; set; }
+    public int group_id { get; set; }
 
+    public virtual group group { get; set; }
     public virtual person person { get; set; }
 }
 
@@ -212,8 +216,8 @@ public partial class person
         this.assignment_component_person = new HashSet<assignment_component_person>();
         this.project_person = new HashSet<project_person>();
         this.comment = new HashSet<comment>();
-        this.message = new HashSet<message>();
         this.connection = new HashSet<connection>();
+        this.message = new HashSet<message>();
     }
 
     public int person_id { get; set; }
@@ -232,8 +236,8 @@ public partial class person
     public virtual ICollection<assignment_component_person> assignment_component_person { get; set; }
     public virtual ICollection<project_person> project_person { get; set; }
     public virtual ICollection<comment> comment { get; set; }
-    public virtual ICollection<message> message { get; set; }
     public virtual ICollection<connection> connection { get; set; }
+    public virtual ICollection<message> message { get; set; }
 }
 
 public partial class project

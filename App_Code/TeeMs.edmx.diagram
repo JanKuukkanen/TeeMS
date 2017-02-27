@@ -62,13 +62,14 @@
         <AssociationConnector Association="TeeMsModel.fk_project_person_group1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_group_project1" />
         <AssociationConnector Association="TeeMsModel.fk_project_has_person_project1" />
-        <EntityTypeShape EntityType="TeeMsModel.message" Width="1.5" PointX="7.75" PointY="12" />
-        <AssociationConnector Association="TeeMsModel.fk_message_person1" />
         <EntityTypeShape EntityType="TeeMsModel.connection" Width="1.5" PointX="4.375" PointY="12.5" />
         <AssociationConnector Association="TeeMsModel.fk_connection_assignment1" />
         <AssociationConnector Association="TeeMsModel.fk_connection_group1" />
         <AssociationConnector Association="TeeMsModel.fk_connection_person1" />
         <AssociationConnector Association="TeeMsModel.fk_connection_project1" />
+        <EntityTypeShape EntityType="TeeMsModel.message" Width="1.5" PointX="7.75" PointY="12.75" />
+        <AssociationConnector Association="TeeMsModel.fk_message_group1" />
+        <AssociationConnector Association="TeeMsModel.fk_message_person1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

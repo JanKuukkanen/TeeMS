@@ -91,6 +91,10 @@
             <End Role="organization" EntitySet="organization" />
             <End Role="group" EntitySet="group" />
           </AssociationSet>
+          <AssociationSet Name="fk_message_group1" Association="TeeMsModel.Store.fk_message_group1">
+            <End Role="group" EntitySet="group" />
+            <End Role="message" EntitySet="message" />
+          </AssociationSet>
           <AssociationSet Name="fk_message_person1" Association="TeeMsModel.Store.fk_message_person1">
             <End Role="person" EntitySet="person" />
             <End Role="message" EntitySet="message" />
@@ -253,11 +257,13 @@
           <Key>
             <PropertyRef Name="message_id" />
             <PropertyRef Name="person_id" />
+            <PropertyRef Name="group_id" />
           </Key>
           <Property Name="message_id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="message_content" Type="varchar" Nullable="false" MaxLength="255" />
           <Property Name="creation_date" Type="datetime" Nullable="false" />
           <Property Name="person_id" Type="int" Nullable="false" />
+          <Property Name="group_id" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="organization">
           <Key>
@@ -550,6 +556,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="fk_message_group1">
+          <End Role="group" Type="TeeMsModel.Store.group" Multiplicity="1" />
+          <End Role="message" Type="TeeMsModel.Store.message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="message">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_message_person1">
           <End Role="person" Type="TeeMsModel.Store.person" Multiplicity="1" />
           <End Role="message" Type="TeeMsModel.Store.message" Multiplicity="*" />
@@ -730,11 +748,6 @@
             <End Role="project" EntitySet="project" />
             <End Role="project_person" EntitySet="project_person" />
           </AssociationSet>
-          <EntitySet Name="message" EntityType="TeeMsModel.message" />
-          <AssociationSet Name="fk_message_person1" Association="TeeMsModel.fk_message_person1">
-            <End Role="person" EntitySet="person" />
-            <End Role="message" EntitySet="message" />
-          </AssociationSet>
           <EntitySet Name="connection" EntityType="TeeMsModel.connection" />
           <AssociationSet Name="fk_connection_assignment1" Association="TeeMsModel.fk_connection_assignment1">
             <End Role="assignment" EntitySet="assignment" />
@@ -751,6 +764,15 @@
           <AssociationSet Name="fk_connection_project1" Association="TeeMsModel.fk_connection_project1">
             <End Role="project" EntitySet="project" />
             <End Role="connection" EntitySet="connection" />
+          </AssociationSet>
+          <EntitySet Name="message" EntityType="TeeMsModel.message" />
+          <AssociationSet Name="fk_message_group1" Association="TeeMsModel.fk_message_group1">
+            <End Role="group" EntitySet="group" />
+            <End Role="message" EntitySet="message" />
+          </AssociationSet>
+          <AssociationSet Name="fk_message_person1" Association="TeeMsModel.fk_message_person1">
+            <End Role="person" EntitySet="person" />
+            <End Role="message" EntitySet="message" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="assignment_component">
@@ -846,8 +868,8 @@
           <NavigationProperty Name="assignment_component_person" Relationship="TeeMsModel.fk_assignment_component_has_person_person1" FromRole="person" ToRole="assignment_component_person" />
           <NavigationProperty Name="project_person" Relationship="TeeMsModel.fk_project_has_person_person1" FromRole="person" ToRole="project_person" />
           <NavigationProperty Name="comment" Relationship="TeeMsModel.fk_comment_person1" FromRole="person" ToRole="comment" />
-          <NavigationProperty Name="message" Relationship="TeeMsModel.fk_message_person1" FromRole="person" ToRole="message" />
           <NavigationProperty Name="connection" Relationship="TeeMsModel.fk_connection_person1" FromRole="person" ToRole="connection" />
+          <NavigationProperty Name="message" Relationship="TeeMsModel.fk_message_person1" FromRole="person" ToRole="message" />
         </EntityType>
         <EntityType Name="role">
           <Key>
@@ -1062,6 +1084,7 @@
           <NavigationProperty Name="project_group" Relationship="TeeMsModel.fk_project_has_group_group1" FromRole="group" ToRole="project_group" />
           <NavigationProperty Name="project_person" Relationship="TeeMsModel.fk_project_person_group1" FromRole="group" ToRole="project_person" />
           <NavigationProperty Name="connection" Relationship="TeeMsModel.fk_connection_group1" FromRole="group" ToRole="connection" />
+          <NavigationProperty Name="message" Relationship="TeeMsModel.fk_message_group1" FromRole="group" ToRole="message" />
         </EntityType>
         <EntityType Name="project">
           <Key>
@@ -1223,29 +1246,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="message">
-          <Key>
-            <PropertyRef Name="message_id" />
-            <PropertyRef Name="person_id" />
-          </Key>
-          <Property Type="Int32" Name="message_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="String" Name="message_content" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Type="DateTime" Name="creation_date" Nullable="false" />
-          <Property Type="Int32" Name="person_id" Nullable="false" />
-          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_message_person1" FromRole="message" ToRole="person" />
-        </EntityType>
-        <Association Name="fk_message_person1">
-          <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
-          <End Type="TeeMsModel.message" Role="message" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="person">
-              <PropertyRef Name="person_id" />
-            </Principal>
-            <Dependent Role="message">
-              <PropertyRef Name="person_id" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityType Name="connection">
           <Key>
             <PropertyRef Name="connection_id" />
@@ -1312,6 +1312,44 @@
             </Principal>
             <Dependent Role="connection">
               <PropertyRef Name="project_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="message">
+          <Key>
+            <PropertyRef Name="message_id" />
+            <PropertyRef Name="person_id" />
+            <PropertyRef Name="group_id" />
+          </Key>
+          <Property Type="Int32" Name="message_id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="String" Name="message_content" Nullable="false" MaxLength="255" FixedLength="false" Unicode="false" />
+          <Property Type="DateTime" Name="creation_date" Nullable="false" />
+          <Property Type="Int32" Name="person_id" Nullable="false" />
+          <Property Type="Int32" Name="group_id" Nullable="false" />
+          <NavigationProperty Name="group" Relationship="TeeMsModel.fk_message_group1" FromRole="message" ToRole="group" />
+          <NavigationProperty Name="person" Relationship="TeeMsModel.fk_message_person1" FromRole="message" ToRole="person" />
+        </EntityType>
+        <Association Name="fk_message_group1">
+          <End Type="TeeMsModel.group" Role="group" Multiplicity="1" />
+          <End Type="TeeMsModel.message" Role="message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="group">
+              <PropertyRef Name="group_id" />
+            </Principal>
+            <Dependent Role="message">
+              <PropertyRef Name="group_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="fk_message_person1">
+          <End Type="TeeMsModel.person" Role="person" Multiplicity="1" />
+          <End Type="TeeMsModel.message" Role="message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="person">
+              <PropertyRef Name="person_id" />
+            </Principal>
+            <Dependent Role="message">
+              <PropertyRef Name="person_id" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1506,16 +1544,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="message">
-            <EntityTypeMapping TypeName="TeeMsModel.message">
-              <MappingFragment StoreEntitySet="message">
-                <ScalarProperty Name="person_id" ColumnName="person_id" />
-                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
-                <ScalarProperty Name="message_content" ColumnName="message_content" />
-                <ScalarProperty Name="message_id" ColumnName="message_id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="connection">
             <EntityTypeMapping TypeName="TeeMsModel.connection">
               <MappingFragment StoreEntitySet="connection">
@@ -1528,6 +1556,17 @@
                 <ScalarProperty Name="connection_username" ColumnName="connection_username" />
                 <ScalarProperty Name="connected" ColumnName="connected" />
                 <ScalarProperty Name="connection_id" ColumnName="connection_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="message">
+            <EntityTypeMapping TypeName="TeeMsModel.message">
+              <MappingFragment StoreEntitySet="message">
+                <ScalarProperty Name="group_id" ColumnName="group_id" />
+                <ScalarProperty Name="person_id" ColumnName="person_id" />
+                <ScalarProperty Name="creation_date" ColumnName="creation_date" />
+                <ScalarProperty Name="message_content" ColumnName="message_content" />
+                <ScalarProperty Name="message_id" ColumnName="message_id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

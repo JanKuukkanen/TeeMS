@@ -77,6 +77,23 @@
                     });
                 };
 
+                // Create a function that the hub can call to fill the chat message screen when the user joins a new group
+                chat.client.fillDiscussion = function (jsonmessages) {
+
+                    $('#discussion').empty();
+
+                    var messagelist = JSON.parse(jsonmessages);
+
+                    $.each(messagelist, function (key, value) {
+                        $('#discussion').append('<li><strong>' + value[0]
+                        + '</strong>:&nbsp;&nbsp;' + value[2] + '</li>');
+                    });
+
+                    // Scroll to the bottom of the divChatScreen
+                    var chatscreen = document.getElementById('divChatScreen');
+                    setTimeout(function () { chatscreen.scrollTop = chatscreen.scrollHeight; }, 200);
+                };
+
                 // Create a function that the hub can call to fill the chat grouplist
                 chat.client.fillGroupList = function (jsongrouplist) {
                     $('#chatGroups').empty();
@@ -106,9 +123,6 @@
                         };
 
                         divChatGroups.appendChild(element);
-
-                        // Store the grouplist
-                        localStorage.setItem(key, value);
                     })
                 };
 

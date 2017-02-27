@@ -173,6 +173,7 @@ namespace SignalRChat
                 Clients.Group(groupname).broadcastMessage("ChatControl", rightperson.username + " Joined group: " + groupname);
 
                 GetChatMembers(rightgroup.group.name);
+                GetConversationMessages(rightgroup.group.name);
             }
             catch (Exception ex)
             {
@@ -198,6 +199,45 @@ namespace SignalRChat
 
                 Clients.OthersInGroup(rightgroup.name).broadcastMessage("ChatControl", rightperson.username + " Left group");
                 ChatMemberLeft(rightgroup.name);
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+        public void GetConversationMessages(string groupname)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightgroup = rightperson.group_member.Where(gm => gm.group.name == groupname).SingleOrDefault();
+
+                var ctxmessagelist = ctx.message.Where(msg => msg.group_id == rightgroup.group.group_id).ToList();
+
+                List<string[]> stringarraylist = new List<string[]>();
+
+                foreach (var message in ctxmessagelist)
+                {
+                    string[] messagearray = { message.person.username, message.creation_date.ToString(), message.message_content };
+                    stringarraylist.Add(messagearray);
+                }
+
+                string messagejson = JsonConvert.SerializeObject(stringarraylist);
+
+                // Call fillDiscussion method on the clients side
+                Clients.Client(Context.ConnectionId).fillDiscussion(messagejson);
+
+                /*List<string> messagelist = ctxmessagelist.Select(msg => msg.message_content).ToList();
+                List<string> senderlist = ctxmessagelist.Select(msg => msg.);
+
+                string messagejson = JsonConvert.SerializeObject(messagelist);
+
+                // Call fillDiscussion method on the clients side
+                Clients.Client(Context.ConnectionId).fillDiscussion(messagejson);*/
             }
             catch (Exception ex)
             {
@@ -297,6 +337,17 @@ namespace SignalRChat
                     var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
                     var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
                     var rightgroup = rightconnection.group;
+
+                    message newmessage = new message()
+                    {
+                        person_id = rightperson.person_id,
+                        group_id = rightgroup.group_id,
+                        message_content = message,
+                        creation_date = DateTime.Now
+                    };
+
+                    ctx.message.Add(newmessage);
+                    ctx.SaveChanges();
 
                     // Call the broadcastMessage method to update clients.
                     Clients.Group(rightgroup.name).broadcastMessage(rightperson.username, message);
