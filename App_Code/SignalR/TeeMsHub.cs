@@ -230,14 +230,6 @@ namespace SignalRChat
 
                 // Call fillDiscussion method on the clients side
                 Clients.Client(Context.ConnectionId).fillDiscussion(messagejson);
-
-                /*List<string> messagelist = ctxmessagelist.Select(msg => msg.message_content).ToList();
-                List<string> senderlist = ctxmessagelist.Select(msg => msg.);
-
-                string messagejson = JsonConvert.SerializeObject(messagelist);
-
-                // Call fillDiscussion method on the clients side
-                Clients.Client(Context.ConnectionId).fillDiscussion(messagejson);*/
             }
             catch (Exception ex)
             {
