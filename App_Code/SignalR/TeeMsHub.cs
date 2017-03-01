@@ -6,8 +6,9 @@ using System.Web.Security;
 using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
-namespace SignalRChat
+namespace SignalRTeeMs
 {
     public class TeeMsHub : Hub
     {
@@ -341,9 +342,47 @@ namespace SignalRChat
                     ctx.message.Add(newmessage);
                     ctx.SaveChanges();
 
+                    Regex regex = new Regex("#PRO(?<tag>[0-9]{1,3})");
+
+                    Match tagmatch = regex.Match(message);
+
+                    if (tagmatch.Success)
+                    {
+                        string stringtag = tagmatch.Groups["tag"].Value;
+                        int projecttag = int.Parse(stringtag);
+                        SaveAsComment(message, rightperson.person_id, projecttag);
+                    }
+
                     // Call the broadcastMessage method to update clients.
                     Clients.Group(rightgroup.name).broadcastMessage(rightperson.username, message);
                 }
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+        protected void SaveAsComment(string message, int personid, int projecttag)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                var rightperson = ctx.person.Where(p => p.person_id == personid).SingleOrDefault();
+                var rightproject = ctx.project.Where(pr => pr.project_tag == projecttag).SingleOrDefault();
+
+                comment newcomment = new comment()
+                {
+                    comment_content = message,
+                    person = rightperson,
+                    project = rightproject,
+                    creation_date = DateTime.Now
+                };
+
+                ctx.comment.Add(newcomment);
+                ctx.SaveChanges();
             }
             catch (Exception ex)
             {

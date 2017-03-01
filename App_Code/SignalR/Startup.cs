@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using Microsoft.Owin;
 using Owin;
-[assembly: OwinStartup(typeof(SignalRChat.Startup))]
+[assembly: OwinStartup(typeof(SignalRTeeMs.Startup))]
 
-namespace SignalRChat
+namespace SignalRTeeMs
 {
     public class Startup
     {

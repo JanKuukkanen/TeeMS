@@ -7,7 +7,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Security;
 using Microsoft.AspNet.SignalR;
-using SignalRChat;
+using SignalRTeeMs;
 
 public partial class Chat : System.Web.UI.Page
 {
