@@ -12,6 +12,7 @@
                 <asp:LinkButton ID="lbtnTriggerTitleChange" OnClick="lbtnTriggerTitleChange_Click" runat="server">
                     <h1 id="h1ProjectName" runat="server">Undefined Project</h1>
                 </asp:LinkButton>
+                <h3 id="h3ProjectTag" runat="server">Project tag: Undefined</h3>
             </div>
 
             <div class="w3-container" style="float:left; width:50%;">
@@ -71,6 +72,32 @@
                     <br />
                     <asp:Button ID="btnCreateNewAssignment" runat="server" Text="Create new" OnClick="btnCreateNewAssignment_Click" CssClass="w3-btn" style="margin-top:10px;" />
                     <asp:Button ID="btnShowAssignmentInfo" runat="server" Text="Show info" OnClick="btnShowAssignmentInfo_Click" CssClass="w3-btn" style="margin-top:10px;" />
+                </div>
+
+                <div class="w3-container" style="margin-top:50px;">
+                    <asp:Button ID="btnArchiveProject" runat="server" Text="Archive Project" CssClass="w3-btn w3-red" />
+                    <ajaxToolkit:ConfirmButtonExtender ID="cbtnArchiveProject" runat="server" TargetControlID="btnArchiveProject" ConfirmText="Are you sure you wish to archive this Project?"
+                     DisplayModalPopupID="mpeConfirmArchiveProject" />
+
+                    <!-- ModalPopupExtender -->
+                    <ajaxToolkit:ModalPopupExtender ID="mpeConfirmArchiveProject" runat="server" PopupControlID="panelConfirmArchiveProject" TargetControlID="btnArchiveProject"
+                        CancelControlID="btnCancelArchiveProject" BackgroundCssClass="w3-blue-grey w3-opacity">
+                    </ajaxToolkit:ModalPopupExtender>
+                    <asp:Panel ID="panelConfirmArchiveProject" runat="server" CssClass="w3-purple">
+                        <div style="width:500px; margin:10px 10px 10px 10px;">
+
+                            <div id="div2" style="margin:auto; width:400px;">
+                                <!-- Display confirmnation text -->
+                                <asp:Label ID="lbConfirmArchiveProject" runat="server" Text="Are you sure you wish to archive this project?" />
+                            </div>
+
+                            <div style=" margin-left:30%; margin-bottom:10px; margin-top:10px; width:400px;">
+                                <asp:Button ID="btnConfirmArchiveProject" runat="server" Text="Confirm" OnClick="btnConfirmArchiveProject_Click" CssClass="w3-btn" />
+                                <asp:Button ID="btnCancelArchiveProject" runat="server" Text="Cancel" CssClass="w3-btn" />
+                            </div>
+                        </div>
+                    </asp:Panel>
+                    <!-- ModalPopupExtender -->
                 </div>
             </div>
         </div>

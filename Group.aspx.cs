@@ -58,6 +58,15 @@ public partial class Group : System.Web.UI.Page
                 rblGroupMembers.Items.Add(person.username);
 	        }
 
+            if (rblGroupMembers.Items.Count > 0)
+            {
+                rblGroupMembers.Items[0].Selected = true; 
+            }
+
+            rblGroupRoleChange.Items.Add("Group Member");
+            rblGroupRoleChange.Items.Add("Group Moderator");
+            rblGroupRoleChange.Items.Add("Group Administrator");
+
             string pictureuri = Request.ApplicationPath + "Images/no_image.png";
 
             if (rightgroup.group_picture_url != null)
@@ -334,6 +343,31 @@ public partial class Group : System.Web.UI.Page
         }
     }
 
+    protected void btnConfirmAssignRole_Click(object sender, EventArgs e)
+    {
+        string newrole = rblGroupRoleChange.SelectedValue;
+        string user_to_change = rblGroupMembers.SelectedValue;
+
+        try
+        {
+            int group_id = int.Parse(Request.QueryString["Group"]);
+
+            var rightrole = ctx.group_role.Where(gro => gro.name == newrole).SingleOrDefault();
+            var rightgroupmember = ctx.group_member.Where(grm => grm.person.username == user_to_change && grm.group_id == group_id).SingleOrDefault();
+
+            if (rightgroupmember.group_role.@class != 1)
+            {
+                rightgroupmember.group_role = rightrole;
+                ctx.SaveChanges();
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
 #endregion
 
 #region SEARCH_FUNCTIONS
@@ -397,7 +431,7 @@ public partial class Group : System.Web.UI.Page
             {
                 var addeduser = ctx.person.Where(p => p.username == username).FirstOrDefault();
                 var addedgroup = ctx.group.Where(g => g.group_id == to_add_groupid).FirstOrDefault();
-                var addedrole = ctx.group_role.Where(gr => gr.@class == 1).FirstOrDefault();
+                var addedrole = ctx.group_role.Where(gr => gr.@class == 4).FirstOrDefault();
 
                 if (addeduser != null && addedgroup != null && addedrole != null)
                 {

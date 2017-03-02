@@ -47,9 +47,40 @@
                     <asp:RadioButtonList ID="rblGroupMembers" runat="server"></asp:RadioButtonList>
                     <br />
                     <asp:Button ID="btnAddMembers" runat="server" Text="Add members" OnClick="btnAddMembers_Click" CssClass="w3-btn" />
+                    <asp:Button ID="btnAssignRole" runat="server" Text="Assign new role" CssClass="w3-btn" />
                     <asp:Button ID="btnDeleteMember" runat="server" Text="Remove Member" OnClick="btnDeleteMember_Click" CssClass="w3-btn" />
                     <asp:Button ID="btnShowInfo" runat="server" Text="Show info" OnClick="btnShowInfo_Click" CssClass="w3-btn" />
                 </div>
+
+                <asp:ScriptManager ID="ScriptManager1" runat="server">
+                </asp:ScriptManager>
+
+                <ajaxToolkit:ConfirmButtonExtender ID="cbtnAssignRole" runat="server" TargetControlID="btnAssignRole" ConfirmText=""
+                     DisplayModalPopupID="mpeConfirmAssignRole" />
+
+                    <!-- ModalPopupExtender -->
+                    <ajaxToolkit:ModalPopupExtender ID="mpeConfirmAssignRole" runat="server" PopupControlID="panelConfirmAssignRole" TargetControlID="btnAssignRole"
+                        CancelControlID="btnCancelAssignRole" BackgroundCssClass="w3-blue-grey w3-opacity">
+                    </ajaxToolkit:ModalPopupExtender>
+                    <asp:Panel ID="panelConfirmAssignRole" runat="server" CssClass="w3-purple">
+                        <div style="width:500px; margin:10px 10px 10px 10px;">
+
+                            <div id="div2" style="margin:auto; width:400px;">
+                                <!-- Display confirmnation text -->
+                                <asp:Label ID="lbConfirmArchiveProject" runat="server" Text="Select a new role for the member." />
+                            </div>
+
+                            <div>
+                                <asp:RadioButtonList ID="rblGroupRoleChange" runat="server" />
+                            </div>
+
+                            <div style=" margin-left:30%; margin-bottom:10px; margin-top:10px; width:400px;">
+                                <asp:Button ID="btnConfirmAssignRole" runat="server" Text="Confirm" OnClick="btnConfirmAssignRole_Click" CssClass="w3-btn" />
+                                <asp:Button ID="btnCancelAssignRole" runat="server" Text="Cancel" CssClass="w3-btn" />
+                            </div>
+                        </div>
+                    </asp:Panel>
+                    <!-- ModalPopupExtender -->
 
                 <div id="divSearch" runat="server" visible="false" style="padding-left:5%; padding-right:10%;" >
                     <h4>Search</h4>

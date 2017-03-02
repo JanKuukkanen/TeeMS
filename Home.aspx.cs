@@ -138,15 +138,14 @@ public partial class Home : System.Web.UI.Page
         {
             var addeduser = ctx.person.Where(p => p.username == ticket.Name).FirstOrDefault();
             var addedgroup = ctx.group.Where(g => g.group_id == addgroup_id).FirstOrDefault();
-            var addedrole = ctx.group_role.Where(gr => gr.@class == 1).FirstOrDefault();
 
-            if (addeduser != null && addedgroup != null && addedrole != null)
+            if (addeduser != null && addedgroup != null)
             {
                 var gm = new group_member
                     {
                         group_id = addedgroup.group_id,
                         person_id = addeduser.person_id,
-                        grouprole_id = addedrole.grouprole_id
+                        grouprole_id = 4
                     };
 
                 addeduser.group_member.Add(gm);

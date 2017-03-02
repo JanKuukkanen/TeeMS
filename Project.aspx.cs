@@ -60,8 +60,17 @@ public partial class Project : System.Web.UI.Page
             projectTitle.InnerText = rightproject.name;
             h1ProjectName.InnerText = rightproject.name;
 
+            // Set project tag
+            h3ProjectTag.InnerText = String.Format("Project tag: #PRO{0}", rightproject.project_tag);
+
             // Set project description
             txtProjectDescription.Text = rightproject.description;
+
+            if (rightproject.finished == true)
+            {
+                btnArchiveProject.Text = "Unarchive project";
+                lbConfirmArchiveProject.Text = "Are you sure you wish to unarchive this project?";
+            }
 
             // Fill ddlMemberGroupList with groups currently working on the project
             var projectgroupquery = ctx.project_group.ToList();
@@ -165,6 +174,33 @@ public partial class Project : System.Web.UI.Page
                 
                 lbMessages.Text = ex.Message;
             }
+        }
+    }
+
+    protected void btnConfirmArchiveProject_Click(object sender, EventArgs e)
+    {
+        try
+        {
+            string project_id = Request.QueryString["Project"];
+            int parsed_project_id = int.Parse(project_id);
+
+            var rightproject = ctx.project.Where(pr => pr.project_id == parsed_project_id).SingleOrDefault();
+
+            if (rightproject.finished == false)
+            {
+                rightproject.finished = true; 
+            }
+            else if (rightproject.finished == true)
+            {
+                rightproject.finished = false;
+            }
+
+            ctx.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
         }
     }
 
@@ -349,6 +385,64 @@ public partial class Project : System.Web.UI.Page
     protected void btnRemoveGroup_Click(object sender, EventArgs e)
     {
         RemoveProjectGroup();
+    }
+
+    protected void RemoveProjectGroup()
+    {
+        try
+        {
+            string project_textid = Request.QueryString["Project"];
+            int project_id = int.Parse(project_textid);
+
+            string groupname = ddlMemberGroupList.SelectedItem.Text;
+            int groupindex = ddlMemberGroupList.SelectedIndex;
+
+            // Because a project can contain multiple groups with the same name we have to identify the right group to remove
+            List<group> projectgroups_perm = (List<group>)Session["projectgroups"];
+            group group_to_remove = new group();
+
+            int counter = 0;
+            foreach (var projectgroup in projectgroups_perm)
+            {
+                if (projectgroup.name == groupname && counter == groupindex - 1)
+                {
+                    group_to_remove = projectgroup;
+                }
+                counter++;
+            }
+
+            var rightprojectgroup = ctx.project_group.Where(pg => pg.project_id == project_id && pg.group_id == group_to_remove.group_id).SingleOrDefault();
+
+            if (rightprojectgroup.supporting == true)
+            {
+                var rightgroupmembers = ctx.group_member.Where(gm => gm.group_id == group_to_remove.group_id).ToList();
+
+                if (rightgroupmembers != null)
+                {
+                    foreach (var member in rightgroupmembers)
+                    {
+                        var rightperson = ctx.person.Where(p => p.person_id == member.person_id).SingleOrDefault();
+
+                        var rightprojectperson = ctx.project_person.Where(prope => prope.person_id == rightperson.person_id && prope.project_id == project_id).SingleOrDefault();
+
+                        ctx.project_person.Remove(rightprojectperson);
+                    }
+                }
+
+                if (rightprojectgroup != null)
+                {
+                    ctx.project_group.Remove(rightprojectgroup);
+                    ctx.SaveChanges();
+
+                    Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
+                } 
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
     }
 
     protected void btnShowGroupInfo_Click(object sender, EventArgs e)
@@ -559,64 +653,6 @@ public partial class Project : System.Web.UI.Page
         if (project_id != String.Empty)
         {
             Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
-        }
-    }
-
-#endregion
-
-#region REMOVAL_FUNCTIONS
-
-    protected void RemoveProjectGroup()
-    {
-        try
-        {
-            string project_textid = Request.QueryString["Project"];
-            int project_id = int.Parse(project_textid);
-
-            string groupname = ddlMemberGroupList.SelectedItem.Text;
-            int groupindex = ddlMemberGroupList.SelectedIndex;
-
-            // Because a project can contain multiple groups with the same name we have to identify the right group to remove
-            List<group> projectgroups_perm = (List<group>)Session["projectgroups"];
-            group group_to_remove = new group();
-
-            int counter = 0;
-            foreach (var projectgroup in projectgroups_perm)
-            {
-                if (projectgroup.name == groupname && counter == groupindex - 1)
-                {
-                    group_to_remove = projectgroup;
-                }
-                counter++;
-            }
-
-            var rightprojectgroup = ctx.project_group.Where(pg => pg.project_id == project_id && pg.group_id == group_to_remove.group_id).SingleOrDefault();
-            var rightgroupmembers = ctx.group_member.Where(gm => gm.group_id == group_to_remove.group_id).ToList();
-
-            if (rightgroupmembers != null)
-            {
-                foreach (var member in rightgroupmembers)
-                {
-                    var rightperson = ctx.person.Where(p => p.person_id == member.person_id).SingleOrDefault();
-
-                    var rightprojectperson = ctx.project_person.Where(prope => prope.person_id == rightperson.person_id && prope.project_id == project_id).SingleOrDefault();
-
-                    ctx.project_person.Remove(rightprojectperson);
-                }
-            }
-
-            if (rightprojectgroup != null)
-            {
-                ctx.project_group.Remove(rightprojectgroup);
-                ctx.SaveChanges();
-
-                Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
-            }
-        }
-        catch (Exception ex)
-        {
-
-            lbMessages.Text = ex.Message;
         }
     }
 
@@ -885,5 +921,4 @@ public partial class Project : System.Web.UI.Page
     }
 
 #endregion
-    
 }
