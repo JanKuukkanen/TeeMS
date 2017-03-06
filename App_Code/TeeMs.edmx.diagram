@@ -70,6 +70,9 @@
         <EntityTypeShape EntityType="TeeMsModel.message" Width="1.5" PointX="7.75" PointY="12.75" />
         <AssociationConnector Association="TeeMsModel.fk_message_group1" />
         <AssociationConnector Association="TeeMsModel.fk_message_person1" />
+        <EntityTypeShape EntityType="TeeMsModel.invite" Width="1.5" PointX="1.5" PointY="11.75" />
+        <AssociationConnector Association="TeeMsModel.fk_invite_group1" />
+        <AssociationConnector Association="TeeMsModel.fk_invite_person1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

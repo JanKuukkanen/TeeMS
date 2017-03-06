@@ -421,6 +421,7 @@ public partial class Group : System.Web.UI.Page
 
 
         // Fill the group_member database table as well
+        // Send an invitation to the group
         try
         {
             group_id = Request.QueryString["Group"];
@@ -429,24 +430,20 @@ public partial class Group : System.Web.UI.Page
 
             if (group_id != String.Empty)
             {
-                var addeduser = ctx.person.Where(p => p.username == username).FirstOrDefault();
-                var addedgroup = ctx.group.Where(g => g.group_id == to_add_groupid).FirstOrDefault();
-                var addedrole = ctx.group_role.Where(gr => gr.@class == 4).FirstOrDefault();
+                var usertoinvite = ctx.person.Where(p => p.username == username).FirstOrDefault();
+                var invitegroup = ctx.group.Where(g => g.group_id == to_add_groupid).FirstOrDefault();
 
-                if (addeduser != null && addedgroup != null && addedrole != null)
+                if (usertoinvite != null && invitegroup != null)
                 {
-                    var gm = new group_member
+                    invite newinvitation = new invite() 
                     {
-                        group_id = addedgroup.group_id,
-                        person_id = addeduser.person_id,
-                        grouprole_id = addedrole.grouprole_id
+                        person = usertoinvite,
+                        group = invitegroup,
+                        invite_content = String.Format("You have been invited to group {0}, do you wish to accept?", invitegroup.name)
                     };
 
-                    addeduser.edited = DateTime.Now;
-                    addedgroup.edited = DateTime.Now;
+                    ctx.invite.Add(newinvitation);
 
-                    addeduser.group_member.Add(gm);
-                    addedgroup.group_member.Add(gm);
                     ctx.SaveChanges();
                 } 
             }

@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 using System.Web.Security;
+using System.Text.RegularExpressions;
 using TeeMs.UserContentManager;
 
 public partial class Home : System.Web.UI.Page
@@ -16,10 +17,15 @@ public partial class Home : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
+        person rightperson = new person();
+
         try
         {
             HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
+
+            ctx = new TeeMsEntities();
+            rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
         }
         catch (HttpException ex)
         {
@@ -28,6 +34,11 @@ public partial class Home : System.Web.UI.Page
         }
 
         FillDivs();
+
+        if (rightperson.invite.ToList() != null)
+        {
+            FillInvitations();
+        }
     }
 
     protected void btnCreateGroup_Click(object sender, EventArgs e)
@@ -159,6 +170,7 @@ public partial class Home : System.Web.UI.Page
             lbMessages.Text = ex.Message;
         }
     }
+    #endregion
 
     protected void FillDivs()
     {
@@ -274,5 +286,121 @@ public partial class Home : System.Web.UI.Page
             lbMessages.Text = ex.Message;
         }
     }
-    #endregion
+
+    protected void FillInvitations()
+    {
+        try
+        {
+            // Fill invitations div with invitations to join a group that has been sent from a groups page
+            var rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
+
+            var invitations = rightperson.invite.ToList();
+
+            divInvitations.Controls.Clear();
+
+            foreach (var invite in invitations)
+            {
+                HtmlGenericControl invitediv = new HtmlGenericControl("div");
+                HtmlGenericControl invitelabeldiv = new HtmlGenericControl("div");
+                HtmlGenericControl invitebuttondiv = new HtmlGenericControl("div");
+                Label invitelabel = new Label();
+                Button inviteconfirmbutton = new Button();
+                Button invitecancelbutton = new Button();
+
+                inviteconfirmbutton.Click += new EventHandler(CreateGroupMember);
+                inviteconfirmbutton.ID = String.Format("inviteconfirmbtn{0}", invite.invite_id);
+                inviteconfirmbutton.Text = "Accept";
+                inviteconfirmbutton.CssClass = "w3-btn";
+                inviteconfirmbutton.Attributes.Add("style", "float:left; margin-left:40%; margin-right:5px;");
+
+                invitecancelbutton.Click += new EventHandler(RemoveInvitation);
+                invitecancelbutton.ID = String.Format("invitecancelbtn{0}", invite.invite_id);
+                invitecancelbutton.Text = "Decline";
+                invitecancelbutton.CssClass = "w3-btn";
+                invitecancelbutton.Attributes.Add("style", "float:left;");
+
+                invitelabel.Text = invite.invite_content;
+                invitelabel.Attributes.Add("style", "margin-left:10%; display:inline-block;");
+
+                invitediv.Attributes.Add("style", "margin-bottom:10px; border: thin solid black; height:100px;");
+
+                invitelabeldiv.Controls.Add(invitelabel);
+                invitebuttondiv.Controls.Add(inviteconfirmbutton);
+                invitebuttondiv.Controls.Add(invitecancelbutton);
+
+                invitediv.Controls.Add(invitelabeldiv);
+                invitediv.Controls.Add(invitebuttondiv);
+
+                divInvitations.Controls.Add(invitediv);
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void CreateGroupMember(object sender, EventArgs e)
+    {
+        var confirmbtn = sender as Button;
+
+        string parseid = Regex.Match(confirmbtn.ID, @"-?\d+\.?\d*$").Value;
+        int inviteid = int.Parse(parseid);
+
+        try
+        {
+            var rightinvitation = ctx.invite.Where(inv => inv.invite_id == inviteid).SingleOrDefault();
+            var rightperson = rightinvitation.person;
+            var rightgroup = rightinvitation.group;
+
+            var roletoadd = ctx.group_role.Where(gr => gr.@class == 4).FirstOrDefault();
+
+            if (rightperson != null && rightgroup != null && roletoadd != null)
+            {
+                var gm = new group_member
+                {
+                    group_id = rightgroup.group_id,
+                    person_id = rightperson.person_id,
+                    grouprole_id = roletoadd.grouprole_id
+                };
+
+                rightperson.edited = DateTime.Now;
+                rightgroup.edited = DateTime.Now;
+
+                rightperson.group_member.Add(gm);
+                rightgroup.group_member.Add(gm);
+
+                ctx.invite.Remove(rightinvitation);
+
+                ctx.SaveChanges();
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void RemoveInvitation(object sender, EventArgs e)
+    {
+        var cancelbtn = sender as Button;
+
+        string parseid = Regex.Match(cancelbtn.ID, @"-?\d+\.?\d*$").Value;
+        int inviteid = int.Parse(parseid);
+
+        try
+        {
+            var rightinvitation = ctx.invite.Where(inv => inv.invite_id == inviteid).SingleOrDefault();
+
+            ctx.invite.Remove(rightinvitation);
+            ctx.SaveChanges();
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
 }

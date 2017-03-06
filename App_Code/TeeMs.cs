@@ -123,6 +123,7 @@ public partial class group
         this.project_person = new HashSet<project_person>();
         this.connection = new HashSet<connection>();
         this.message = new HashSet<message>();
+        this.invite = new HashSet<invite>();
     }
 
     public int group_id { get; set; }
@@ -141,6 +142,7 @@ public partial class group
     public virtual ICollection<project_person> project_person { get; set; }
     public virtual ICollection<connection> connection { get; set; }
     public virtual ICollection<message> message { get; set; }
+    public virtual ICollection<invite> invite { get; set; }
 }
 
 public partial class group_member
@@ -168,6 +170,17 @@ public partial class group_role
     public int @class { get; set; }
 
     public virtual ICollection<group_member> group_member { get; set; }
+}
+
+public partial class invite
+{
+    public int invite_id { get; set; }
+    public string invite_content { get; set; }
+    public int person_id { get; set; }
+    public int group_id { get; set; }
+
+    public virtual group group { get; set; }
+    public virtual person person { get; set; }
 }
 
 public partial class login
@@ -218,6 +231,7 @@ public partial class person
         this.comment = new HashSet<comment>();
         this.connection = new HashSet<connection>();
         this.message = new HashSet<message>();
+        this.invite = new HashSet<invite>();
     }
 
     public int person_id { get; set; }
@@ -238,6 +252,7 @@ public partial class person
     public virtual ICollection<comment> comment { get; set; }
     public virtual ICollection<connection> connection { get; set; }
     public virtual ICollection<message> message { get; set; }
+    public virtual ICollection<invite> invite { get; set; }
 }
 
 public partial class project
