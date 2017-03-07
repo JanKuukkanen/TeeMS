@@ -132,6 +132,11 @@ public partial class Project : System.Web.UI.Page
                 calendarDueDate.VisibleDate = (DateTime)rightproject.due_date; 
             }
 
+            if (rightproject.assignment.Count > 0)
+            {
+                FillProjectAssignmentProgress(); 
+            }
+
             FillComments();
         }
         catch (Exception ex)
@@ -920,5 +925,76 @@ public partial class Project : System.Web.UI.Page
         }
     }
 
-#endregion
+    #endregion
+
+    protected void FillProjectAssignmentProgress()
+    {
+        try
+        {
+            divAssignmentProgress.Controls.Clear();
+
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+            var assignmentlist = ctx.assignment.Where(amt => amt.project_id == rightproject.project_id).ToList();
+
+            foreach (var assignment in assignmentlist)
+            {
+                var finishedcomponentlist = assignment.assignment_component.Where(amtc => amtc.finished == true).ToList();
+
+                int componentcount = assignment.assignment_component.Count;
+                int finishedcomponents = finishedcomponentlist.Count;
+
+                double assignmentpercent = 0;
+
+                if (finishedcomponents > 0)
+                {
+                    assignmentpercent = ((double)finishedcomponents * 100) / (double)componentcount;
+                }
+
+                HtmlGenericControl assignmentdiv = new HtmlGenericControl("div");
+                HtmlGenericControl assignmentprogressdiv = new HtmlGenericControl("div");
+                HtmlGenericControl assignmentprogressbardiv = new HtmlGenericControl("div");
+                Label assignmentnamelabel = new Label();
+                Label assignmentinfolabel = new Label();
+
+                assignmentinfolabel.Text = String.Format("Assignments: {0}. Finished assignments: {1}", componentcount, finishedcomponents);
+                assignmentinfolabel.Attributes.Add("style", "display:inline-block");
+
+                assignmentnamelabel.Text = assignment.name;
+                assignmentnamelabel.Attributes.Add("style", "float:left; margin-right:10px;");
+
+                assignmentdiv.Attributes.Add("class", "projectprogressbars");
+                assignmentdiv.Attributes.Add("style", "padding-top:10px; padding-bottom:5px; padding-left:5px;");
+
+                assignmentprogressdiv.Attributes.Add("class", "progress");
+                assignmentprogressdiv.Attributes.Add("style", "float:left; width:60%; background-color:gray;");
+
+                assignmentprogressbardiv.Attributes.Add("class", "progress-bar");
+                assignmentprogressbardiv.Attributes.Add("role", "progressbar");
+                assignmentprogressbardiv.Attributes.Add("aria-valuemin", "0");
+                assignmentprogressbardiv.Attributes.Add("aria-valuemax", "100");
+                assignmentprogressbardiv.Attributes.Add("style", String.Format("width:{0}%;", assignmentpercent));
+
+                if (finishedcomponents > 0)
+                {
+                    assignmentprogressbardiv.InnerText = String.Format("{0}% Complete", assignmentpercent); 
+                }
+                
+                // Assign right elements to their parent elements
+                assignmentprogressdiv.Controls.Add(assignmentprogressbardiv);
+
+                assignmentdiv.Controls.Add(assignmentnamelabel);
+                assignmentdiv.Controls.Add(assignmentprogressdiv);
+                assignmentdiv.Controls.Add(assignmentinfolabel);
+
+                divAssignmentProgress.Controls.Add(assignmentdiv);
+            }
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
 }

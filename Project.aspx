@@ -1,6 +1,9 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/MasterPage.master" AutoEventWireup="true" CodeFile="Project.aspx.cs" Inherits="Project" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="head" Runat="Server">
+
+    <link href="Content/bootstrap.css" rel="stylesheet" type="text/css" />
+
     <!-- Change title so that it shows the name of the project currently being worked on -->
     <title id="projectTitle" runat="server">Project</title>
 </asp:Content>
@@ -118,9 +121,12 @@
 
                     <h3>Due date</h3>
                     <asp:Calendar ID="calendarDueDate" runat="server"></asp:Calendar>
-
+                    <br />
                     <!-- Information on the projects progress will be displayed here -->
-
+                    <h3>Project progress</h3>
+                    <div id="divAssignmentProgress" runat="server">
+                        <h4 runat="server">No current assignments!</h4>
+                    </div>
                 </div>
 
                 <!-- This will be the comments section -->

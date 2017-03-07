@@ -55,7 +55,7 @@
                 <ajaxToolkit:ConfirmButtonExtender ID="cbtnDeleteAssignment" runat="server" TargetControlID="btnDeleteAssignment" ConfirmText="Are you sure you wish to delete this assignment?"
                  DisplayModalPopupID="mpeConfirmDeleteAssignment" />
 
-                <!-- ModalPopupExtender -->
+                <!-- Start ModalPopupExtender -->
                 <ajaxToolkit:ModalPopupExtender ID="mpeConfirmDeleteAssignment" runat="server" PopupControlID="panelConfirmDeleteAssignment" TargetControlID="btnDeleteAssignment"
                     CancelControlID="btnCancelDeleteAssignment" BackgroundCssClass="w3-blue-grey w3-opacity">
                 </ajaxToolkit:ModalPopupExtender>
@@ -73,7 +73,7 @@
                         </div>
                     </div>
                 </asp:Panel>
-                <!-- ModalPopupExtender -->
+                <!-- End ModalPopupExtender -->
             </div>
         </div>
 
@@ -93,7 +93,7 @@
                 </asp:ScriptManager>
                 <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Create new component" CssClass="w3-btn" />
  
-                <!-- ModalPopupExtender -->
+                <!-- Start ModalPopupExtender -->
                 <ajaxToolkit:ModalPopupExtender ID="mpeAddComponent" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnShowAddComponentModal"
                     CancelControlID="btnCloseAddComponentModal" BackgroundCssClass="w3-blue-grey w3-opacity">
                 </ajaxToolkit:ModalPopupExtender>
@@ -117,7 +117,7 @@
                         </div>
                     </div>
                 </asp:Panel>
-                <!-- ModalPopupExtender -->
+                <!-- End ModalPopupExtender -->
 
             </div>
 
@@ -125,7 +125,7 @@
 
                 <asp:Button ID="btnHiddenModalTarget" runat="server" Style="display:none;" />
 
-                <!-- ModalPopupExtender -->
+                <!-- Start ModalPopupExtender -->
                 <ajaxToolkit:ModalPopupExtender ID="mpeShowComponentModal" runat="server" PopupControlID="panelShowComponent" TargetControlID="btnHiddenModalTarget"
                     CancelControlID="btnCloseShowComponent" BackgroundCssClass="w3-blue-grey w3-opacity">
                 </ajaxToolkit:ModalPopupExtender>
@@ -151,7 +151,7 @@
                         </div>
                     </div>
                 </asp:Panel>
-                <!-- ModalPopupExtender -->
+                <!-- End ModalPopupExtender -->
 
             </div>
 

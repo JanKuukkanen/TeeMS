@@ -42,6 +42,13 @@
             display: block;
         }
 
+.projectprogressbars
+{
+    margin-bottom:10px;
+    border: thin solid black;
+    background-color:beige;
+}
+
 #assignmentcomponentul 
 {
     display:inline-block;
