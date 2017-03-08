@@ -54,7 +54,6 @@
                     </td>
                     <td>
                         <asp:TextBox ID="txtFirstName" runat="server"></asp:TextBox>
-                        <asp:RegularExpressionValidator ID="regexFirstName" runat="server" ErrorMessage="Your name contains invalid characters!" ForeColor="Red" ControlToValidate="txtFirstName" ValidationExpression="^[A-Za-z]+(((\'|\-|\.)?([A-Za-z])+))?$"></asp:RegularExpressionValidator>
                     </td>
                 </tr>
                 <tr>
@@ -63,7 +62,6 @@
                     </td>
                     <td>
                         <asp:TextBox ID="txtLastName" runat="server"></asp:TextBox>
-                        <asp:RegularExpressionValidator ID="regexLastName" runat="server" ErrorMessage="Your name contains invalid characters!" ForeColor="Red" ControlToValidate="txtLastName" ValidationExpression="^[A-Za-z]+(((\'|\-|\.)?([A-Za-z])+))?$"></asp:RegularExpressionValidator>
                     </td>
                 </tr>
                 <tr>
@@ -80,7 +78,7 @@
         </div>
 
         <div class="w3-container">
-            <asp:Button ID="btnRegisterUser" runat="server" Text="Register" OnClick="btnRegisterUser_Click" /> <br />
+            <asp:Button ID="btnRegisterUser" runat="server" Text="Register" OnClick="btnRegisterUser_Click" CssClass="w3-btn" /> <br />
             <asp:Label ID="lbAlreadyRegistered" runat="server" Text="Already Registered?" />
             <a href="Login.aspx">Sign in</a>
         </div> <br />

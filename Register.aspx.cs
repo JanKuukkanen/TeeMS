@@ -44,7 +44,7 @@ public partial class Register : System.Web.UI.Page
         {
             try
             {
-                var p = new person
+                person p = new person
                 {
                     first_name = fname,
                     last_name = lname,
@@ -55,15 +55,23 @@ public partial class Register : System.Web.UI.Page
                     role_id = 3
                 };
 
-                var l = new login
+                login l = new login
                 {
                     login_name = uname,
                     salt = salt,
                     password = saltedhash
                 };
+
+                connection newconnection = new connection()
+                {
+                    connected = true,
+                    connection_username = uname,
+                    person_id = p.person_id
+                };
                 
                 ctx.person.Add(p);
                 ctx.login.Add(l);
+                ctx.connection.Add(newconnection);
                 ctx.SaveChanges();
             }
             catch (Exception ex)
