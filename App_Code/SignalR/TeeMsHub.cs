@@ -162,16 +162,16 @@ namespace SignalRTeeMs
             {
                 ctx = new TeeMsEntities();
 
-                await Groups.Add(Context.ConnectionId, groupname);
-
                 var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
                 var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
                 var rightgroup = rightperson.group_member.Where(gm => gm.group.name == groupname).SingleOrDefault();
 
+                await Groups.Add(Context.ConnectionId, groupname + rightgroup.group_id.ToString());
+
                 rightconnection.group_id = rightgroup.group_id;
                 ctx.SaveChanges();
 
-                Clients.Group(groupname).broadcastMessage("ChatControl", rightperson.username + " Joined group: " + groupname);
+                Clients.Group(groupname + rightgroup.group_id.ToString()).broadcastMessage("ChatControl", rightperson.username + " Joined group: " + groupname);
 
                 GetChatMembers(rightgroup.group.name);
                 GetConversationMessages(rightgroup.group.name);
@@ -193,12 +193,12 @@ namespace SignalRTeeMs
                 var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
                 var rightgroup = rightconnection.group;
 
-                await Groups.Remove(Context.ConnectionId, rightgroup.name);
+                await Groups.Remove(Context.ConnectionId, rightgroup.name + rightgroup.group_id.ToString());
 
                 rightconnection.group_id = null;
                 ctx.SaveChanges();
 
-                Clients.OthersInGroup(rightgroup.name).broadcastMessage("ChatControl", rightperson.username + " Left group");
+                Clients.OthersInGroup(rightgroup.name + rightgroup.group_id.ToString()).broadcastMessage("ChatControl", rightperson.username + " Left group");
                 ChatMemberLeft(rightgroup.name);
             }
             catch (Exception ex)
@@ -253,7 +253,7 @@ namespace SignalRTeeMs
                 string connectionjson = JsonConvert.SerializeObject(memberlist);
 
                 // Call fillMemberList method on the clients side
-                Clients.Group(groupname).fillMemberList(connectionjson);
+                Clients.Group(groupname + rightgroup.group_id.ToString()).fillMemberList(connectionjson);
             }
             catch (Exception ex)
             {
@@ -276,7 +276,7 @@ namespace SignalRTeeMs
                 string connectionjson = JsonConvert.SerializeObject(memberlist);
 
                 // Call fillMemberList method on the clients side
-                Clients.OthersInGroup(groupname).fillMemberList(connectionjson);
+                Clients.OthersInGroup(groupname + rightgroup.group_id.ToString()).fillMemberList(connectionjson);
             }
             catch (Exception ex)
             {
@@ -354,7 +354,7 @@ namespace SignalRTeeMs
                     }
 
                     // Call the broadcastMessage method to update clients.
-                    Clients.Group(rightgroup.name).broadcastMessage(rightperson.username, message);
+                    Clients.Group(rightgroup.name + rightgroup.group_id.ToString()).broadcastMessage(rightperson.username, message);
                 }
             }
             catch (Exception ex)
@@ -397,10 +397,12 @@ namespace SignalRTeeMs
             {
                 if (Context.User.Identity.IsAuthenticated)
                 {
-                    string username = Context.User.Identity.Name;
+                    var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                    var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                    var rightgroup = rightconnection.group;
 
                     // Call the broadcastMessage method to update clients.
-                    Clients.Group(groupname).broadcastMessage(name, message);
+                    Clients.Group(groupname + rightgroup.group_id).broadcastMessage(name, message);
                 }
             }
             catch (Exception ex)

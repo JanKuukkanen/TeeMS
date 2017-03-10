@@ -64,7 +64,7 @@ public partial class Register : System.Web.UI.Page
 
                 connection newconnection = new connection()
                 {
-                    connected = true,
+                    connected = false,
                     connection_username = uname,
                     person_id = p.person_id
                 };

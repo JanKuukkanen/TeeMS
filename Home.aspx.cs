@@ -365,6 +365,29 @@ public partial class Home : System.Web.UI.Page
                     grouprole_id = roletoadd.grouprole_id
                 };
 
+                /*var prope = new project_person
+                {
+                    project_id = rightproject.project_id,
+                    person_id = member.person_id,
+                    group_id = rightgroup.group_id,
+                    project_person_supporting = false
+                };*/
+
+                List<project_group> projectgrouplist = rightgroup.project_group.ToList();
+
+                foreach (var projectgroup in projectgrouplist)
+                {
+                    var prope = new project_person
+                    {
+                        project_id = projectgroup.project_id,
+                        person_id = rightperson.person_id,
+                        group_id = rightgroup.group_id,
+                        project_person_supporting = false
+                    };
+
+                    ctx.project_person.Add(prope);
+                }
+
                 rightperson.edited = DateTime.Now;
                 rightgroup.edited = DateTime.Now;
 

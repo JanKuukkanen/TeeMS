@@ -10,6 +10,8 @@ using System.Data;
 using System.Text.RegularExpressions;
 using AjaxControlToolkit;
 using TeeMs.UserContentManager;
+using Microsoft.AspNet.SignalR;
+using Microsoft.AspNet.SignalR.Client.Hubs;
 
 public partial class Project : System.Web.UI.Page
 {
@@ -997,4 +999,13 @@ public partial class Project : System.Web.UI.Page
             lbMessages.Text = ex.Message;
         }
     }
+
+    #region SignalR
+
+    protected void UpdateComments(object sender, EventArgs e)
+    {
+        FillComments();
+    }
+
+    #endregion
 }
