@@ -23,14 +23,17 @@ public partial class Project : System.Web.UI.Page
     {
         ctx = new TeeMsEntities();
 
-        string project_id = String.Empty;
+        int project_id = 0;
+        bool isarchived = false;
 
         try
         {
             HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
-            project_id = Request.QueryString["Project"];
+            project_id = int.Parse(Request.QueryString["Project"]);
+
+            isarchived = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault().finished;
         }
         catch (HttpException ex)
         {
@@ -40,11 +43,16 @@ public partial class Project : System.Web.UI.Page
 
         if (!IsPostBack)
         {
-            FillControls(int.Parse(project_id));
+            FillControls(project_id);
         }
         else if (IsPostBack)
         {
             FillComments();
+        }
+
+        if (isarchived == true)
+        {
+            ArchiveProjectPage();
         }
     }
 
@@ -1008,4 +1016,51 @@ public partial class Project : System.Web.UI.Page
     }
 
     #endregion
+
+    protected void ArchiveProjectPage()
+    {
+        int project_id = int.Parse(Request.QueryString["Project"]);
+
+        try
+        {
+            var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+            var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+            // Get all groups that satisfy the following conditions: has the project_id of rightproject and is NOT a supporting group in the project
+            var grouplist = ctx.group.Where(g => g.project_group.Any(pg => pg.project_id == rightproject.project_id && pg.supporting == false)).ToList();
+
+            bool allow_unarchive = false;
+
+            foreach (var group in grouplist)
+	        {
+		        var rightgroupmember = group.group_member.Where(gm => gm.person_id == rightperson.person_id).SingleOrDefault();
+
+                if (rightgroupmember != null && rightgroupmember.group_role.@class < 3)
+	            {
+		            allow_unarchive = true;
+	            }
+	        }
+
+            // If the user is an administrator in the main group working on the project he will be able to unarchive the project
+            if (allow_unarchive == false)
+            {
+                btnArchiveProject.Enabled = false;
+            }
+
+            // Disable the buttons on the project page
+            btnAddGroup.Enabled = false;
+            btnChangePicture.Enabled = false;
+            btnCreateNewAssignment.Enabled = false;
+            btnEditDescription.Enabled = false;
+            btnRemoveGroup.Enabled = false;
+            btnSaveComment.Enabled = false;
+            btnSearchGroups.Enabled = false;
+
+            h3ProjectTag.InnerText = "This project has been archived and cannot be edited further!";
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
 }

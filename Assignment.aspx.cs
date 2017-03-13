@@ -22,16 +22,19 @@ public partial class Assignment : System.Web.UI.Page
         // set the database context using entity framework
         ctx = new TeeMsEntities();
 
-        string project_id = "";
-        string assignment_id = "";
+        int project_id = 0;
+        int assignment_id = 0;
+        bool isarchived = false;
 
         try
         {
             HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
-            assignment_id = Request.QueryString["Assignment"];
-            project_id = Request.QueryString["Project"];
+            assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            project_id = int.Parse(Request.QueryString["Project"]);
+
+            isarchived = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault().finished;
         }
         catch (HttpException ex)
         {
@@ -43,7 +46,7 @@ public partial class Assignment : System.Web.UI.Page
         {
             try
             {
-                FillControls(int.Parse(project_id), int.Parse(assignment_id));
+                FillControls(project_id, assignment_id);
             }
             catch (Exception ex)
             {
@@ -55,6 +58,11 @@ public partial class Assignment : System.Web.UI.Page
         {
             FillComponentList();
             FillComments();
+        }
+
+        if (isarchived == true)
+        {
+            ArchiveProjectPage();
         }
     }
 
@@ -1153,4 +1161,34 @@ public partial class Assignment : System.Web.UI.Page
     }
 
     #endregion
+
+    protected void ArchiveProjectPage()
+    {
+        int project_id = int.Parse(Request.QueryString["Project"]);
+
+        try
+        {
+            var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+            var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+
+
+            // Disable the buttons on the assignment page
+            btnEditAssignmentDescription.Enabled = false;
+            btnAddAssignmentMember.Enabled = false;
+            btnAddComponent.Enabled = false;
+            btnDeleteAssignment.Enabled = false;
+            btnRemoveAssignmentComponent.Enabled = false;
+            btnRemoveAssignmentMember.Enabled = false;
+            btnSaveChanges.Enabled = false;
+            btnSearchPersons.Enabled = false;
+            btnShowAddComponentModal.Enabled = false;
+            btnConfirmDeleteAssignment.Enabled = false;
+            btnSaveComment.Enabled = false;
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
 }
