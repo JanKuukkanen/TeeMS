@@ -162,8 +162,30 @@ namespace SignalRTeeMs
                 var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
                 var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
 
-                // Call fillMemberList method on the clients side
+                // Call updateComments method on the clients side
                 Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateComments();
+            }
+            catch (Exception ex)
+            {
+                
+                throw ex;
+            }
+        }
+
+        public void BroadcastUpdateProjectDescription()
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                int project_id = int.Parse(this.Context.QueryString["Project"]);
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+
+                // Call fillMemberList method on the clients side
+                Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateProjectDescription();
             }
             catch (Exception ex)
             {

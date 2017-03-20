@@ -701,6 +701,7 @@ public partial class Project : System.Web.UI.Page
 
                 txtWriteComment.Text = String.Empty;
                 FillComments();
+
             }
         }
         catch (Exception ex)
@@ -721,6 +722,8 @@ public partial class Project : System.Web.UI.Page
 
             var commentlist = ctx.comment.Where(co => co.amt_id == null).ToList();
             int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
 
             List<HtmlGenericControl> divlist = new List<HtmlGenericControl>();
 
@@ -1015,6 +1018,29 @@ public partial class Project : System.Web.UI.Page
         FillComments();
     }
 
+    protected void UpdateAssignmentProgress(object sender, EventArgs e)
+    {
+        FillProjectAssignmentProgress();
+    }
+
+    protected void UpdateProjectDescription(object sender, EventArgs e)
+    {
+        try
+        {
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightproject = ctx.project.Where(g => g.project_id == project_id).SingleOrDefault();
+
+            // Set project description
+            txtProjectDescription.Text = rightproject.description;
+        }
+        catch (Exception ex)
+        {
+            
+            lbMessages.Text = ex.Message;
+        }
+    }
+
     #endregion
 
     protected void ArchiveProjectPage()
@@ -1052,7 +1078,6 @@ public partial class Project : System.Web.UI.Page
             btnCreateNewAssignment.Enabled = false;
             btnEditDescription.Enabled = false;
             btnRemoveGroup.Enabled = false;
-            btnSaveComment.Enabled = false;
             btnSearchGroups.Enabled = false;
 
             h3ProjectTag.InnerText = "This project has been archived and cannot be edited further!";

@@ -10,6 +10,8 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
     <div class="w3-container w3-rest" style="width:auto">
 
+        <asp:ScriptManager ID="smComments" runat="server" />
+
         <div id="divDefault" runat="server" class="w3-container" visible="true" style="float:left; width:50%">
             <div class="w3-container" style="float:left; width:50%;">
                 <asp:LinkButton ID="lbtnTriggerTitleChange" OnClick="lbtnTriggerTitleChange_Click" runat="server">
@@ -110,9 +112,20 @@
 
                 <div id="divProjectDesc">
                     <h2>Project description</h2>
-                    <asp:TextBox ID="txtProjectDescription" runat="server" TextMode="MultiLine" Height="100px" Width="450px" Style="vertical-align:top;" ReadOnly="true" />
-                    <br />
-                    <asp:Button ID="btnEditDescription" runat="server" Text="Edit description" OnClick="btnEditDescription_Click" CssClass="w3-btn" />
+
+                    <asp:UpdatePanel ID="upProjectDescription" runat="server" UpdateMode="Conditional">
+                        
+                        <ContentTemplate>
+
+                            <asp:TextBox ID="txtProjectDescription" runat="server" TextMode="MultiLine" Height="100px" Width="450px" Style="vertical-align:top;" ReadOnly="true" />
+                            <br />
+                            <asp:Button ID="btnEditDescription" runat="server" Text="Edit description" OnClick="btnEditDescription_Click" CssClass="w3-btn" />
+
+                            <asp:Button ID="btnUpdateProjectDescription" runat="server" OnClick="UpdateProjectDescription" style="display:none;" />
+                        </ContentTemplate>
+
+                    </asp:UpdatePanel>
+
                 </div>
 
                 <!-- This will contain all the charts of the workflow -->
@@ -124,16 +137,25 @@
                     <br />
                     <!-- Information on the projects progress will be displayed here -->
                     <h3>Project progress</h3>
-                    <div id="divAssignmentProgress" runat="server">
-                        <h4 runat="server">No current assignments!</h4>
-                    </div>
+
+                    <asp:UpdatePanel ID="upAssignmentProgress" runat="server" UpdateMode="Conditional">
+                        <ContentTemplate>
+
+                            <div id="divAssignmentProgress" runat="server">
+                                <h4 runat="server">No current assignments!</h4>
+                            </div>
+
+                            <asp:Button ID="btnUpdateAssignmentProgress" runat="server" OnClick="UpdateAssignmentProgress" style="display:none;" />
+                        </ContentTemplate>
+
+                    </asp:UpdatePanel>
+
                 </div>
 
                 <!-- This will be the comments section -->
                 <div id="divProjectComments" style="margin-top:40px";>
                     <h3>Comments</h3>
 
-                    <asp:ScriptManager ID="smComments" runat="server" />
                     <asp:UpdatePanel ID="upComments" runat="server" UpdateMode="Conditional">
                         <ContentTemplate>
 
@@ -146,6 +168,7 @@
                                 <asp:RequiredFieldValidator ID="rfvCommentContentRequired" runat="server" ControlToValidate="txtWriteComment" ErrorMessage="Write a comment before sending!" 
                                                             ToolTip="Write a comment before sending." ForeColor="Red" ValidationGroup="CommentValidation" />
                                 <br />
+
                                 <asp:Button ID="btnSaveComment" runat="server" Text="Send Comment" OnClick="btnSaveComment_Click" CssClass="w3-btn" />
                             </div>
 
@@ -185,6 +208,11 @@
                     document.getElementById('<%=btnUpdateComments.ClientID%>').click();
                 };
 
+                project.client.updateProjectDescription = function () {
+                    // Trigger the onclick event of a hidden button in upProjectDescription updatepanel.
+                    document.getElementById('<%=btnUpdateProjectDescription.ClientID%>').click();
+                };
+
                 // Set connection parameters
                 $.connection.hub.qs = { 'Project': urlParams.get('Project') };
 
@@ -196,6 +224,18 @@
                         // Call the BroadcastUpdateComments method on the hub. 
                         project.server.broadcastUpdateComments();
             
+                    });
+
+                    $('#<%=btnEditDescription.ClientID%>').click(function () {
+
+                        console.log("Let's Start");
+
+                        if ( $('#<%=btnEditDescription.ClientID%>').is('[readonly]')) {
+                            // Call the BroadcastUpdateProjectDescription method on the hub.
+                            console.log("Hello");
+                            project.server.broadcastUpdateProjectDescription();
+                        }
+
                     });
                 });
             });
