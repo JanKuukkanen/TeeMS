@@ -193,5 +193,16 @@ namespace SignalRTeeMs
                 throw ex;
             }
         }
+
+        public void UpdateClientsComments(int project_id, person rightperson)
+        {
+            ctx = new TeeMsEntities();
+
+            var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+            var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+
+            // Call updateComments method on the clients side
+            Clients.Group(rightproject.name + rightproject.project_id.ToString()).updateComments();
+        }
     }
 }

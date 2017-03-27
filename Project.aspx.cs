@@ -701,7 +701,6 @@ public partial class Project : System.Web.UI.Page
 
                 txtWriteComment.Text = String.Empty;
                 FillComments();
-
             }
         }
         catch (Exception ex)
@@ -881,6 +880,13 @@ public partial class Project : System.Web.UI.Page
 
         try
         {
+
+            
+            TeeMsEntities context = new TeeMsEntities();
+
+            string uname = User.Identity.Name;
+            var dbperson = context.person.Where(person => person.username == uname).SingleOrDefault();
+
             string username = ticket.Name;
             var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
             var rightcomment = ctx.comment.Where(com => com.comment_id == commentid).SingleOrDefault();

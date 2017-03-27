@@ -152,7 +152,7 @@
 
                 </div>
 
-                <!-- This will be the comments section -->
+                <!-- Comments section -->
                 <div id="divProjectComments" style="margin-top:40px";>
                     <h3>Comments</h3>
 
@@ -176,10 +176,32 @@
                         </ContentTemplate>
                     </asp:UpdatePanel>
                 </div>
+                <!-- Comments section -->
 
                 <div>
                     <asp:Label ID="lbMessages" runat="server" />
                 </div>
+
+                <!-- SignalR comments section -->
+                <div id="divProjectCommentSection" style="margin-top:40px";>
+                    <h3>Comments</h3>
+
+                        <div id="divCommentMessages">
+
+                        </div>
+                              
+                        <div style="margin-top:40px;">
+                            <textarea id="txtWriteComments" style="width:400px; height:100px;"></textarea>
+                            
+                            <!-- Find out how to do a requiredfieldvalidator in javascript -->
+                            <br />
+
+                            <button type="button" id="btnSaveComments" class="w3-btn">Send Comment</button>
+                        </div>
+                        <button type="button" id="btnHiddenUpdateComments" style="display:none;"></button>
+                </div>
+                <!-- SignalR comments section -->
+
             </div>
         </div>
     </div>
