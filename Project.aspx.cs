@@ -675,41 +675,6 @@ public partial class Project : System.Web.UI.Page
 
 #region COMMENT_FUNCTIONS
 
-    protected void btnSaveComment_Click(object sender, EventArgs e)
-    {
-        string comment = txtWriteComment.Text;
-
-        try
-        {
-            if (comment != String.Empty)
-            {
-                int project_id = int.Parse(Request.QueryString["Project"]);
-                string username = ticket.Name;
-
-                var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
-
-                comment newcomment = new comment
-                {
-                    comment_content = comment,
-                    creation_date = DateTime.Now,
-                    person_id = rightperson.person_id,
-                    project_id = project_id
-                };
-
-                ctx.comment.Add(newcomment);
-                ctx.SaveChanges();
-
-                txtWriteComment.Text = String.Empty;
-                FillComments();
-            }
-        }
-        catch (Exception ex)
-        {
-            
-            lbMessages.Text = ex.Message;
-        }
-    }
-
     protected void FillComments()
     {
         try

@@ -64,6 +64,11 @@
                         + '</strong>:&nbsp;&nbsp;' + encodedMsg + '</li>');
                 };
 
+                // Create a function that changes the first group button black upon connecting to hub
+                chat.client.changeInitialButton = function () {
+                    document.getElementById('0').style.backgroundColor = "black";
+                }
+
                 // Create a function that the hub can call to fill the chat memberlist
                 chat.client.fillMemberList = function (jsonmemberlist) {
 
@@ -103,16 +108,15 @@
                     // Iterate through the grouplist object using key-value pairs
                     $.each(grouplist, function (key, value) {
                         //Create an input type dynamically.   
-                        var element = document.createElement("input");
+                        var element = document.createElement("button");
                         //Assign different attributes to the element. 
                         element.type = "button";
-                        element.value = value;
+                        element.innerHTML = value;
                         element.id = key;
                         element.className = "ChatGrouppButtons";
                         element.onclick = function () {
                             // Call server side methods without the generated proxy
-                            chat.invoke('leaveGroup');
-                            chat.invoke('joinGroup', value);
+                            chat.invoke('leaveGroup', value);
 
                             var elements = document.getElementsByClassName('ChatGrouppButtons');
                             for (var i = 0; i < elements.length; i++) {

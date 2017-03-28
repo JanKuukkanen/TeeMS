@@ -81,6 +81,7 @@ namespace SignalRTeeMs
                 {
                     await JoinGroup(grouplist[0]);
                     GetChatMembers(grouplist[0]);
+                    Clients.Client(Context.ConnectionId).changeInitialButton();
                 }
 
                 await base.OnConnected();
@@ -183,7 +184,7 @@ namespace SignalRTeeMs
             }
         }
 
-        public async Task LeaveGroup()
+        public async Task LeaveGroup(string newgroup)
         {
             try
             {
@@ -198,8 +199,10 @@ namespace SignalRTeeMs
                 rightconnection.group_id = null;
                 ctx.SaveChanges();
 
-                Clients.OthersInGroup(rightgroup.name + rightgroup.group_id.ToString()).broadcastMessage("ChatControl", rightperson.username + " Left group");
                 ChatMemberLeft(rightgroup.name);
+                Clients.Group(rightgroup.name + rightgroup.group_id.ToString()).broadcastMessage("ChatControl", rightperson.username + " Left group");
+
+                await JoinGroup(newgroup);
             }
             catch (Exception ex)
             {
@@ -373,6 +376,8 @@ namespace SignalRTeeMs
                 var rightperson = ctx.person.Where(p => p.person_id == personid).SingleOrDefault();
                 var rightproject = ctx.project.Where(pr => pr.project_tag == projecttag).SingleOrDefault();
 
+                IHubContext projectContext = GlobalHost.ConnectionManager.GetHubContext<ProjectHub>();
+
                 comment newcomment = new comment()
                 {
                     comment_content = message,
@@ -383,6 +388,9 @@ namespace SignalRTeeMs
 
                 ctx.comment.Add(newcomment);
                 ctx.SaveChanges();
+
+                // Call updateComments method on the ProjectHub users client side
+                projectContext.Clients.Group(rightproject.name + rightproject.project_id.ToString()).updateComments();
             }
             catch (Exception ex)
             {

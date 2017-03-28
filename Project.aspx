@@ -162,15 +162,6 @@
                             <div id="divProjectCommentMessages" runat="server">
 
                             </div>
-                              
-                            <div style="margin-top:40px;">
-                                <asp:TextBox ID="txtWriteComment" runat="server" TextMode="MultiLine" Width="400" Height="100" ValidationGroup="CommentValidation" />
-                                <asp:RequiredFieldValidator ID="rfvCommentContentRequired" runat="server" ControlToValidate="txtWriteComment" ErrorMessage="Write a comment before sending!" 
-                                                            ToolTip="Write a comment before sending." ForeColor="Red" ValidationGroup="CommentValidation" />
-                                <br />
-
-                                <asp:Button ID="btnSaveComment" runat="server" Text="Send Comment" OnClick="btnSaveComment_Click" CssClass="w3-btn" />
-                            </div>
 
                             <asp:Button ID="btnUpdateComments" runat="server" OnClick="UpdateComments" style="display:none;" />
                         </ContentTemplate>
@@ -178,17 +169,8 @@
                 </div>
                 <!-- Comments section -->
 
-                <div>
-                    <asp:Label ID="lbMessages" runat="server" />
-                </div>
-
                 <!-- SignalR comments section -->
-                <div id="divProjectCommentSection" style="margin-top:40px";>
-                    <h3>Comments</h3>
-
-                        <div id="divCommentMessages">
-
-                        </div>
+                <div id="divProjectCommentWrite" style="margin-top:40px";>
                               
                         <div style="margin-top:40px;">
                             <textarea id="txtWriteComments" style="width:400px; height:100px;"></textarea>
@@ -198,9 +180,12 @@
 
                             <button type="button" id="btnSaveComments" class="w3-btn">Send Comment</button>
                         </div>
-                        <button type="button" id="btnHiddenUpdateComments" style="display:none;"></button>
                 </div>
                 <!-- SignalR comments section -->
+
+                <div>
+                    <asp:Label ID="lbMessages" runat="server" />
+                </div>
 
             </div>
         </div>
@@ -241,16 +226,7 @@
                 // Start the connection.
                 $.connection.hub.start().done(function () {
 
-                    $('#<%=btnSaveComment.ClientID%>').click(function () {
-
-                        // Call the BroadcastUpdateComments method on the hub. 
-                        project.server.broadcastUpdateComments();
-            
-                    });
-
                     $('#<%=btnEditDescription.ClientID%>').click(function () {
-
-                        console.log("Let's Start");
 
                         if ( $('#<%=btnEditDescription.ClientID%>').is('[readonly]')) {
                             // Call the BroadcastUpdateProjectDescription method on the hub.
@@ -258,6 +234,15 @@
                             project.server.broadcastUpdateProjectDescription();
                         }
 
+                    });
+
+                    $('#btnSaveComments').click(function () {
+                        console.log("Comment saved");
+
+                        var comment = $('textarea#txtWriteComments').val();
+                        $('textarea#txtWriteComment').val('');
+
+                        project.server.saveComment(comment);
                     });
                 });
             });

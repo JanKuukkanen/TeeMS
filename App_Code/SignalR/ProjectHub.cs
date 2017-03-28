@@ -150,6 +150,40 @@ namespace SignalRTeeMs
             }
         }
 
+        public void SaveComment(string commentcon)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                if (commentcon != String.Empty)
+                {
+                    int project_id = int.Parse(this.Context.QueryString["Project"]);
+                    string username = Context.User.Identity.Name;
+
+                    var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
+
+                    comment newcomment = new comment
+                    {
+                        comment_content = commentcon,
+                        creation_date = DateTime.Now,
+                        person_id = rightperson.person_id,
+                        project_id = project_id
+                    };
+
+                    ctx.comment.Add(newcomment);
+                    ctx.SaveChanges();
+
+                    BroadcastUpdateComments();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
         public void BroadcastUpdateComments()
         {
             try
@@ -163,7 +197,7 @@ namespace SignalRTeeMs
                 var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
 
                 // Call updateComments method on the clients side
-                Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateComments();
+                Clients.Group(rightproject.name + rightproject.project_id.ToString()).updateComments();
             }
             catch (Exception ex)
             {
