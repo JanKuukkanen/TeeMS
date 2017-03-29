@@ -53,6 +53,8 @@ namespace SignalRTeeMs
                     await JoinGroup(rightproject.name + rightproject.project_id.ToString());
                 }
 
+                SendProjectDescription(rightproject);
+
                 await base.OnConnected();
             }
             catch (Exception ex)
@@ -150,6 +152,19 @@ namespace SignalRTeeMs
             }
         }
 
+        public void SendProjectDescription(project rightproject)
+        {
+            string projectdesc = rightproject.description;
+            string archive = "false";
+
+            if (rightproject.finished == true)
+            {
+                archive = "true";
+            }
+
+            Clients.Caller.insertProjectDescription(projectdesc, archive);
+        }
+
         public void SaveComment(string commentcon)
         {
             try
@@ -202,6 +217,31 @@ namespace SignalRTeeMs
             catch (Exception ex)
             {
                 
+                throw ex;
+            }
+        }
+
+        public void saveProjectDescription(string projectdescription)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                int project_id = int.Parse(this.Context.QueryString["Project"]);
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+
+                rightproject.description = projectdescription;
+                ctx.SaveChanges();
+
+                // Call fillMemberList method on the clients side
+                Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateProjectDescription(projectdescription);
+            }
+            catch (Exception ex)
+            {
+
                 throw ex;
             }
         }

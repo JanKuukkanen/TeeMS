@@ -73,9 +73,6 @@ public partial class Project : System.Web.UI.Page
             // Set project tag
             h3ProjectTag.InnerText = String.Format("Project tag: #PRO{0}", rightproject.project_tag);
 
-            // Set project description
-            txtProjectDescription.Text = rightproject.description;
-
             if (rightproject.finished == true)
             {
                 btnArchiveProject.Text = "Unarchive project";
@@ -153,42 +150,6 @@ public partial class Project : System.Web.UI.Page
         {
             
             lbMessages.Text = ex.Message;
-        }
-    }
-
-    protected void btnEditDescription_Click(object sender, EventArgs e)
-    {
-        if (txtProjectDescription.ReadOnly == true)
-        {
-            txtProjectDescription.ReadOnly = false;
-            btnEditDescription.Text = "Save changes";
-        }
-        else if (txtProjectDescription.ReadOnly == false)
-        {
-            try
-            {
-                string project_id = Request.QueryString["Project"];
-                int parsed_project_id = int.Parse(project_id);
-
-                var rightproject = ctx.project.Where(pr => pr.project_id == parsed_project_id).SingleOrDefault();
-
-                if (rightproject != null)
-                {
-                    rightproject.description = txtProjectDescription.Text;
-                    rightproject.edited = DateTime.Now;
-
-                    ctx.SaveChanges();
-                }
-
-                txtProjectDescription.Text = rightproject.description;
-                txtProjectDescription.ReadOnly = true;
-                btnEditDescription.Text = "Edit description";
-            }
-            catch (Exception ex)
-            {
-                
-                lbMessages.Text = ex.Message;
-            }
         }
     }
 
@@ -551,7 +512,7 @@ public partial class Project : System.Web.UI.Page
 
                     for (int i = 0; i < searchgroup.Count(); i++)
                     {
-                        if (searchgroup[i] != group.name[i] && group.name[i] != null)
+                        if (searchgroup[i] != group.name[i])
                         {
                             add_to_grid = false;
                         }
@@ -849,9 +810,6 @@ public partial class Project : System.Web.UI.Page
             
             TeeMsEntities context = new TeeMsEntities();
 
-            string uname = User.Identity.Name;
-            var dbperson = context.person.Where(person => person.username == uname).SingleOrDefault();
-
             string username = ticket.Name;
             var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
             var rightcomment = ctx.comment.Where(com => com.comment_id == commentid).SingleOrDefault();
@@ -994,24 +952,6 @@ public partial class Project : System.Web.UI.Page
         FillProjectAssignmentProgress();
     }
 
-    protected void UpdateProjectDescription(object sender, EventArgs e)
-    {
-        try
-        {
-            int project_id = int.Parse(Request.QueryString["Project"]);
-
-            var rightproject = ctx.project.Where(g => g.project_id == project_id).SingleOrDefault();
-
-            // Set project description
-            txtProjectDescription.Text = rightproject.description;
-        }
-        catch (Exception ex)
-        {
-            
-            lbMessages.Text = ex.Message;
-        }
-    }
-
     #endregion
 
     protected void ArchiveProjectPage()
@@ -1047,7 +987,6 @@ public partial class Project : System.Web.UI.Page
             btnAddGroup.Enabled = false;
             btnChangePicture.Enabled = false;
             btnCreateNewAssignment.Enabled = false;
-            btnEditDescription.Enabled = false;
             btnRemoveGroup.Enabled = false;
             btnSearchGroups.Enabled = false;
 

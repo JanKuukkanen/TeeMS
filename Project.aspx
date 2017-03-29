@@ -22,7 +22,7 @@
 
             <div class="w3-container" style="float:left; width:50%;">
                 <div class="w3-container">
-                    <img id="imgProjectPicture" runat="server" alt="Project picture" width="150" height="150" />
+                    <img id="imgProjectPicture" src="~/Images/no_image.png" runat="server" alt="Project picture" width="150" height="150" />
                     <br />
                     <asp:Button ID="btnChangePicture" runat="server" Text="Change picture" OnClick="btnChangePicture_Click" CssClass="w3-btn" />
                 </div>
@@ -110,21 +110,14 @@
         <div style="float:left;">
             <div class="w3-container" style="float: left;">
 
-                <div id="divProjectDesc">
+                <div id="divProjectDescription">
                     <h2>Project description</h2>
 
-                    <asp:UpdatePanel ID="upProjectDescription" runat="server" UpdateMode="Conditional">
-                        
-                        <ContentTemplate>
+                    <textarea id="txtProjectsDescription" readonly="readonly" style="height:100px; width:450px; vertical-align:top;"></textarea>
+                    <br />
+                    <button type="button" id="btnEditProjectDescription" class="w3-btn" >Edit description</button>
 
-                            <asp:TextBox ID="txtProjectDescription" runat="server" TextMode="MultiLine" Height="100px" Width="450px" Style="vertical-align:top;" ReadOnly="true" />
-                            <br />
-                            <asp:Button ID="btnEditDescription" runat="server" Text="Edit description" OnClick="btnEditDescription_Click" CssClass="w3-btn" />
-
-                            <asp:Button ID="btnUpdateProjectDescription" runat="server" OnClick="UpdateProjectDescription" style="display:none;" />
-                        </ContentTemplate>
-
-                    </asp:UpdatePanel>
+                    <button type="button" id="btnSaveProjectDescription" class="w3-btn" style="display:none;">Save description</button>
 
                 </div>
 
@@ -215,10 +208,25 @@
                     document.getElementById('<%=btnUpdateComments.ClientID%>').click();
                 };
 
-                project.client.updateProjectDescription = function () {
+                project.client.updateProjectDescription = function (projectdesc) {
                     // Trigger the onclick event of a hidden button in upProjectDescription updatepanel.
-                    document.getElementById('<%=btnUpdateProjectDescription.ClientID%>').click();
+                    $('#txtProjectsDescription').val(projectdesc);
                 };
+
+                // Create a function the hub can call to insert the project description upon connecting to the hub
+                project.client.insertProjectDescription = function (projectdesc, archived) {
+
+                    if (archived != "true")
+                    {
+                        // Insert the projectdescription in to the textarea
+                        $('#txtProjectsDescription').val(projectdesc);
+                    }
+                    else
+                    {
+                        $('#btnEditProjectDescription').prop("disabled", true);
+                    }
+
+                }
 
                 // Set connection parameters
                 $.connection.hub.qs = { 'Project': urlParams.get('Project') };
@@ -226,23 +234,32 @@
                 // Start the connection.
                 $.connection.hub.start().done(function () {
 
-                    $('#<%=btnEditDescription.ClientID%>').click(function () {
-
-                        if ( $('#<%=btnEditDescription.ClientID%>').is('[readonly]')) {
-                            // Call the BroadcastUpdateProjectDescription method on the hub.
-                            console.log("Hello");
-                            project.server.broadcastUpdateProjectDescription();
-                        }
-
-                    });
-
                     $('#btnSaveComments').click(function () {
-                        console.log("Comment saved");
 
                         var comment = $('textarea#txtWriteComments').val();
                         $('textarea#txtWriteComment').val('');
 
                         project.server.saveComment(comment);
+                    });
+
+                    $('#btnEditProjectDescription').click(function () {
+
+                        $('#txtProjectsDescription').removeAttr('readonly');
+                        $('#btnEditProjectDescription').css({ "display": 'none' });
+                        $('#btnSaveProjectDescription').css({ "display": 'inline-block' });
+
+                    });
+
+                    $('#btnSaveProjectDescription').click(function () {
+
+                        $('#txtProjectsDescription').attr("readonly", "readonly");
+                        $('#btnSaveProjectDescription').css({ "display": 'none' });
+                        $('#btnEditProjectDescription').css({ "display": 'inline-block' });
+
+                        var projectdesc = $('#txtProjectsDescription').val();
+
+                        project.server.saveProjectDescription(projectdesc);
+
                     });
                 });
             });
