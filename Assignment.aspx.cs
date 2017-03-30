@@ -77,16 +77,6 @@ public partial class Assignment : System.Web.UI.Page
             titleAssignmentTitle.InnerText = rightassignment.name;
             h1AssignmentName.InnerText = rightassignment.name;
 
-            // Set the assignment description to textbox
-            if (rightassignment.description != null)
-            {
-                txtAssignmentDescription.Text = rightassignment.description;
-            }
-            else
-            {
-                txtAssignmentDescription.Text = String.Format("Assignment {0} does not have a description.", rightassignment.name);
-            }
-
             // Fill Assignmentmember lists
             FillAssignmentMemberList();
             FillPanelAssignmentMemberList();
@@ -105,46 +95,6 @@ public partial class Assignment : System.Web.UI.Page
         int project_id = int.Parse(Request.QueryString["Project"]);
 
         Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", project_id));
-    }
-
-    protected void btnEditAssignmentDescription_Click(object sender, EventArgs e)
-    {
-        // Switch the assignment description textbox to be editable or non editable depending on it's current state
-        // and save any possible changes made in the ddescription
-        if (txtAssignmentDescription.ReadOnly == true)
-        {
-            txtAssignmentDescription.ReadOnly = false;
-            btnEditAssignmentDescription.Text = "Save changes";
-        }
-        else if (txtAssignmentDescription.ReadOnly == false)
-        {
-            try
-            {
-                string assignment_id = Request.QueryString["Assignment"];
-                int parsed_assignment_id = int.Parse(assignment_id);
-
-                var rightassignment = ctx.assignment.Where(a => a.amt_id == parsed_assignment_id).SingleOrDefault();
-
-                if (rightassignment != null)
-                {
-                    rightassignment.description = txtAssignmentDescription.Text;
-                    rightassignment.edited = DateTime.Now;
-
-                    ctx.SaveChanges();
-                }
-
-                txtAssignmentDescription.Text = rightassignment.description;
-                txtAssignmentDescription.ReadOnly = true;
-                btnEditAssignmentDescription.Text = "Edit description";
-
-                lbMessages.Text = String.Empty;
-            }
-            catch (Exception ex)
-            {
-
-                lbMessages.Text = ex.Message;
-            }
-        }
     }
 
     protected void FillAssignmentMemberList()
@@ -896,44 +846,6 @@ public partial class Assignment : System.Web.UI.Page
 
     #region COMMENT_FUNCTIONS
 
-    protected void btnSaveComment_Click(object sender, EventArgs e)
-    {
-        string comment = txtWriteComment.Text;
-
-        try
-        {
-            if (comment != String.Empty)
-            {
-                int assignment_id = int.Parse(Request.QueryString["Assignment"]);
-                int project_id = int.Parse(Request.QueryString["Project"]);
-                string username = ticket.Name;
-
-                var rightperson = ctx.person.Where(p => p.username == username).SingleOrDefault();
-
-                comment newcomment = new comment
-                {
-                    comment_content = comment,
-                    creation_date = DateTime.Now,
-                    person_id = rightperson.person_id,
-                    project_id = project_id,
-                    amt_id = assignment_id,
-                    assignment_project_id = project_id
-                };
-
-                ctx.comment.Add(newcomment);
-                ctx.SaveChanges();
-
-                txtWriteComment.Text = String.Empty;
-                FillComments();
-            }
-        }
-        catch (Exception ex)
-        {
-
-            lbMessages.Text = ex.Message;
-        }
-    }
-
     protected void FillComments()
     {
         try
@@ -1162,6 +1074,17 @@ public partial class Assignment : System.Web.UI.Page
 
     #endregion
 
+    #region SignalR
+
+    protected void UpdateComments(object sender, EventArgs e)
+    {
+        FillComments();
+    }
+
+    
+
+    #endregion
+
     protected void ArchiveProjectPage()
     {
         int project_id = int.Parse(Request.QueryString["Project"]);
@@ -1173,7 +1096,6 @@ public partial class Assignment : System.Web.UI.Page
 
 
             // Disable the buttons on the assignment page
-            btnEditAssignmentDescription.Enabled = false;
             btnAddAssignmentMember.Enabled = false;
             btnAddComponent.Enabled = false;
             btnDeleteAssignment.Enabled = false;
@@ -1183,7 +1105,6 @@ public partial class Assignment : System.Web.UI.Page
             btnSearchPersons.Enabled = false;
             btnShowAddComponentModal.Enabled = false;
             btnConfirmDeleteAssignment.Enabled = false;
-            btnSaveComment.Enabled = false;
         }
         catch (Exception ex)
         {
