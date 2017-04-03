@@ -29,7 +29,12 @@ namespace SignalRTeeMs
                 ctx = new TeeMsEntities();
 
                 int project_id = int.Parse(this.Context.QueryString["Project"]);
-                string assignment_textid = this.Context.QueryString["Assignment"];
+                string assignment_textid = String.Empty;
+
+                if (this.Context.QueryString["Assignment"] != null)
+                {
+                    assignment_textid = this.Context.QueryString["Assignment"];
+                }
 
                 var connectionlist = ctx.connection.ToList();
                 var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
@@ -52,6 +57,16 @@ namespace SignalRTeeMs
                 if (projectconnection != null)
                 {
                     await JoinGroup(rightproject.name + rightproject.project_id.ToString());
+                }
+
+                if (rightproject.name != String.Empty)
+                {
+                    SendProjectName(rightproject);
+                }
+
+                if (rightproject.picture_url != String.Empty)
+                {
+                    SendProjectImage(rightproject);
                 }
 
                 if (assignment_textid != String.Empty)
@@ -162,6 +177,34 @@ namespace SignalRTeeMs
 
                 throw ex;
             }
+        }
+
+        public void SendProjectName(project rightproject)
+        {
+            string projectname = rightproject.name;
+            int project_tag = (int) rightproject.project_tag;
+            string project_texttag = project_tag.ToString();
+            string archive = "false";
+
+            if (rightproject.finished == true)
+            {
+                archive = "true";
+            }
+
+            Clients.Caller.insertProjectName(projectname, project_texttag, archive);
+        }
+
+        public void SendProjectImage(project rightproject)
+        {
+            string projectpic_url = rightproject.picture_url;
+            string archive = "false";
+
+            if (rightproject.finished == true)
+            {
+                archive = "true";
+            }
+
+            Clients.Caller.insertProjectImage(projectpic_url, archive);
         }
 
         public void SendProjectDescription(project rightproject)
@@ -294,8 +337,58 @@ namespace SignalRTeeMs
                 var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
                 var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
 
-                // Call updateComments method on the clients side
+                // Call updateAssignmentComments method on the clients side
                 Clients.Group(rightproject.name + rightproject.project_id.ToString()).updateAssignmentComments();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public void SaveProjectTitle(string title)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                int project_id = int.Parse(this.Context.QueryString["Project"]);
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+
+                rightproject.name = title;
+                ctx.SaveChanges();
+
+                // Call updateProjectTitle method on the client side
+                Clients.Group(rightproject.name + rightproject.project_id.ToString()).updateProjectName(title);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public void SaveProjectImage(string project_imageurl)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                int project_id = int.Parse(this.Context.QueryString["Project"]);
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+
+                rightproject.picture_url = project_imageurl;
+                ctx.SaveChanges();
+
+                // Call updateProjectTitle method on the client side
+                Clients.Group(rightproject.name + rightproject.project_id.ToString()).updateProjectImage(project_imageurl);
             }
             catch (Exception ex)
             {
@@ -319,34 +412,12 @@ namespace SignalRTeeMs
                 rightproject.description = projectdescription;
                 ctx.SaveChanges();
 
-                // Call fillMemberList method on the clients side
+                // Call updateProjectDescription method on the clients side
                 Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateProjectDescription(projectdescription);
             }
             catch (Exception ex)
             {
 
-                throw ex;
-            }
-        }
-
-        public void BroadcastUpdateProjectDescription()
-        {
-            try
-            {
-                ctx = new TeeMsEntities();
-
-                int project_id = int.Parse(this.Context.QueryString["Project"]);
-
-                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
-                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
-                var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
-
-                // Call fillMemberList method on the clients side
-                Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateProjectDescription();
-            }
-            catch (Exception ex)
-            {
-                
                 throw ex;
             }
         }
@@ -366,7 +437,7 @@ namespace SignalRTeeMs
                 rightproject.description = assignmentdescription;
                 ctx.SaveChanges();
 
-                // Call fillMemberList method on the clients side
+                // Call updateAssignmentDescription method on the clients side
                 Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateAssignmentDescription(assignmentdescription);
             }
             catch (Exception ex)

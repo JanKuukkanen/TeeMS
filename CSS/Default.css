@@ -138,3 +138,9 @@
             padding:6px 2px 6px 16px;
             display: block;
         }
+
+.btnTitleButtons {
+    background: none;
+    border: none;
+    font-size: 1em;
+}

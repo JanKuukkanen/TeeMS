@@ -12,40 +12,44 @@
 
         <asp:ScriptManager ID="smComments" runat="server" />
 
-        <div id="divDefault" runat="server" class="w3-container" visible="true" style="float:left; width:50%">
+        <!-- SignalR title and image change -->
+
+        <div id="divTitleAndImageDefault" class="w3-container" visible="true" style="float:left; width:50%">
             <div class="w3-container" style="float:left; width:50%;">
-                <asp:LinkButton ID="lbtnTriggerTitleChange" OnClick="lbtnTriggerTitleChange_Click" runat="server">
-                    <h1 id="h1ProjectName" runat="server">Undefined Project</h1>
-                </asp:LinkButton>
-                <h3 id="h3ProjectTag" runat="server">Project tag: Undefined</h3>
+                
+                <h1 id="h1ProjectTitle"><button type="button" id="btnChangeProjectTitle" class="btnTitleButtons">Undefined Project</button></h1>
+                
+                <h3 id="h3ProjectTagNro">Project tag: Undefined</h3>
             </div>
 
             <div class="w3-container" style="float:left; width:50%;">
                 <div class="w3-container">
-                    <img id="imgProjectPicture" src="~/Images/no_image.png" runat="server" alt="Project picture" width="150" height="150" />
+                    <img id="imgProjectImage" src="/Images/no_image.png" alt="Project picture" width="150" height="150" />
                     <br />
-                    <asp:Button ID="btnChangePicture" runat="server" Text="Change picture" OnClick="btnChangePicture_Click" CssClass="w3-btn" />
+                    <button type="button" id="btnProjectImageChange" class="w3-btn">Change picture</button>
                 </div>
             </div>
         </div>
 
-        <div id="divDuringChange" runat="server" class="w3-container w3-blue" visible="false" style="padding-top:5%; padding-bottom:5%; width:50%; float:left;">
-            <div id="divTitleChanger" runat="server" visible="false">
-                <asp:TextBox ID="txtTitleChanger" runat="server" />
-                <asp:RequiredFieldValidator ID="ProjectNameRequired" runat="server" ErrorMessage="*" ForeColor="Red" ControlToValidate="txtTitleChanger" ValidationGroup="TitleChange"></asp:RequiredFieldValidator>
+        <div id="divChangeTitleAndImage" class="w3-container w3-blue" style="padding-top:5%; padding-bottom:5%; width:50%; float:left; display:none;">
+            <div id="divChangeTitle" style="display:none;">
+                <input type="text" id="txtChangeTitle" style="color:black;" />
+                <!-- Insert validator to check that textbox is not empty here -->
 
-                <asp:Button ID="btnTitleChanger" runat="server" Text="Change Name" OnClick="btnTitleChanger_Click" CssClass="w3-btn" ValidationGroup="TitleChange" />
-                <asp:Button ID="btnTitleCancel" runat="server" Text="Cancel" OnClick="btnTitleCancel_Click" CssClass="w3-btn" />
+                <button type="button" id="btnChangeTitle" class="w3-btn">Change Name</button>
+                <button type="button" id="btnChangeTitleCancel" class="w3-btn">Cancel</button>
             </div>
 
-            <div id="divImageChanger" runat="server" visible="false">
-                <asp:TextBox ID="txtImageChanger" runat="server" />
-                <asp:RequiredFieldValidator ID="ImageRequired" runat="server" ErrorMessage="*" ForeColor="Red" ControlToValidate="txtImageChanger" ValidationGroup="ImageChange"></asp:RequiredFieldValidator>
+            <div id="divChangeImage" style="display:none;">
+                <input type="text" id="txtChangeImage" style="color:black;" />
+                <!-- Insert validator to check that textbox is not empty here -->
 
-                <asp:Button ID="btnImageChanger" runat="server" Text="Change Image" OnClick="btnImageChanger_Click" CssClass="w3-btn" ValidationGroup="ImageChange" />
-                <asp:Button ID="btnImageCancel" runat="server" Text="Cancel" OnClick="btnImageCancel_Click" CssClass="w3-btn" />
+                <button type="button" id="btnChangeImage" class="w3-btn">Change Image</button>
+                <button type="button" id="btnChangeImageCancel" class="w3-btn">Cancel</button>
             </div>
         </div>
+
+        <!-- SignalR title and image change -->
 
         <div style="float:left; width:50%;">
             <div class="w3-container" style="float:left;">
@@ -208,10 +212,63 @@
                     document.getElementById('<%=btnUpdateComments.ClientID%>').click();
                 };
 
+                project.client.updateProjectImage = function (project_imageurl) {
+                    // Change the project image.
+                    $('#imgProjectImage').attr("src", project_imageurl);
+                };
+
+                project.client.updateProjectName = function (project_title) {
+
+                    console.log("Changing title");
+
+                    // Change the project title.
+                    $('#btnChangeProjectTitle').text(project_title);
+                };
+
+                project.client.updateProjectH = function () {
+                    // Change the project image.
+                    console.log("How much fun can you have");
+                };
+
                 project.client.updateProjectDescription = function (projectdesc) {
-                    // Trigger the onclick event of a hidden button in upProjectDescription updatepanel.
+                    // Update the projects description.
                     $('#txtProjectsDescription').val(projectdesc);
                 };
+
+                // Create a function the hub can call to insert the project picture upon connecting to the hub
+                project.client.insertProjectName = function (projectname, projecttag, archived) {
+
+                    if (archived != "true") {
+                        // Insert the projectdescription in to the textarea
+                        $('#btnChangeProjectTitle').text(projectname);
+
+                        // Insert project tag in to textarea
+                        $('#h3ProjectTagNro').text('Project tag: #PRO' + projecttag);
+                    }
+                    else {
+
+                        $('#btnChangeProjectTitle').text(projectname);
+                        $('#h3ProjectTagNro').text('This project has been archived and cannot be edited further!');
+                        $('#btnChangeProjectTitle').prop("disabled", true);
+                    }
+
+                }
+
+                // Create a function the hub can call to insert the project picture upon connecting to the hub
+                project.client.insertProjectImage = function (projectpic_url, archived) {
+
+                    console.log(projectpic_url);
+
+                    if (archived != "true") {
+                        // Insert the projectdescription in to the textarea
+                        $('#imgProjectImage').attr("src", projectpic_url);
+                    }
+                    else {
+                        $('#imgProjectImage>').attr("src", projectpic_url);
+                        $('#btnProjectImageChange').prop("disabled", true);
+                    }
+
+                }
 
                 // Create a function the hub can call to insert the project description upon connecting to the hub
                 project.client.insertProjectDescription = function (projectdesc, archived) {
@@ -223,6 +280,7 @@
                     }
                     else
                     {
+                        $('#txtProjectsDescription').val(projectdesc);
                         $('#btnEditProjectDescription').prop("disabled", true);
                     }
 
@@ -242,11 +300,33 @@
                         project.server.saveComment(comment);
                     });
 
-                    $('#btnEditProjectDescription').click(function () {
+                    $('#btnChangeTitle').click(function () {
 
-                        $('#txtProjectsDescription').removeAttr('readonly');
-                        $('#btnEditProjectDescription').css({ "display": 'none' });
-                        $('#btnSaveProjectDescription').css({ "display": 'inline-block' });
+                        var project_title = $('#txtChangeTitle').val();
+                        $('#txtChangeTitle').val('');
+
+                        //$('#btnChangeProjectTitle').text(project_title);
+
+                        $('#divChangeTitleAndImage').css({ "display": 'none' });
+                        $('#divTitleAndImageDefault').css({ "display": 'inline-block' });
+                        $('#divChangeTitle').css({ "display": 'none' });
+
+                        project.server.saveProjectTitle(project_title);
+
+                    });
+
+                    $('#btnChangeImage').click(function () {
+
+                        var project_imageurl = $('#txtChangeImage').val();
+                        $('#txtChangeImage').val('');
+
+                        //$('#imgProjectImage').attr("src", project_imageurl);
+
+                        $('#divChangeTitleAndImage').css({ "display": 'none' });
+                        $('#divTitleAndImageDefault').css({ "display": 'inline-block' });
+                        $('#divChangeImage').css({ "display": 'none' });
+
+                        project.server.saveProjectImage(project_imageurl);
 
                     });
 
@@ -262,6 +342,45 @@
 
                     });
                 });
+
+                // Buttons with functionality that alter the css of elements
+                // Button that will hide the regular title and image and bring up the change title textbox
+                $('#btnChangeProjectTitle').click(function () {
+                    $('#divTitleAndImageDefault').css({ "display": 'none' });
+                    $('#divChangeTitleAndImage').css({ "display": 'inline-block' });
+                    $('#divChangeTitle').css({ "display": 'inline-block' });
+                });
+
+                // Button that will hide the regular title and image and bring up the change image textbox
+                $('#btnProjectImageChange').click(function () {
+                    $('#divTitleAndImageDefault').css({ "display": 'none' });
+                    $('#divChangeTitleAndImage').css({ "display": 'inline-block' });
+                    $('#divChangeImage').css({ "display": 'inline-block' });
+                });
+                
+                // Button that will return the regular title and image to be visible
+                $('#btnChangeTitleCancel').click(function () {
+                    $('#divChangeTitleAndImage').css({ "display": 'none' });
+                    $('#divTitleAndImageDefault').css({ "display": 'inline-block' });
+                    $('#divChangeTitle').css({ "display": 'none' });
+                });
+
+                // Button that will return the regular title and image to be visible
+                $('#btnChangeImageCancel').click(function () {
+                    $('#divChangeTitleAndImage').css({ "display": 'none' });
+                    $('#divTitleAndImageDefault').css({ "display": 'inline-block' });
+                    $('#divChangeImage').css({ "display": 'none' });
+                });
+
+                // Button that will make the project description textbox able to be modified
+                $('#btnEditProjectDescription').click(function () {
+
+                    $('#txtProjectsDescription').removeAttr('readonly');
+                    $('#btnEditProjectDescription').css({ "display": 'none' });
+                    $('#btnSaveProjectDescription').css({ "display": 'inline-block' });
+
+                });
+
             });
 
         </script>
