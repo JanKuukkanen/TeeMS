@@ -347,23 +347,25 @@ namespace SignalRTeeMs
             }
         }
 
-        public void SaveProjectTitle(string title)
+        public void SaveProjectName(string projectname)
         {
             try
             {
                 ctx = new TeeMsEntities();
 
                 int project_id = int.Parse(this.Context.QueryString["Project"]);
+                string newname = projectname;
 
                 var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
                 var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
                 var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
 
-                rightproject.name = title;
+                rightproject.name = newname;
                 ctx.SaveChanges();
 
                 // Call updateProjectTitle method on the client side
-                Clients.Group(rightproject.name + rightproject.project_id.ToString()).updateProjectName(title);
+                // For some reason this call to the client side is made only if the variable passed to the client side is the same as the current project name in the database
+                Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateProjectName(newname);
             }
             catch (Exception ex)
             {
@@ -388,7 +390,7 @@ namespace SignalRTeeMs
                 ctx.SaveChanges();
 
                 // Call updateProjectTitle method on the client side
-                Clients.Group(rightproject.name + rightproject.project_id.ToString()).updateProjectImage(project_imageurl);
+                Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateProjectImage(project_imageurl);
             }
             catch (Exception ex)
             {

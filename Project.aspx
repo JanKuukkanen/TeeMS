@@ -17,7 +17,7 @@
         <div id="divTitleAndImageDefault" class="w3-container" visible="true" style="float:left; width:50%">
             <div class="w3-container" style="float:left; width:50%;">
                 
-                <h1 id="h1ProjectTitle"><button type="button" id="btnChangeProjectTitle" class="btnTitleButtons">Undefined Project</button></h1>
+                <h1 id="h1ProjectTitle"><input type="button" id="btnChangeProjectTitle" value="Undefined Project" style="background: none; border: none; padding-bottom:4px;" /></h1>
                 
                 <h3 id="h3ProjectTagNro">Project tag: Undefined</h3>
             </div>
@@ -217,17 +217,12 @@
                     $('#imgProjectImage').attr("src", project_imageurl);
                 };
 
-                project.client.updateProjectName = function (project_title) {
-
-                    console.log("Changing title");
+                // For some reason this function only activates if projectname variable value is the same as the current projectname value in the database
+                project.client.updateProjectName = function (projectname) {
 
                     // Change the project title.
-                    $('#btnChangeProjectTitle').text(project_title);
-                };
+                    $('#btnChangeProjectTitle').val(projectname);
 
-                project.client.updateProjectH = function () {
-                    // Change the project image.
-                    console.log("How much fun can you have");
                 };
 
                 project.client.updateProjectDescription = function (projectdesc) {
@@ -240,14 +235,16 @@
 
                     if (archived != "true") {
                         // Insert the projectdescription in to the textarea
-                        $('#btnChangeProjectTitle').text(projectname);
+                        // $('#btnChangeProjectTitle').text(projectname);
+                        $('#btnChangeProjectTitle').val(projectname);
 
                         // Insert project tag in to textarea
                         $('#h3ProjectTagNro').text('Project tag: #PRO' + projecttag);
                     }
                     else {
 
-                        $('#btnChangeProjectTitle').text(projectname);
+                        //$('#btnChangeProjectTitle').text(projectname);
+                        $('#btnChangeProjectTitle').val(projectname);
                         $('#h3ProjectTagNro').text('This project has been archived and cannot be edited further!');
                         $('#btnChangeProjectTitle').prop("disabled", true);
                     }
@@ -256,8 +253,6 @@
 
                 // Create a function the hub can call to insert the project picture upon connecting to the hub
                 project.client.insertProjectImage = function (projectpic_url, archived) {
-
-                    console.log(projectpic_url);
 
                     if (archived != "true") {
                         // Insert the projectdescription in to the textarea
@@ -302,16 +297,16 @@
 
                     $('#btnChangeTitle').click(function () {
 
-                        var project_title = $('#txtChangeTitle').val();
+                        var projectname = $('#txtChangeTitle').val();
                         $('#txtChangeTitle').val('');
 
-                        //$('#btnChangeProjectTitle').text(project_title);
+                        $('#btnChangeProjectTitle').val(projectname);
 
                         $('#divChangeTitleAndImage').css({ "display": 'none' });
                         $('#divTitleAndImageDefault').css({ "display": 'inline-block' });
                         $('#divChangeTitle').css({ "display": 'none' });
 
-                        project.server.saveProjectTitle(project_title);
+                        project.server.saveProjectName(projectname);
 
                     });
 
@@ -320,7 +315,7 @@
                         var project_imageurl = $('#txtChangeImage').val();
                         $('#txtChangeImage').val('');
 
-                        //$('#imgProjectImage').attr("src", project_imageurl);
+                        $('#imgProjectImage').attr("src", project_imageurl);
 
                         $('#divChangeTitleAndImage').css({ "display": 'none' });
                         $('#divTitleAndImageDefault').css({ "display": 'inline-block' });
