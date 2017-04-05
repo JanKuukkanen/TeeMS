@@ -137,6 +137,8 @@ public partial class Assignment : System.Web.UI.Page
     {
         try
         {
+            cblPanelAssignmentMembers.Items.Clear();
+
             int assignment_id = int.Parse(Request.QueryString["Assignment"]);
             int project_id = int.Parse(Request.QueryString["Project"]);
 
@@ -161,6 +163,44 @@ public partial class Assignment : System.Web.UI.Page
             }
 
             Session["assignmentpersons"] = persons;
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void FillPanelComboboxMemberList()
+    {
+        try
+        {
+            int assignment_id = int.Parse(Request.QueryString["Assignment"]);
+            int project_id = int.Parse(Request.QueryString["Project"]);
+
+            var rightassignment = ctx.assignment.Where(amt => amt.project_id == project_id && amt.amt_id == assignment_id).SingleOrDefault();
+            var assignmentpersons = ctx.assignment_person.Where(ap => ap.amt_id == rightassignment.amt_id).ToList();
+
+            List<person> persons = new List<person>();
+            List<int> ids = new List<int>();
+
+            foreach (var assignmentperson in assignmentpersons)
+            {
+                if (!ids.Contains(assignmentperson.person_id))
+                {
+                    persons.Add(ctx.person.Where(p => p.person_id == assignmentperson.person_id).SingleOrDefault());
+                    ids.Add(assignmentperson.person_id);
+                }
+            }
+
+            cblShowComponentMembers.Items.Clear();
+
+            foreach (var person in persons)
+            {
+                cblShowComponentMembers.Items.Add(person.username);
+            }
+
+            Session["assignmentcomponentpersons"] = persons;
         }
         catch (Exception ex)
         {
@@ -467,7 +507,7 @@ public partial class Assignment : System.Web.UI.Page
 
                 divAssignmentComponents.Controls.Add(componentdiv);
             }
-	    }
+        }
 	    catch (Exception ex)
 	    {
 		
@@ -505,6 +545,7 @@ public partial class Assignment : System.Web.UI.Page
                 cbComponentFinished.Checked = false;
             }
 
+            // Cut off here
             List<person> persons = new List<person>();
             List<int> ids = new List<int>();
 
@@ -569,6 +610,12 @@ public partial class Assignment : System.Web.UI.Page
             }
 
             bool madechanges = false;
+
+            if (txtShowComponentName.Text != rightassignmentcomponent.name)
+            {
+                rightassignmentcomponent.name = txtShowComponentName.Text;
+                madechanges = true;
+            }
 
             if (members_to_remove != null)
             {
@@ -752,7 +799,7 @@ public partial class Assignment : System.Web.UI.Page
 
                     for (int i = 0; i < searchperson.Count(); i++)
                     {
-                        if (searchperson[i] != person.username[i] && person.username[i] != null)
+                        if (searchperson[i] != person.username[i])
                         {
                             check_username = false;
                         }

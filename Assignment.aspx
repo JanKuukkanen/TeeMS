@@ -8,6 +8,9 @@
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="body" Runat="Server">
     <div class="w3-container w3-rest" style="width:auto;">
+
+        <asp:ScriptManager ID="smAssignments" runat="server"></asp:ScriptManager>
+
         <div id="divTitle" class="w3-container" style="float:left; width:50%;">
             <div>
                 <asp:Button ID="btnBackToProject" runat="server" Text="Back to project page" OnClick="btnBackToProject_Click" CssClass="w3-btn w3-blue-gray" />
@@ -90,14 +93,14 @@
                 <h4>Assignment Components</h4>
             </div>
 
-            <div id="divAssignmentComponents" runat="server" class="w3-container" >
+            <asp:UpdatePanel ID="updateComponentList" runat="server">
+                <ContentTemplate>
+                    <div id="divAssignmentComponents" runat="server" class="w3-container">
 
-            </div>
+                    </div>
 
             <div id="divAddComponent">
 
-                <asp:ScriptManager ID="ScriptManager1" runat="server">
-                </asp:ScriptManager>
                 <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Create new component" CssClass="w3-btn" />
  
                 <!-- Start ModalPopupExtender -->
@@ -161,6 +164,10 @@
                 <!-- End ModalPopupExtender -->
 
             </div>
+            
+            </ContentTemplate>
+            </asp:UpdatePanel>
+            <!-- End updatepanel here -->
 
             <!-- Comments section -->
             <div id="divAssignmentComments" style="margin-top:40px";>
