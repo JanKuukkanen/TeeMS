@@ -347,6 +347,30 @@ namespace SignalRTeeMs
             }
         }
 
+        public void broadcastUpdateAssignmentComponent()
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                int project_id = int.Parse(this.Context.QueryString["Project"]);
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                var rightproject = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault();
+
+                System.Threading.Thread.Sleep(2000);
+
+                // Call updateAssignmentComments method on the clients side
+                Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateAssignmentComponents();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
         public void SaveProjectName(string projectname)
         {
             try

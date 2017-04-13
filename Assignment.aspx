@@ -93,79 +93,90 @@
                 <h4>Assignment Components</h4>
             </div>
 
+            <!-- Start UpdatePanel here -->
             <asp:UpdatePanel ID="updateComponentList" runat="server">
                 <ContentTemplate>
+
                     <div id="divAssignmentComponents" runat="server" class="w3-container">
 
                     </div>
 
-            <div id="divAddComponent">
+                    <asp:Button ID="btnUpdateAssignmentComponents" runat="server" OnClick="UpdateAssignmentComponents" style="display:none;" />
+                </ContentTemplate>
+            </asp:UpdatePanel>
 
-                <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Create new component" CssClass="w3-btn" />
+            <asp:UpdatePanel ID="UpdateAssignmentComponentModal" runat="server">
+                <ContentTemplate>
+
+                    <div id="divAddComponent">
+
+                        <asp:Button ID="btnShowAddComponentModal" runat="server" Text="Create new component" CssClass="w3-btn" />
  
-                <!-- Start ModalPopupExtender -->
-                <ajaxToolkit:ModalPopupExtender ID="mpeAddComponent" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnShowAddComponentModal"
-                    CancelControlID="btnCloseAddComponentModal" BackgroundCssClass="w3-blue-grey w3-opacity">
-                </ajaxToolkit:ModalPopupExtender>
-                <asp:Panel ID="panelAddComponent" runat="server" CssClass="w3-purple">
-                    <div style="width:700px; margin:10px 10px 10px 10px;">
-                        <div style="float: left; width:50%;">
-                            <asp:Label ID="lbAddComponentName" runat="server" Text="Name: "></asp:Label>
-                            <asp:TextBox ID="txtAddComponent" runat="server" ValidationGroup="ModalValidation"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="rfvComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
-                            <br />
-                            <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" CssClass="w3-btn" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
-                        </div>
+                        <!-- Start ModalPopupExtender -->
+                        <ajaxToolkit:ModalPopupExtender ID="mpeAddComponent" runat="server" PopupControlID="panelAddComponent" TargetControlID="btnShowAddComponentModal"
+                            CancelControlID="btnCloseAddComponentModal" BackgroundCssClass="w3-blue-grey w3-opacity">
+                        </ajaxToolkit:ModalPopupExtender>
+                        <asp:Panel ID="panelAddComponent" runat="server" CssClass="w3-purple">
+                            <div style="width:700px; margin:10px 10px 10px 10px;">
+                                <div style="float: left; width:50%;">
+                                    <asp:Label ID="lbAddComponentName" runat="server" Text="Name: "></asp:Label>
+                                    <asp:TextBox ID="txtAddComponent" runat="server" ValidationGroup="ModalValidation"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="rfvComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
+                                    <br />
+                                    <asp:Button ID="btnAddComponent" runat="server" Text="Add Component" CssClass="w3-btn" OnClick="btnAddComponent_Click" Style="margin-top:10px;" />
+                                </div>
 
-                        <div id="divPanelAssignmentMembers" style="float:left; width:50%;">
-                            <!-- List all assignment members on the modal popup -->
-                            <asp:CheckBoxList ID="cblPanelAssignmentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
-                        </div>
+                                <div id="divPanelAssignmentMembers" style="float:left; width:50%;">
+                                    <!-- List all assignment members on the modal popup -->
+                                    <asp:CheckBoxList ID="cblPanelAssignmentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
+                                </div>
 
-                        <div style="margin-left: 45%; margin-bottom:10px; float: left; width:100%;">
-                            <asp:Button ID="btnCloseAddComponentModal" runat="server" Text="Close" CssClass="w3-btn" />
-                        </div>
+                                <div style="margin-left: 45%; margin-bottom:10px; float: left; width:100%;">
+                                    <asp:Button ID="btnCloseAddComponentModal" runat="server" Text="Close" CssClass="w3-btn" />
+                                </div>
+                            </div>
+                        </asp:Panel>
+                        <!-- End ModalPopupExtender -->
+
                     </div>
-                </asp:Panel>
-                <!-- End ModalPopupExtender -->
 
-            </div>
 
-            <div id="divDisplayComponent">
 
-                <asp:Button ID="btnHiddenModalTarget" runat="server" Style="display:none;" />
+                    <div id="divDisplayComponent">
 
-                <!-- Start ModalPopupExtender -->
-                <ajaxToolkit:ModalPopupExtender ID="mpeShowComponentModal" runat="server" PopupControlID="panelShowComponent" TargetControlID="btnHiddenModalTarget"
-                    CancelControlID="btnCloseShowComponent" BackgroundCssClass="w3-blue-grey w3-opacity">
-                </ajaxToolkit:ModalPopupExtender>
-                <asp:Panel ID="panelShowComponent" runat="server" CssClass="w3-purple">
-                    <div style="width:700px; margin:10px 10px 10px 10px;">
-                        <div style="float: left; width:60%;">
-                            <asp:Label ID="lbShowComponentName" runat="server" Text="Name: "></asp:Label>
-                            <asp:TextBox ID="txtShowComponentName" runat="server" ValidationGroup="ShowModalValidation"></asp:TextBox>
-                            <asp:RequiredFieldValidator ID="rfvShowComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ShowModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
-                            <asp:CheckBox ID="cbComponentFinished" runat="server" Text="Completed" />
-                            <br />
-                            <asp:Button ID="btnSaveChanges" runat="server" Text="Save changes" CssClass="w3-btn" OnClick="btnSaveChanges_Click" Style="margin-top:5px;" />
-                            <asp:Button ID="btnRemoveAssignmentComponent" runat="server" Text="Delete Component" CssClass="w3-btn" OnClick="btnRemoveAssignmentComponent_Click" Style="margin-left:5px; margin-top:5px;" />
-                        </div>
+                        <asp:Button ID="btnHiddenModalTarget" runat="server" Style="display:none;" />
 
-                        <div id="div1" style="float:left; width:40%;">
-                            <!-- List all assignment members on the modal popup -->
-                            <asp:CheckBoxList ID="cblShowComponentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
-                        </div>
+                        <!-- Start ModalPopupExtender -->
+                        <ajaxToolkit:ModalPopupExtender ID="mpeShowComponentModal" runat="server" PopupControlID="panelShowComponent" TargetControlID="btnHiddenModalTarget"
+                            CancelControlID="btnCloseShowComponent" BackgroundCssClass="w3-blue-grey w3-opacity">
+                        </ajaxToolkit:ModalPopupExtender>
+                        <asp:Panel ID="panelShowComponent" runat="server" CssClass="w3-purple">
+                            <div style="width:700px; margin:10px 10px 10px 10px;">
+                                <div style="float: left; width:60%;">
+                                    <asp:Label ID="lbShowComponentName" runat="server" Text="Name: "></asp:Label>
+                                    <asp:TextBox ID="txtShowComponentName" runat="server" ValidationGroup="ShowModalValidation"></asp:TextBox>
+                                    <asp:RequiredFieldValidator ID="rfvShowComponentNameRequired" runat="server" ControlToValidate="txtAddComponent" ErrorMessage="Name is required." ForeColor="Red" ValidationGroup="ShowModalValidation" ToolTip="Password is required.">*</asp:RequiredFieldValidator>
+                                    <asp:CheckBox ID="cbComponentFinished" runat="server" Text="Completed" />
+                                    <br />
+                                    <asp:Button ID="btnSaveChanges" runat="server" ClientIDMode="Static" Text="Save changes" CssClass="w3-btn btnSaveAssignmentChanges" OnClick="btnSaveChanges_Click" Style="margin-top:5px;" />
+                                    <asp:Button ID="btnRemoveAssignmentComponent" runat="server" Text="Delete Component" CssClass="w3-btn" OnClick="btnRemoveAssignmentComponent_Click" Style="margin-left:5px; margin-top:5px;" />
+                                </div>
 
-                        <div style="margin-left: 45%; margin-top:50px; margin-bottom:10px; float: left; width:100%;">
-                            <asp:Button ID="btnCloseShowComponent" runat="server" Text="Close" CssClass="w3-btn" />
-                        </div>
+                                <div id="div1" style="float:left; width:40%;">
+                                    <!-- List all assignment members on the modal popup -->
+                                    <asp:CheckBoxList ID="cblShowComponentMembers" runat="server" Style="float:right;"></asp:CheckBoxList>
+                                </div>
+
+                                <div style="margin-left: 45%; margin-top:50px; margin-bottom:10px; float: left; width:100%;">
+                                    <asp:Button ID="btnCloseShowComponent" runat="server" Text="Close" CssClass="w3-btn" />
+                                </div>
+                            </div>
+                        </asp:Panel>
+                        <!-- End ModalPopupExtender -->
+
                     </div>
-                </asp:Panel>
-                <!-- End ModalPopupExtender -->
 
-            </div>
-            
-            </ContentTemplate>
+                </ContentTemplate>
             </asp:UpdatePanel>
             <!-- End updatepanel here -->
 
@@ -224,11 +235,19 @@
 
                 // Declare a proxy to reference the hub.
                 var project = $.connection.projectHub;
-                // Create a function that the hub can call to broadcast messages.
+                // Create a function that the hub can call to update assignment comments.
                 project.client.updateAssignmentComments = function () {
+
                     // Trigger the onclick event of a hidden button in upComments updatepanel. 
                     document.getElementById('<%=btnUpdateComments.ClientID%>').click();
                 };
+
+                // Create a function that the hub can call to update assignment components.
+                project.client.updateAssignmentComponents = function () {
+
+                    // Trigger the onclick event of a hidden button in updateComponentList updatepanel
+                    document.getElementById('<%=btnUpdateAssignmentComponents.ClientID%>').click();
+                }
 
                 project.client.updateAssignmentDescription = function (assignmentdesc) {
                     // Trigger the onclick event of a hidden button in upProjectDescription updatepanel.
@@ -281,6 +300,12 @@
                         var assignmentdesc = $('#txtAssignmentsDescription').val();
 
                         project.server.saveAssignmentDescription(assignmentdesc);
+
+                    });
+
+                    $(document).on('click', '#<%=btnSaveChanges.ClientID%>', function () {
+
+                        project.server.broadcastUpdateAssignmentComponent();
 
                     });
                 });

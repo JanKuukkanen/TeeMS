@@ -1128,7 +1128,11 @@ public partial class Assignment : System.Web.UI.Page
         FillComments();
     }
 
-    
+    protected void UpdateAssignmentComponents(object sender, EventArgs e)
+    {
+        divAssignmentComponents.Controls.Clear();
+        FillComponentList();
+    }
 
     #endregion
 
