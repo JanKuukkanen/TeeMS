@@ -76,11 +76,14 @@ namespace SignalRTeeMs
                     var rightassignment = ctx.assignment.Where(amt => amt.amt_id == assignment_id).SingleOrDefault();
 
                     SendAssignmentDescription(rightproject, rightassignment);
+
+                    Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateAssignmentProgress();
                 }
                 else
                 {
                     SendProjectDescription(rightproject);
                 }
+
 
                 await base.OnConnected();
             }
@@ -363,6 +366,7 @@ namespace SignalRTeeMs
 
                 // Call updateAssignmentComments method on the clients side
                 Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateAssignmentComponents();
+                Clients.OthersInGroup(rightproject.name + rightproject.project_id.ToString()).updateAssignmentProgress();
             }
             catch (Exception ex)
             {

@@ -212,6 +212,11 @@
                     document.getElementById('<%=btnUpdateComments.ClientID%>').click();
                 };
 
+                project.client.updateAssignmentProgress = function () {
+                    // Trigger the onclick event of a hidden button in upAssignmentProgress updatepanel
+                    document.getElementById('<%=btnUpdateAssignmentProgress.ClientID%>').click();
+                };
+
                 project.client.updateProjectImage = function (project_imageurl) {
                     // Change the project image.
                     $('#imgProjectImage').attr("src", project_imageurl);

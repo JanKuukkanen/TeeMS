@@ -308,6 +308,12 @@
                         project.server.broadcastUpdateAssignmentComponent();
 
                     });
+
+                    $(document).on('click', '#<%=btnAddComponent.ClientID%>', function () {
+
+                        project.server.broadcastUpdateAssignmentComponent();
+
+                    });
                 });
             });
 
