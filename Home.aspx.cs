@@ -180,6 +180,9 @@ public partial class Home : System.Web.UI.Page
 
         try
         {
+            divYourGroups.Controls.Clear();
+            divYourProjects.Controls.Clear();
+
             List<group> usergroups = contentmanager.GetUserGroups();
             List<project> userprojects = contentmanager.GetUserProjects();
 
@@ -365,14 +368,6 @@ public partial class Home : System.Web.UI.Page
                     grouprole_id = roletoadd.grouprole_id
                 };
 
-                /*var prope = new project_person
-                {
-                    project_id = rightproject.project_id,
-                    person_id = member.person_id,
-                    group_id = rightgroup.group_id,
-                    project_person_supporting = false
-                };*/
-
                 List<project_group> projectgrouplist = rightgroup.project_group.ToList();
 
                 foreach (var projectgroup in projectgrouplist)
@@ -397,6 +392,9 @@ public partial class Home : System.Web.UI.Page
                 ctx.invite.Remove(rightinvitation);
 
                 ctx.SaveChanges();
+
+                FillInvitations();
+                FillDivs();
             }
         }
         catch (Exception ex)

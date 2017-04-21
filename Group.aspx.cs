@@ -18,24 +18,40 @@ public partial class Group : System.Web.UI.Page
     {
         // set the database context using entity framework
         ctx = new TeeMsEntities();
-        string group_id = String.Empty;
+        string group_textid = String.Empty;
+        bool alloweduser = false;
 
         try
         {
             HttpCookie authcookie = Request.Cookies[FormsAuthentication.FormsCookieName];
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
-            group_id = Request.QueryString["Group"];
+            group_textid = Request.QueryString["Group"];
+            int group_id = int.Parse(group_textid);
+
+            var rightgroup = ctx.group.Where(g => g.group_id == group_id).SingleOrDefault();
+            var rightperson = ctx.person.Where(p => p.username == User.Identity.Name).SingleOrDefault();
+            var rightmember = rightperson.group_member.Where(gm => gm.group_id == rightgroup.group_id).SingleOrDefault();
+
+            if (rightmember != null)
+            {
+                alloweduser = true;
+            }
         }
-        catch (HttpException ex)
+        catch (Exception ex)
         {
 
             lbMessages.Text = ex.Message;
         }
 
-        if (!IsPostBack && group_id != String.Empty)
+        if (alloweduser != true)
         {
-            FillControls(int.Parse(group_id)); 
+            Response.Redirect(String.Format(Request.ApplicationPath + "Home.aspx"));
+        }
+
+        if (!IsPostBack && group_textid != String.Empty)
+        {
+            FillControls(int.Parse(group_textid)); 
         }
     }
 
@@ -48,7 +64,6 @@ public partial class Group : System.Web.UI.Page
             var rightgroup = ctx.group.Where(g => g.group_id == group_id).SingleOrDefault();
 
             groupTitle.InnerText = rightgroup.name;
-            h1GroupName.InnerText = rightgroup.name;
 
             var groupMembers = rightgroup.group_member.Where(gm => gm.group_id == group_id).Select(gm => gm.person_id).ToList();
 
@@ -66,20 +81,6 @@ public partial class Group : System.Web.UI.Page
             rblGroupRoleChange.Items.Add("Group Member");
             rblGroupRoleChange.Items.Add("Group Moderator");
             rblGroupRoleChange.Items.Add("Group Administrator");
-
-            string pictureuri = Request.ApplicationPath + "Images/no_image.png";
-
-            if (rightgroup.group_picture_url != null)
-            {
-                if (rightgroup.group_picture_url != String.Empty)
-                {
-                    imgGroupPicture.Src = rightgroup.group_picture_url; 
-                }
-            }
-            else
-            {
-                imgGroupPicture.Src = pictureuri;
-            }
 
             // Fill ddlProjecyList with groups currently working on the project
             var projectgroupquery = ctx.project_group.ToList();
@@ -110,132 +111,6 @@ public partial class Group : System.Web.UI.Page
     }
 
 #region BUTTONS
-    protected void lbtnTriggerTitleChange_Click(object sender, EventArgs e)
-    {
-        // Change the visibility of certain html elements to bring up a textbox
-        divDefault.Visible = false;
-        divDuringChange.Visible = true;
-        divTitleChanger.Visible = true;
-    }
-
-    protected void btnTitleChanger_Click(object sender, EventArgs e)
-    {
-        // Change The name of the group
-        UserContentManager contentmanager = new UserContentManager(ticket.Name);
-
-        try
-        {
-            string group_id = Request.QueryString["Group"];
-
-            int parsed_group_id = int.Parse(group_id);
-            bool is_same_name = false;
-
-            var rightgroup = ctx.group.Where(g => g.group_id == parsed_group_id).SingleOrDefault();
-
-            // Check that the user does not already belong to a group with the same name
-            // as the one they're trying to give
-            List<group> usergroupquery = contentmanager.GetUserGroups();
-
-            foreach (var item in usergroupquery)
-            {
-                if (item.name == txtTitleChanger.Text)
-                {
-                    is_same_name = true;
-                }
-            }
-
-            if (rightgroup != null && is_same_name == false)
-            {
-                rightgroup.name = txtTitleChanger.Text;
-                rightgroup.edited = DateTime.Now;
-
-                ctx.SaveChanges();
-
-                h1GroupName.InnerText = txtTitleChanger.Text;
-                groupTitle.InnerText = txtTitleChanger.Text;
-                lbMessages.Text = String.Format("Changed group name");
-            }
-            else if (is_same_name == true)
-            {
-                lbMessages.Text = "You already have a group with that name";
-            }
-            else
-            {
-                lbMessages.Text = "Failed to change the name of the group";
-            }
-
-            divDuringChange.Visible = false;
-            divTitleChanger.Visible = false;
-            divDefault.Visible = true;
-        }
-        catch (Exception ex)
-        {
-
-            lbMessages.Text = ex.Message;
-        }
-    }
-
-    protected void btnTitleCancel_Click(object sender, EventArgs e)
-    {
-        divTitleChanger.Visible = false;
-        divDuringChange.Visible = false;
-        divDefault.Visible = true;
-    }
-
-    protected void btnChangePicture_Click(object sender, EventArgs e)
-    {
-        // Change the visibility of certain html elements to bring up a textbox
-        divDefault.Visible = false;
-        divDuringChange.Visible = true;
-        divImageChanger.Visible = true;
-    }
-
-    protected void btnImageChanger_Click(object sender, EventArgs e)
-    {
-        try
-        {
-            string group_id = Request.QueryString["Group"];
-            int parsed_group_id = int.Parse(group_id);
-            bool gooduri = Uri.IsWellFormedUriString(txtImageChanger.Text, UriKind.Absolute);
-            string pictureuri = Request.ApplicationPath + "Images/no_image.png";
-            var rightgroup = ctx.group.Where(g => g.group_id == parsed_group_id).SingleOrDefault();
-
-            if (gooduri == true)
-            {
-                pictureuri = txtImageChanger.Text;
-            }
-            else
-            {
-                lbMessages.Text = "Enter valid absolute url path of the picture";
-            }
-
-            if (rightgroup != null && txtImageChanger.Text != String.Empty)
-            {
-                rightgroup.group_picture_url = pictureuri;
-                rightgroup.edited = DateTime.Now;
-
-                ctx.SaveChanges();
-
-                imgGroupPicture.Src = rightgroup.group_picture_url;
-            }
-        }
-        catch (Exception ex)
-        {
-
-            lbMessages.Text = ex.Message;
-        }
-
-        divImageChanger.Visible = false;
-        divDuringChange.Visible = false;
-        divDefault.Visible = true;
-    }
-
-    protected void btnImageCancel_Click(object sender, EventArgs e)
-    {
-        divImageChanger.Visible = false;
-        divDuringChange.Visible = false;
-        divDefault.Visible = true;
-    }
 
     protected void btnAddMembers_Click(object sender, EventArgs e)
     {
@@ -486,11 +361,107 @@ public partial class Group : System.Web.UI.Page
 
                     lbProjectInfo.Text = group_project.project.description;
                 }
+
+                if (rightproject.assignment != null)
+                {
+                    FillAssignmentProgress(rightproject);
+                }
             }
         }
         catch (Exception ex)
         {
             
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void FillAssignmentProgress(project rightproject)
+    {
+        try
+        {
+            divProjectAssignmentList.Controls.Clear();
+
+            var assignmentlist = ctx.assignment.Where(amt => amt.project_id == rightproject.project_id).ToList();
+
+            foreach (var assignment in assignmentlist)
+            {
+                var finishedcomponentlist = assignment.assignment_component.Where(amtc => amtc.finished == true).ToList();
+
+                int componentcount = assignment.assignment_component.Count;
+                int finishedcomponents = finishedcomponentlist.Count;
+
+                double assignmentpercent = 0;
+
+                if (finishedcomponents > 0)
+                {
+                    assignmentpercent = ((double)finishedcomponents * 100) / (double)componentcount;
+                }
+
+                HtmlGenericControl assignmentdiv = new HtmlGenericControl("div");
+                HtmlGenericControl assignmentprogressdiv = new HtmlGenericControl("div");
+                HtmlGenericControl assignmentprogressbardiv = new HtmlGenericControl("div");
+                Label assignmentnamelabel = new Label();
+                Label assignmentinfolabel = new Label();
+
+                assignmentinfolabel.Text = String.Format("Assignments: {0}. Finished assignments: {1}", componentcount, finishedcomponents);
+                assignmentinfolabel.Attributes.Add("style", "display:inline-block");
+
+                assignmentnamelabel.Text = assignment.name;
+                assignmentnamelabel.Attributes.Add("style", "float:left; margin-right:10px;");
+
+                assignmentdiv.Attributes.Add("class", "projectprogressbars");
+                assignmentdiv.Attributes.Add("style", "padding-top:10px; padding-bottom:5px; padding-left:5px;");
+
+                assignmentprogressdiv.Attributes.Add("class", "progress");
+                assignmentprogressdiv.Attributes.Add("style", "float:left; width:60%; background-color:gray;");
+
+                assignmentprogressbardiv.Attributes.Add("class", "progress-bar");
+                assignmentprogressbardiv.Attributes.Add("role", "progressbar");
+                assignmentprogressbardiv.Attributes.Add("aria-valuemin", "0");
+                assignmentprogressbardiv.Attributes.Add("aria-valuemax", "100");
+                assignmentprogressbardiv.Attributes.Add("style", String.Format("width:{0}%; background-color:#337ab7; color:#fff;", assignmentpercent));
+
+                if (finishedcomponents > 0)
+                {
+                    assignmentprogressbardiv.InnerText = String.Format("{0}% Complete", assignmentpercent);
+                }
+
+                // Assign right elements to their parent elements
+                assignmentprogressdiv.Controls.Add(assignmentprogressbardiv);
+
+                assignmentdiv.Controls.Add(assignmentnamelabel);
+                assignmentdiv.Controls.Add(assignmentprogressdiv);
+                assignmentdiv.Controls.Add(assignmentinfolabel);
+
+                divProjectAssignmentList.Controls.Add(assignmentdiv);
+            }
+        }
+        catch (Exception ex)
+        {
+
+            lbMessages.Text = ex.Message;
+        }
+    }
+
+    protected void btnShowProjectPage_Click(object sender, EventArgs e)
+    {
+        string projectname = ddlProjectList.SelectedValue;
+        string group_id = String.Empty;
+
+        try
+        {
+            group_id = Request.QueryString["Group"];
+            int groupnro_id = int.Parse(group_id);
+            var rightproject = ctx.project.Where(pr => pr.name == projectname).SingleOrDefault();
+
+            if (rightproject != null)
+            {
+                Response.Redirect(String.Format(Request.ApplicationPath + "Project.aspx?Project={0}", rightproject.project_id));
+            }
+        }
+        catch (Exception ex)
+        {
+
             lbMessages.Text = ex.Message;
         }
     }

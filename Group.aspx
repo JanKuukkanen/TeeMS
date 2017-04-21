@@ -112,18 +112,39 @@
 
                 <!-- This will become a list of elements instead of a dropdownlist -->
                 <h2>Group projects</h2>
-                <asp:DropDownList ID="ddlProjectList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlProjectList_SelectedIndexChanged" />
-                <br />
+                <asp:UpdatePanel ID="updateProjectList" runat="server">
+                    <ContentTemplate>
+                        <asp:DropDownList ID="ddlProjectList" runat="server" AutoPostBack="true" OnSelectedIndexChanged="ddlProjectList_SelectedIndexChanged" />
+                        <br />
 
-                <h2 style="margin-top: 60px;">Project info</h2>
-                <table>
-                    <tr>
-                        <td style="border: 1px solid black; width:350px; height:250px; vertical-align:top;">
-                            <asp:Label ID="lbProjectInfo" runat="server" />
-                        </td>
-                    </tr>
-                </table>
+                        <h2 style="margin-top: 60px; margin-bottom:10px;">Project info</h2>
+                        <table>
+                            <tr>
+                                <td>
+                                    <h3>Project description</h3>
+                                </td>
+                                <td>
+                                    <h3>Project assignments</h3>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid black; width:350px; height:250px; vertical-align:top;">
+                                    <asp:Label ID="lbProjectInfo" runat="server" />
+                                </td>
+                                <td style="border: 1px solid black; width:550px; height:250px; vertical-align:top;">
+                                    <div id="divProjectAssignmentList" runat="server">
 
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <asp:Button ID="btnShowProjectPage" runat="server" OnClick="btnShowProjectPage_Click" Text="Show project" CssClass="w3-btn" />
+                                </td>
+                            </tr>
+                        </table>
+                    </ContentTemplate>
+                </asp:UpdatePanel>
                 <div>
                     <asp:Label ID="lbMessages" runat="server" />
                 </div>
@@ -179,7 +200,9 @@
                 group.client.insertGroupImage = function (grouppic_url) {
 
                     // change the image in thr group page
-                    $('#imgGroupImage').attr("src", grouppic_url);
+                    if (grouppic_url) {
+                        $('#imgGroupImage').attr("src", grouppic_url);
+                    }
 
                 }
 

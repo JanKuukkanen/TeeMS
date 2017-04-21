@@ -25,6 +25,7 @@ public partial class Project : System.Web.UI.Page
 
         int project_id = 0;
         bool isarchived = false;
+        bool alloweduser = false;
 
         try
         {
@@ -33,12 +34,26 @@ public partial class Project : System.Web.UI.Page
 
             project_id = int.Parse(Request.QueryString["Project"]);
 
+            var rightproject = ctx.project.Where(g => g.project_id == project_id).SingleOrDefault();
+            var rightperson = ctx.person.Where(p => p.username == User.Identity.Name).SingleOrDefault();
+            var rightprojectmember = rightperson.project_person.Where(prope => prope.project_id == rightproject.project_id).SingleOrDefault();
+
+            if (rightprojectmember != null)
+            {
+                alloweduser = true;
+            }
+
             isarchived = ctx.project.Where(pr => pr.project_id == project_id).SingleOrDefault().finished;
         }
-        catch (HttpException ex)
+        catch (Exception ex)
         {
 
             lbMessages.Text = ex.Message;
+        }
+
+        if (alloweduser != true)
+        {
+            Response.Redirect(String.Format(Request.ApplicationPath + "Home.aspx"));
         }
 
         if (!IsPostBack)
