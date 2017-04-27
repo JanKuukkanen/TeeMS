@@ -52,38 +52,11 @@ public partial class Home : System.Web.UI.Page
     protected int CreateNewGroup()
     {
         ctx = new TeeMsEntities();
-        int emptyrow = 0;
-        int addedrow = 0;
-
-        // First check for any gaps in the number sequence inside the database
-        for (int i = 0; i <= ctx.group.Count(); i++)
-        {
-            group compareGroup = new group();
-            var checkGroup = ctx.group.Where(gr => gr.group_id == i).SingleOrDefault();
-
-            if (checkGroup == compareGroup)
-            {
-                emptyrow = i;
-            }
-            else
-            {
-                compareGroup = checkGroup;
-            }
-        }
-
-        if (emptyrow == 0)
-        {
-            addedrow = ctx.group.Count() + 1;
-        }
-        else
-        {
-            addedrow = emptyrow;
-        }
-
-        // Next add a new group to the database
 
         try
         {
+            // First add a new group to the database
+
             UserContentManager contentmanager = new UserContentManager(ticket.Name);
             List<group> usergroupquery = contentmanager.GetUserGroups();
             int newgroupnamenro = 1;
@@ -149,6 +122,9 @@ public partial class Home : System.Web.UI.Page
         {
             var addeduser = ctx.person.Where(p => p.username == ticket.Name).FirstOrDefault();
             var addedgroup = ctx.group.Where(g => g.group_id == addgroup_id).FirstOrDefault();
+            var rightgrouprole = ctx.group_role.Where(gr => gr.@class == 1).SingleOrDefault();
+
+            int group_role_input = rightgrouprole.grouprole_id;
 
             if (addeduser != null && addedgroup != null)
             {
@@ -156,7 +132,7 @@ public partial class Home : System.Web.UI.Page
                     {
                         group_id = addedgroup.group_id,
                         person_id = addeduser.person_id,
-                        grouprole_id = 4
+                        grouprole_id = group_role_input
                     };
 
                 addeduser.group_member.Add(gm);
@@ -176,7 +152,7 @@ public partial class Home : System.Web.UI.Page
     {
         // Fill your projects section with the users projects and assignments
         // and fill your groups with the users groups
-        UserContentManager contentmanager = new UserContentManager(ticket.Name);
+        UserContentManager contentmanager = new UserContentManager(User.Identity.Name);
 
         try
         {

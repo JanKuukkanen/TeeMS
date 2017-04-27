@@ -44,6 +44,9 @@ public partial class Register : System.Web.UI.Page
         {
             try
             {
+                var rightrole = ctx.role.Where(r => r.@class == 3).SingleOrDefault();
+                int role_to_input = rightrole.role_id;
+
                 person p = new person
                 {
                     first_name = fname,
@@ -52,7 +55,7 @@ public partial class Register : System.Web.UI.Page
                     email = email,
                     creation_date = cdate,
                     privacy = privacynro,
-                    role_id = 3
+                    role_id = role_to_input
                 };
 
                 login l = new login
@@ -78,6 +81,11 @@ public partial class Register : System.Web.UI.Page
             {
 
                 lbMessages.Text = ex.Message;
+
+                if (ex.InnerException != null)
+                {
+                    lbMessages.Text = ex.InnerException.ToString();
+                }
             }
 
             Response.Redirect("Login.aspx");

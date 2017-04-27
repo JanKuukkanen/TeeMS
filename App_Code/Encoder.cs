@@ -42,7 +42,7 @@ namespace TeeMs.Encoder
             // Append the salt to the end of the password
             string passwordsalt = password + salt;
 
-            // Calculate MD5 hash from input, Change to a better hash algorithm later
+            // Calculate sha512 hash from input
             SHA512 sha512 = System.Security.Cryptography.SHA512.Create();
 
             byte[] inputBytes = System.Text.Encoding.ASCII.GetBytes(passwordsalt);
