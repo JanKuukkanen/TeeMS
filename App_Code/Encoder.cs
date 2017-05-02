@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Security.Cryptography;
 using System.Text;
+using BCrypt.Net;
 
 /// <summary>
 /// Summary description for Encoder
@@ -22,7 +23,12 @@ namespace TeeMs.Encoder
 
         public string GetSalt()
         {
-            var random = new RNGCryptoServiceProvider();
+            //Generate salt used by BCrypt
+            return BCrypt.Net.BCrypt.GenerateSalt(12);
+
+            // Alternative salt generation for SHA512, if needed
+
+            /*var random = new RNGCryptoServiceProvider();
 
             //Maximum length of salt
             int max_length = 32;
@@ -34,13 +40,20 @@ namespace TeeMs.Encoder
             random.GetNonZeroBytes(salt);
 
             // Return the string encoded salt
-            return Convert.ToBase64String(salt);
+            return Convert.ToBase64String(salt);*/
         }
 
         public string GenerateSaltedHash(string password, string salt)
         {
+            // Encode user password with BCrypt
+            string sb = BCrypt.Net.BCrypt.HashPassword(password, salt);
+
+            return sb;
+
+            // Below is and alternative way to encode user passwords using SHA512
+
             // Append the salt to the end of the password
-            string passwordsalt = password + salt;
+            /*string passwordsalt = password + salt;
 
             // Calculate sha512 hash from input
             SHA512 sha512 = System.Security.Cryptography.SHA512.Create();
@@ -57,7 +70,7 @@ namespace TeeMs.Encoder
                 sb.Append(hash[i].ToString("X2"));
             }
 
-            return sb.ToString();
+            return sb.ToString();*/
         }
 
         public Boolean AuthenticateUser(string uname, string password)
@@ -75,7 +88,9 @@ namespace TeeMs.Encoder
 
                 if (authenticator.username == loginauth.login_name)
                 {
-                    string saltedhash = GenerateSaltedHash(password, loginauth.salt);
+                    return BCrypt.Net.BCrypt.Verify(password, loginauth.password);
+
+                    /*string saltedhash = GenerateSaltedHash(password, loginauth.salt);
 
                     if (saltedhash == loginauth.password)
                     {
@@ -84,7 +99,7 @@ namespace TeeMs.Encoder
                     else
                     {
                         return false;
-                    }
+                    }*/
                 }
                 else
                 {
