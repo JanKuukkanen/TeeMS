@@ -82,12 +82,14 @@
                         <asp:RegularExpressionValidator ID="regexLastName" runat="server" ErrorMessage="Your name contains invalid characters!" ForeColor="Red" ControlToValidate="txtLastName" ValidationExpression="^[A-Za-z]+(((\'|\-|\.)?([A-Za-z])+))?$"></asp:RegularExpressionValidator>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <asp:Button ID="btnEditProfile" runat="server" Text="Edit Profile" CssClass="w3-btn" ValidationGroup="UserProfile" OnClick="btnEditProfile_Click" />
-                    </td>
-                </tr>
             </table>
+
+            <div style="margin-top:10px;">
+                <asp:Label ID="lbUserPrivacy" runat="server" Text="Set profile to private mode:" style="margin-right:10px; float:left;" />
+                <asp:CheckBox ID="cbChangeUserPrivacy" runat="server" style="float:left;" />
+                <br />
+                <asp:Button ID="btnEditProfile" runat="server" Text="Edit Profile" CssClass="w3-btn" style="margin-top:5px;" ValidationGroup="UserProfile" OnClick="btnEditProfile_Click" />
+            </div>
 
             <table style="margin-top:40px;">
                 <tr>

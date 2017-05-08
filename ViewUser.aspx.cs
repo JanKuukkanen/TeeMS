@@ -24,11 +24,24 @@ public partial class ViewUser : System.Web.UI.Page
 
             if (user_id != null)
             {
-                FillControls(usernro_id);
-                FillDivs(usernro_id);
+                var rightperson = ctx.person.Where(p => p.person_id == usernro_id).SingleOrDefault();
+
+                if (rightperson.privacy == 1 || rightperson.username == User.Identity.Name)
+                {
+                    FillControls(usernro_id);
+                    FillDivs(usernro_id); 
+                }
+                else if (Request.UrlReferrer.ToString() != String.Empty)
+                {
+                    Response.Redirect(Request.UrlReferrer.ToString());
+                }
+                else
+                {
+                    Response.Redirect(String.Format(Request.ApplicationPath + "Home.aspx"));
+                }
             }
         }
-        catch (HttpException ex)
+        catch (Exception ex)
         {
 
             lbMessages.Text = ex.Message;

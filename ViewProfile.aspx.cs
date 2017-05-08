@@ -33,6 +33,11 @@ public partial class ViewProfile : System.Web.UI.Page
             lbEmailInsert.Text = correctperson.email;
             lbFirstNameInsert.Text = correctperson.first_name;
             lbLastNameInsert.Text = correctperson.last_name;
+
+            if (correctperson.privacy != 1 && !IsPostBack)
+            {
+                cbChangeUserPrivacy.Checked = true;
+            }
         }
         catch (Exception ex)
         {
@@ -92,6 +97,18 @@ public partial class ViewProfile : System.Web.UI.Page
                 {
                     email = txtEmail.Text;
                     rightperson.email = email;
+                    ischanged = true;
+                }
+
+                if (cbChangeUserPrivacy.Checked == true && rightperson.privacy == 1)
+                {
+                    rightperson.privacy = 0;
+                    ischanged = true;
+                }
+
+                if (cbChangeUserPrivacy.Checked == false && rightperson.privacy != 1)
+                {
+                    rightperson.privacy = 1;
                     ischanged = true;
                 }
 
