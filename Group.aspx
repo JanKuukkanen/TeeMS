@@ -13,7 +13,7 @@
         <div id="divTitleAndImageDefault" class="w3-container" visible="true" style="float:left; width:50%">
             <div class="w3-container" style="float:left; width:50%;">
                 
-                <h1 id="h1GroupTitle"><input type="button" id="btnChangeGroupTitle" value="Undefined Group" style="background: none; border: none; padding-bottom:4px;" /></h1>
+                <h1><input type="button" id="btnChangeGroupTitle" value="Undefined Group" style="background: none; border: none; padding-bottom:4px;" /></h1>
                 
                 <h3 id="h3GroupTagNro">Group tag: Undefined</h3>
             </div>

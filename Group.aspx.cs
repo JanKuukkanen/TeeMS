@@ -348,6 +348,8 @@ public partial class Group : System.Web.UI.Page
 
         try
         {
+            lbProjectInfo.Text = "";
+
             group_id = Request.QueryString["Group"];
             int groupnro_id = int.Parse(group_id);
             var rightproject = ctx.project.Where(pr => pr.name == projectname).SingleOrDefault();

@@ -175,33 +175,6 @@ namespace SignalRTeeMs
             Clients.Caller.insertGroupImage(projectpic_url);
         }
 
-        public void SaveGroupName(string groupname)
-        {
-            try
-            {
-                ctx = new TeeMsEntities();
-
-                int group_id = int.Parse(this.Context.QueryString["Group"]);
-                string newname = groupname;
-
-                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
-                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
-                var rightgroup = ctx.group.Where(g => g.group_id == group_id).SingleOrDefault();
-
-                rightgroup.name = newname;
-                ctx.SaveChanges();
-
-                // Call updateProjectTitle method on the client side
-                // For some reason this call to the client side is made only if the variable passed to the client side is the same as the current project name in the database
-                Clients.OthersInGroup(rightgroup.name + rightgroup.group_id.ToString()).updateGroupName(newname);
-            }
-            catch (Exception ex)
-            {
-
-                throw ex;
-            }
-        }
-
         public void SaveGroupImage(string group_imageurl)
         {
             try
@@ -219,6 +192,32 @@ namespace SignalRTeeMs
 
                 // Call updateProjectTitle method on the client side
                 Clients.OthersInGroup(rightgroup.name + rightgroup.group_id.ToString()).updateGroupImage(group_imageurl);
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public void SaveGroupName(string group_name)
+        {
+            try
+            {
+                ctx = new TeeMsEntities();
+
+                int group_id = int.Parse(this.Context.QueryString["Group"]);
+
+                var rightperson = ctx.person.Where(p => p.username == Context.User.Identity.Name).SingleOrDefault();
+                var rightconnection = ctx.connection.Where(con => con.person_id == rightperson.person_id).SingleOrDefault();
+                var rightgroup = ctx.group.Where(g => g.group_id == group_id).SingleOrDefault();
+
+                rightgroup.name = group_name;
+                ctx.SaveChanges();
+
+                // Call updateProjectTitle method on the client side
+                // For some reason this call to the client side is made only if the variable passed to the client side is the same as the current project name in the database
+                Clients.OthersInGroup(rightgroup.name + rightgroup.group_id.ToString()).updateGroupName(group_name);
             }
             catch (Exception ex)
             {

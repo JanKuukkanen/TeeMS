@@ -17,7 +17,6 @@ public partial class Home : System.Web.UI.Page
 
     protected void Page_Load(object sender, EventArgs e)
     {
-        person rightperson = new person();
 
         try
         {
@@ -25,7 +24,6 @@ public partial class Home : System.Web.UI.Page
             ticket = FormsAuthentication.Decrypt(authcookie.Value);
 
             ctx = new TeeMsEntities();
-            rightperson = ctx.person.Where(p => p.username == ticket.Name).SingleOrDefault();
         }
         catch (HttpException ex)
         {
@@ -35,10 +33,7 @@ public partial class Home : System.Web.UI.Page
 
         FillDivs();
 
-        if (rightperson.invite.ToList() != null)
-        {
-            FillInvitations();
-        }
+        FillInvitations();
     }
 
     protected void btnCreateGroup_Click(object sender, EventArgs e)
@@ -152,7 +147,7 @@ public partial class Home : System.Web.UI.Page
     {
         // Fill your projects section with the users projects and assignments
         // and fill your groups with the users groups
-        UserContentManager contentmanager = new UserContentManager(User.Identity.Name);
+        UserContentManager contentmanager = new UserContentManager(ticket.Name);
 
         try
         {
@@ -275,42 +270,45 @@ public partial class Home : System.Web.UI.Page
 
             var invitations = rightperson.invite.ToList();
 
-            divInvitations.Controls.Clear();
-
-            foreach (var invite in invitations)
+            if (invitations != null)
             {
-                HtmlGenericControl invitediv = new HtmlGenericControl("div");
-                HtmlGenericControl invitelabeldiv = new HtmlGenericControl("div");
-                HtmlGenericControl invitebuttondiv = new HtmlGenericControl("div");
-                Label invitelabel = new Label();
-                Button inviteconfirmbutton = new Button();
-                Button invitecancelbutton = new Button();
+                divInvitations.Controls.Clear();
 
-                inviteconfirmbutton.Click += new EventHandler(CreateGroupMember);
-                inviteconfirmbutton.ID = String.Format("inviteconfirmbtn{0}", invite.invite_id);
-                inviteconfirmbutton.Text = "Accept";
-                inviteconfirmbutton.CssClass = "w3-btn";
-                inviteconfirmbutton.Attributes.Add("style", "float:left; margin-left:40%; margin-right:5px;");
+                foreach (var invite in invitations)
+                {
+                    HtmlGenericControl invitediv = new HtmlGenericControl("div");
+                    HtmlGenericControl invitelabeldiv = new HtmlGenericControl("div");
+                    HtmlGenericControl invitebuttondiv = new HtmlGenericControl("div");
+                    Label invitelabel = new Label();
+                    Button inviteconfirmbutton = new Button();
+                    Button invitecancelbutton = new Button();
 
-                invitecancelbutton.Click += new EventHandler(RemoveInvitation);
-                invitecancelbutton.ID = String.Format("invitecancelbtn{0}", invite.invite_id);
-                invitecancelbutton.Text = "Decline";
-                invitecancelbutton.CssClass = "w3-btn";
-                invitecancelbutton.Attributes.Add("style", "float:left;");
+                    inviteconfirmbutton.Click += new EventHandler(CreateGroupMember);
+                    inviteconfirmbutton.ID = String.Format("inviteconfirmbtn{0}", invite.invite_id);
+                    inviteconfirmbutton.Text = "Accept";
+                    inviteconfirmbutton.CssClass = "w3-btn";
+                    inviteconfirmbutton.Attributes.Add("style", "float:left; margin-left:40%; margin-right:5px;");
 
-                invitelabel.Text = invite.invite_content;
-                invitelabel.Attributes.Add("style", "margin-left:10%; display:inline-block;");
+                    invitecancelbutton.Click += new EventHandler(RemoveInvitation);
+                    invitecancelbutton.ID = String.Format("invitecancelbtn{0}", invite.invite_id);
+                    invitecancelbutton.Text = "Decline";
+                    invitecancelbutton.CssClass = "w3-btn";
+                    invitecancelbutton.Attributes.Add("style", "float:left;");
 
-                invitediv.Attributes.Add("style", "margin-bottom:10px; border: thin solid black; height:100px;");
+                    invitelabel.Text = invite.invite_content;
+                    invitelabel.Attributes.Add("style", "margin-left:10%; display:inline-block;");
 
-                invitelabeldiv.Controls.Add(invitelabel);
-                invitebuttondiv.Controls.Add(inviteconfirmbutton);
-                invitebuttondiv.Controls.Add(invitecancelbutton);
+                    invitediv.Attributes.Add("style", "margin-bottom:10px; border: thin solid black; height:100px;");
 
-                invitediv.Controls.Add(invitelabeldiv);
-                invitediv.Controls.Add(invitebuttondiv);
+                    invitelabeldiv.Controls.Add(invitelabel);
+                    invitebuttondiv.Controls.Add(inviteconfirmbutton);
+                    invitebuttondiv.Controls.Add(invitecancelbutton);
 
-                divInvitations.Controls.Add(invitediv);
+                    invitediv.Controls.Add(invitelabeldiv);
+                    invitediv.Controls.Add(invitebuttondiv);
+
+                    divInvitations.Controls.Add(invitediv);
+                } 
             }
         }
         catch (Exception ex)
